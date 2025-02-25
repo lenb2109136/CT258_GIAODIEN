@@ -1,23 +1,25 @@
 import logo from './logo.svg';
 import './App.css';
-
+import Home from './component/public/Home';
+import './lib/owlcarousel/assets/owl.carousel.min.css';
+import './lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min";  
+import { Route, Routes } from 'react-router-dom';
+import Tour from "./component/public/chitiettour"
+import ListTour from "./component/public/listtour"
+import F from "./component/public/footer"
+import H from "./component/public/header"
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <H></H>
+      <Routes>
+          <Route path='/home' element={<Home/>}> </Route>
+          <Route path='/tour' element={<Tour></Tour>}></Route>
+          <Route path='/Listtour' element={<ListTour></ListTour>}></Route>
+      </Routes>
+      <F></F>
     </div>
   );
 }
