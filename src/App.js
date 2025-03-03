@@ -10,6 +10,7 @@ import Tour from "./component/public/chitiettour"
 import ListTour from "./component/public/listtour"
 import F from "./component/public/footer"
 import H from "./component/public/header"
+import S from "./component/public/shopingcart"
 function App() {
   return (
     <div className="App">
@@ -18,6 +19,7 @@ function App() {
           <Route path='/home' element={<Home/>}> </Route>
           <Route path='/tour' element={<Tour></Tour>}></Route>
           <Route path='/Listtour' element={<ListTour></ListTour>}></Route>
+          <Route path='/shopingcart' element={<S></S>}></Route>
       </Routes>
       <F></F>
     </div>

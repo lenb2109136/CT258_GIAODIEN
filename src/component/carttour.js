@@ -13,7 +13,7 @@ export default function TourCard(prop) {
       >
         <div style={{ position: "relative" }}>
           <img
-            src="https://deviet.vn/wp-content/uploads/2024/07/tour-ghep-cyprus-dao-sip.png"
+            src={prop.anh}
             alt="Cyprus - Đảo Síp"
             style={{
               width: "80%",
@@ -40,7 +40,7 @@ export default function TourCard(prop) {
   
         <div>
           <h2 style={{ fontSize: "18px", fontWeight: "bold", margin: "12px 0" ,whiteSpace:"normal", wordWrap:"break-word"}}>
-            Tour ghép tại châu Âu: CYPRUS – Đảo Síp
+            {prop.ten}
           </h2>
         </div>
   
@@ -62,7 +62,7 @@ export default function TourCard(prop) {
               style={{ width: "24px", height: "24px" }}
             />
             <p style={{ fontSize: "16px", fontWeight: "bold", color: "#d4a017", marginRight: "20px" }}>
-              1.298EUR
+              {prop.gia}đ
             </p>
           </div>
           <div style={{ display: "flex", alignItems: "center" }}>
@@ -71,7 +71,7 @@ export default function TourCard(prop) {
               alt="Thời gian"
               style={{ width: "24px", height: "24px", marginRight: "3px" }}
             />
-            <p style={{ fontSize: "14px", color: "#555" }}>5 ngày 4 đêm</p>
+            <p style={{ fontSize: "14px", color: "#555" }}>{prop.ngay} ngày {prop.dem} đêm</p>
           </div>
         </div>
   

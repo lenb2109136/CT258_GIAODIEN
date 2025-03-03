@@ -1,8 +1,10 @@
 import React, { useRef } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import Cart from "../carttour";
+import { Link, useParams } from "react-router-dom";
 
-const TourSlider = () => {
+const TourSlider = (prop) => {
+  
   const sliderRef = useRef(null);
   const scrollAmount = 300;
 
@@ -25,12 +27,14 @@ const TourSlider = () => {
       </button>
 
       <div ref={sliderRef} style={cartItemsWrapperStyle}>
-        <Cart />
-        <Cart />
-        <Cart />
-        <Cart />
-        <Cart />
-        <Cart />
+        {
+          prop.ds.map((data,index)=>{
+           return <Link key={index} to={"/tour?id="+data.T_ID} style={{ textDecoration: "none", color: "inherit", marginLeft: "6%" }}>
+                <Cart ten={data.T_TEN} id={data.T_ID} gia={data.gia} ngay={data.T_SONGAY} anh={data.T_ANH} dem={data.T_SODEM} />
+          </Link>
+           
+          })
+        }
       </div>
 
       <button onClick={scrollRight} style={rightButtonStyle}>
