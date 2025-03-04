@@ -191,7 +191,7 @@ const TourInfo = () => {
 
 
             </div>
-            <Comment></Comment>
+            <Comment id={id}></Comment>
 
         </div>
     </>

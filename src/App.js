@@ -11,6 +11,7 @@ import ListTour from "./component/public/listtour"
 import F from "./component/public/footer"
 import H from "./component/public/header"
 import S from "./component/public/shopingcart"
+import CheckoutPage from './component/public/Checkout';
 function App() {
   return (
     <div className="App">
@@ -20,6 +21,7 @@ function App() {
           <Route path='/tour' element={<Tour></Tour>}></Route>
           <Route path='/Listtour' element={<ListTour></ListTour>}></Route>
           <Route path='/shopingcart' element={<S></S>}></Route>
+          <Route path='/checkout' element={<CheckoutPage/>}/>
       </Routes>
       <F></F>
     </div>

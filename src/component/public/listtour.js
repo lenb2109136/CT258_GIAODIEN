@@ -170,7 +170,7 @@ export default () => {
             listtour.map((data, index) => {
               if (index <= indx + 5 && index >= indx) {
                 return <>
-                  <Link key={index} to={"/tour?id="+data.T_ID} style={{ textDecoration: "none", color: "inherit", marginLeft: "6%" }}>
+                  <Link key={index} to={"/tour?id="+data.T_ID} style={{ textDecoration: "none", color: "inherit" }}>
                     <Cart ten={data.T_TEN} id={data.T_ID} gia={data.gia} ngay={data.T_SONGAY} anh={data.T_ANH} dem={data.T_SODEM} />
                   </Link>
                 </>
