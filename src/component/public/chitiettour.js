@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Footer from "./footer";
 import Header from "./header";
 import Comment from "./comment"
 import { useParams, useSearchParams } from "react-router-dom";
 import axios from "axios";
+import { CartContext } from "./KhachHang";
 function formatDate(dateString) {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0'); 
@@ -13,16 +14,24 @@ function formatDate(dateString) {
     return `${day}/${month}/${year}`;
 }
 const TourInfo = () => {
-
+    const {cart,setcart} =useContext(CartContext)
     const [searchParams] = useSearchParams();
     const id = searchParams.get('id')
     const [t, sett] = useState();
+    const [chuachon,setchu]=useState(true)
     useEffect(() => {
         axios.get(`http://localhost:8080/tour/getinfortour?id=${id}`)
             .then(data => {
                 sett(data.data.data);
             })
     }, [])
+    useEffect(()=>{
+        for( let i=0;i<cart.length;i++){
+            if(cart.id==id){
+                alert("id đã tồn tại")
+            }
+        }
+    })
     const [activeTab, setActiveTab] = useState("Giới thiệu chung");
     return (<>
         <div className="container mt-4">
@@ -38,7 +47,7 @@ const TourInfo = () => {
                                 backgroundColor: activeTab === tab ? "#7AB730" : "transparent",
                                 borderColor: activeTab === tab ? "#7AB730" : "white",
                                 color: activeTab === tab ? "white" : "#000",
-                                borderRadius: "5px", // Tạo viền bo tròn nhẹ
+                                borderRadius: "5px"
                             }}
                         >
                             {tab}
@@ -63,17 +72,23 @@ const TourInfo = () => {
                         <img className="mb-2 col-lg-2" style={{ width: "70px", height: "8%", marginRight: "2%" }} src="https://cdn-icons-png.flaticon.com/128/10693/10693001.png" alt="price-icon" />
                         <h4 className="col-lg-10 text-danger text-center">73.900.000 đ</h4>
                     </div>
-
-
-
-
                     <div className="d-flex">
                         <img className="mb-2" style={{ width: "8%", height: "8%", marginRight: "6%" }} src=" https://cdn-icons-png.flaticon.com/128/2784/2784459.png" alt="airline-icon" />
                         <p><strong>Thời gian:</strong> {t?.soNgay} ngày {t?.soDem} đêm</p>
                     </div>
+                    <div>
+                        <p>Thông tin khởi hành chi tiết</p>
+                        <ul>
+                            {
+                                t?.thoiGianKhoiHanh2.map(data=>{
+                                    return <li>Khởi hành: {formatDate(data.thoiGian)}</li>
+                                })
+                            }
+                        </ul>
+                    </div>
                     <div className="d-flex">
-                        <img className="mb-2" style={{ width: "8%", height: "8%", marginRight: "2%" }} src="https://cdn-icons-png.flaticon.com/128/984/984233.png" alt="airline-icon" />
-                        <p><strong>Hãng hàng không:</strong> Turkish Airlines hoặc tương đương</p>
+                        <img className="mb-2" style={{ width: "8%", height: "8%", marginRight: "6%", }} src="https://cdn-icons-png.flaticon.com/128/984/984233.png" alt="airline-icon" />
+                        <p><strong>Hãng hàng không:</strong> Turkish Airlines</p>
                     </div>
                     <div className="d-flex">
                         <img className="mb-2" style={{ width: "8%", height: "8%", marginRight: "6%" }} src="https://cdn-icons-png.flaticon.com/128/282/282803.png" alt="calendar-icon" />
@@ -94,18 +109,17 @@ const TourInfo = () => {
                                     </>
                                 })
                             }
-
-
                         </div>
                     </div>
-                    <button className="w-100" style={{ backgroundColor: "#7AB730", color: "white", border: "1px solid white", height: "30px", borderRadius: "10px" }}>
+                    <button onClick={()=>{
+                        let y=[...cart]
+                        y.push({...t,dsdv:[]})
+                       setcart(y)
+                    }} className="w-100" style={{ backgroundColor: "#7AB730", color: "white", border: "1px solid white", height: "30px", borderRadius: "10px" }}>
                         <strong>ĐẶT TOUR</strong>
                     </button>
                 </div>
             </div>
-
-            {/* thông tin mô tả */}
-
             <hr></hr>
 
             <div class="row pb-3">

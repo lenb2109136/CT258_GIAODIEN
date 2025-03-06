@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { BottomNavigation, BottomNavigationAction } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { Menu, Button } from "antd";
 import { AppstoreOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
-import Cart from "../carttour";
-import Slider from "./cartslider";
+import Cart from "./Cartdichvu";
+import Slider from "./SLiderdichVu";
 import axios from "axios";
 function kiemtra(a, u){
   for(let i=0;i<a.length;i++){
@@ -15,10 +15,14 @@ function kiemtra(a, u){
   return -1;
 }
 export default () => {
+  const [searchParams] = useSearchParams();
+  const inde = searchParams.get("inde");
   const [loai, setloai] = useState([])
+  const [dvall,setdvall]=useState([])
   const [loaichon, setloaichon] = useState(0);
   const [value, setValue] = useState("recents");
   const [collapsed, setCollapsed] = useState(true);
+  const[dsdichvu,setdsdichvu]=useState([])
   const [indx, setindx] = useState(0)
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -49,6 +53,16 @@ export default () => {
     loai:0
 
   })
+  useEffect(()=>{
+    axios.get("http://localhost:8080/dichvu/getphuhop")
+    .then(data=>{
+        setdsdichvu(data.data.data)
+    })
+    axios.get("http://localhost:8080/dichvu/getall")
+    .then(data=>{
+        setdvall(data.data.data)
+    })
+  },[])
   useEffect(() => {
     axios.get("http://localhost:8080/tour/getListTourfavourite")
       .then(data => {
@@ -77,33 +91,18 @@ export default () => {
   return (
     <div className="row">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "10px" }}>
-        <div>
-          <BottomNavigation sx={{ width: 500 }} value={value} onChange={handleChange}>
-            {
-              loai?.map(data => {
-                return <BottomNavigationAction
-                  onClick={() => {
-                    setloaichon(data.id)
-                  }}
-                  label={data.ten}
-                  value={data.ten}
-                  icon={<img src={data.icon} alt="Recents" style={{ width: 24, height: 24 }} />}
-                />
-
-              })
-            }
-          </BottomNavigation>
-        </div>
+        
 
       </div>
 
       <div style={{ width: "100%", marginBottom: "15px" }}>
         <div class="text-center mb-3 pb-3 mt-3">
-          <h6 class="text-uppercase" style={{ letterSpacing: "5px", color: "#7AB730" }}>Tours You May Like</h6>
+          <h6 class="text-uppercase" style={{ letterSpacing: "5px", color: "#7AB730" }}>
+          service may be suitable</h6>
 
         </div>
         <hr style={{ color: "#7AB730" }}></hr>
-        <Slider ds={favorite} />
+        <Slider ds={dsdichvu} />
       </div>
 
       <div className="bosung" style={{ display: "flex", gap: "20px", position: "fixed", width: "100%", zIndex: 20 }}>
@@ -115,8 +114,8 @@ export default () => {
 
       </div>
       <div class="text-center mb-3 pb-3 mt-3">
-        <h6 class="text-uppercase" style={{ letterSpacing: "5px", color: "#7AB730" }}>Best Selling Tour</h6>
-        <h1>Explore Top Destination</h1>
+        <h6 class="text-uppercase" style={{ letterSpacing: "5px", color: "#7AB730" }}>Service may be suitable</h6>
+        <h1>Explore Top Service</h1>
       </div>
       <div className="row" style={{ width: "90%", marginLeft: "4%" }}>
         <div className="col-lg-3" style={{ maxHeight: "600px", overflowY: "scroll" }}>
@@ -227,14 +226,13 @@ export default () => {
               position: "relative", paddingBottom: "50px"
             }}>
 
-            {listtour.map((data, index) => {
+            {dvall.map((data, index) => {
               if (index <= indx + 5 && index >= indx) {
                 return (
-                  <Link key={index} to={"/khachhang/tour?id=" + data.T_ID}
-                    style={{ textDecoration: "none", color: "inherit" }}>
-                    <Cart ten={data.T_TEN} id={data.T_ID} gia={data.gia}
-                      ngay={data.T_SONGAY} anh={data.T_ANH} dem={data.T_SODEM} />
-                  </Link>
+                  // <Link key={index} to={"/tour?id=" + data.T_ID}
+                    // style={{ textDecoration: "none", color: "inherit" }}>
+                     <Cart inde={inde} ten={data.ten} id={data.id} gia={data.gia} anh={data.anh} />
+                  // </Link>
                 );
               }
               return null;

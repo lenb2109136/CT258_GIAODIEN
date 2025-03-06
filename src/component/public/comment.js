@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-// Component hiển thị từng comment (hỗ trợ đệ quy)
 const Comment = ({ comment, fetchReplies }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -13,6 +12,23 @@ const Comment = ({ comment, fetchReplies }) => {
     }
   };
 
+  const addcomment = async () => {
+    let f= new FormData()
+  f.append("idcha", comment.id)
+  f.append("noidung", document.getElementById("them"+comment.id).value)
+  axios.post("http://localhost:8080/phanhoi/addthem",f)
+    .then(data=>{
+      if(data.data.status=="OK"){
+        
+        document.getElementById("them"+comment.id).value=""
+        if(comment.replies.length!=0){
+          fetchReplies(comment.id)
+
+        }
+        
+      }
+    })
+  }
   return (
     <div style={styles.comment}>
       <div style={styles.commentHeader}>
@@ -24,21 +40,25 @@ const Comment = ({ comment, fetchReplies }) => {
       </div>
 
       <p style={styles.content}>{comment.content || "No content available"}</p>
-
+      <input placeholder="Để lại bình luận của bạn" id={"them"+comment.id
+      } style={{padding:"10px",border:"0px", borderBottom:"1px solid black", outline:"none", marginBottom:"10px"}} type="text"></input>
       <div style={styles.replyContainer}>
-        <button style={styles.replyButton}>Reply</button>
+        <button style={styles.replyButton} onClick={()=>{
+          addcomment()
+        }} >Reply</button>
+        
         {comment.replies.length === 0 && (
-          <p style={{marginLeft:"2%",cursor:"pointer",color:"#7AB730"}} onClick={handleFetchReplies}>
+          <p style={{marginLeft:"2%",cursor:"pointer",color:"#7AB730", marginBottom:"0px", height:"30px", marginTop:"10px"}} onClick={handleFetchReplies}>
             {isLoading ? "Đang tải..." : "Xem thêm phản hồi"}
           </p>
         )}
       </div>
 
-      {/* Hiển thị danh sách replies nếu có */}
       {comment.replies.length > 0 && (
         <div style={styles.replies}>
           {comment.replies.map((reply) => (
             <Comment key={reply.id} comment={reply} fetchReplies={fetchReplies} />
+
           ))}
         </div>
       )}
@@ -46,11 +66,9 @@ const Comment = ({ comment, fetchReplies }) => {
   );
 };
 
-// Component hiển thị danh sách comment chính
 const CommentSection = ({ id }) => {
   const [comments, setComments] = useState([]);
 
-  // Lấy danh sách comment chính theo `id`
   useEffect(() => {
     const fetchComments = async () => {
       try {
@@ -61,7 +79,7 @@ const CommentSection = ({ id }) => {
           author: d.khachHang?.ten || "Unknown",
           date: d.thoiGianPhanHoi || "N/A",
           content: d.noiDungPhanHoi || "No content",
-          replies: [] // Ban đầu không có replies, chỉ tải khi cần
+          replies: []
         }));
         setComments(formattedComments);
       } catch (error) {
@@ -71,7 +89,6 @@ const CommentSection = ({ id }) => {
     fetchComments();
   }, [id]);
 
-  // Hàm lấy danh sách phản hồi của từng comment (hỗ trợ đệ quy)
   const fetchReplies = async (commentId) => {
     try {
       const response = await axios.get(`http://localhost:8080/phanhoi/getbyph?id=${commentId}`);
@@ -81,7 +98,7 @@ const CommentSection = ({ id }) => {
         author: d.khachHang?.ten || "Unknown",
         date: d.thoiGianPhanHoi || "N/A",
         content: d.noiDungPhanHoi || "No content",
-        replies: [] // Ban đầu không có replies, tải khi cần
+        replies: []
       }));
 
       setComments(prevComments =>
@@ -92,7 +109,6 @@ const CommentSection = ({ id }) => {
     }
   };
 
-  // Hàm đệ quy để cập nhật danh sách reply vào đúng vị trí
   const updateCommentTree = (comment, targetId, newReplies) => {
     if (comment.id === targetId) {
       return { ...comment, replies: newReplies };
@@ -170,7 +186,7 @@ const styles = {
     color: "#555",
     fontSize: "0.95rem",
     lineHeight: "1.5",
-    marginBottom: "10px",
+    marginBottom: "0px",
     textAlign: "left",
   },
   replyContainer: {

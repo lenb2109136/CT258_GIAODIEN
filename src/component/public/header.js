@@ -46,11 +46,11 @@ export default () => {
                     <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
                         <div class="navbar-nav ml-auto py-0">
                             <a onClick={()=>{
-                                navigate("home")
+                                navigate("/khachhang/home")
                             }} style={{cursor:"pointer"}}  class="nav-item nav-link ">Home</a>
                             <a href="about.html" class="nav-item nav-link">About</a>
                             <a onClick={()=>{
-                                navigate("listtour")
+                                navigate("/khachhang/listtour")
                             }} style={{cursor:"pointer"}} class="nav-item nav-link ">Services</a>
                             <a href="package.html" class="nav-item nav-link">Tour Packages</a>
 
