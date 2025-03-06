@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 
 const CartContext = createContext();
 export {CartContext}
+
 export default () => {
     const [cart,setcart] = useState([]); 
     const navigate=useNavigate();
@@ -31,7 +32,7 @@ export default () => {
                             navigate("/khachhang/checkout")
                         }}
                     />
-                    {cart.length > 0 && (
+                    {cart?.length > 0 && (
                         <span style={{
                             position: "absolute",
                             cursor:"pointer",
@@ -48,7 +49,7 @@ export default () => {
                             alignItems: "center",
                             fontWeight: "bold",
                         }}>
-                            {cart.length}
+                            {cart?.length}
                         </span>
                     )}
                 </div>

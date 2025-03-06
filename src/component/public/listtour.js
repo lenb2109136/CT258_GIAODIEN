@@ -190,8 +190,10 @@ export default () => {
                 <label key={index} style={{ display: "block", margin: "5px 0", textAlign: "left" }}>
                   <input onClick={()=>{
                     let  mm=kiemtra(filter.current.thoiLuong,brand.batDau)
+                    // tt={...filter}
                      if(mm==-1){
                       filter.current.thoiLuong.push(brand)
+                      console.log(filter)
                      }
                      else{
                       filter.current.thoiLuong.pop(mm)
@@ -207,10 +209,8 @@ export default () => {
                     let  mm=kiemtra(filter.current.dsNgay,brand.batDau)
                      if(mm==-1){
                       filter.current.dsNgay.push(brand)
-                      alert("vaof theem ")
                      }
                      else{
-                      alert("số lượng: "+mm)
                       filter.current.dsNgay.pop(mm)
                      }
                   }} type="checkbox" style={{ marginRight: "5px" }} />  Ngày {brand.batDau} - {brand.KetThuc}

@@ -29,7 +29,7 @@ const TourSlider = (prop) => {
             <div ref={sliderRef} style={cartItemsWrapperStyle}>
                 {
                     prop.ds.map((data, index) => {
-                        return  <Cart ten={data.ten} id={data.id} gia={data.gia} anh={data.anh} />
+                        return  <Cart inde={prop.inde} ten={data.ten} id={data.id} gia={data.gia} anh={data.anh} />
                        
 
                     })

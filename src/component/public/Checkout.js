@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { CartContext } from "./KhachHang";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 function formatDate(dateString) {
   const date = new Date(dateString);
   const day = String(date.getDate()).padStart(2, '0');
@@ -11,13 +12,13 @@ function formatDate(dateString) {
 }
 function total(a) {
   let gia = 0;
-  for (let o = 0; o < a.length; o++) {
-    a[o].thoiGianKhoiHanh2.map(data=>{
-      if(data.chon==true){
-        gia+=data.gia
+  for (let o = 0; o < a?.length; o++) {
+    a[o]?.thoiGianKhoiHanh2?.map(data => {
+      if (data.chon == true) {
+        gia += data.gia
       }
     })
-    a[o].dsdv.map(data => {
+    a[o]?.dsdv?.map(data => {
       gia += data.gia
     })
     return gia
@@ -32,7 +33,7 @@ const CheckoutPage = () => {
       <div className="row">
         {/* Shopping Cart Section */}
         <div className="col-lg-8">
-          <h4 style={{ color: "#7AB730", marginBottom: "22px" }}>Shopping Tour <span className="text-muted">{cart.length} Tour</span></h4>
+          <h4 style={{ color: "#7AB730", marginBottom: "22px" }}>Shopping Tour <span className="text-muted">{cart?.length} Tour</span></h4>
           <table className="table">
             <thead style={{ border: "0px solid red" }}>
               <tr style={{ backgroundColor: "#7AB730" }}>
@@ -43,7 +44,13 @@ const CheckoutPage = () => {
             </thead>
             <tbody>
               {
-                cart.map((data, index) => {
+                cart?.length <0  ? <div style={{ width: "100%", textAlign: "center" }}>
+                  <div style={{ marginLeft: "70%" }}><img src="https://cdn-icons-png.flaticon.com/128/10608/10608904.png" alt="Không tìm thấy" />
+                    <p>Bạn chưa chọn tour nào </p></div>
+                </div> : null
+              }
+              {
+                cart?.map((data, index) => {
                   return <>
                     <tr >
                       <td>
@@ -54,7 +61,7 @@ const CheckoutPage = () => {
                       </td>
                       <td>
                         {
-                          data.thoiGianKhoiHanh2.map((d, i) => {
+                          data?.thoiGianKhoiHanh2?.map((d, i) => {
                             return <>
                               <div style={{ paddingTop: "10px" }}>
                                 <input style={{
@@ -70,7 +77,9 @@ const CheckoutPage = () => {
                                   for (let p = 0; p < j[index].thoiGianKhoiHanh2.length; p++) {
                                     j[index].thoiGianKhoiHanh2[p].chon = false;
                                   }
+                                  alert("đã đi vào đây rồi")
                                   j[index].thoiGianKhoiHanh2[i].chon = true
+                                  console.log(j)
                                   setcart(j)
                                   console.log(j)
                                 }} name={"bbb" + index} type="radio"></input>
@@ -99,7 +108,7 @@ const CheckoutPage = () => {
                       </div></td>
                     </tr>
                     {
-                      data.dsdv.map((de, id) => {
+                      data?.dsdv?.map((de, id) => {
                         return <tr>
                           <td>
                             <div style={{ display: "flex", gap: 22 }}>
@@ -137,10 +146,59 @@ const CheckoutPage = () => {
         <div className="col-lg-4" style={{ backgroundColor: "white", border: "1px solidrgb(24, 37, 8)", borderRadius: "10px" }}>
           <div className="  p-3">
             <h4 cla>Order Summary</h4>
-            <p>Số lượng tour: {cart.length} <span className="float-end">{total(cart)}</span></p>
+            <p>Số lượng tour: {cart?.length} <span className="float-end">{total(cart)}</span></p>
             <input type="text" className="form-control my-2" placeholder="Enter your phone" />
             <input type="text" className="form-control my-2" placeholder="Enter your name" />
-            <button style={{ backgroundColor: "#7AB730" }} className="btn  w-100 mb-2"><strong><span style={{ color: "white" }}>Apply</span></strong></button>
+            <button onClick={()=>{
+              if(cart.length==0){
+                alert("Vui lòng chọn nhiều hơn 1 tour");
+              }
+              else{
+                  let ss=[]
+                  cart.forEach(data => {
+                    let thoidiemkhoihanh=0;
+                    data.thoiGianKhoiHanh2.some((f,index)=>{
+                        if(f.chon==false&&index==data.thoiGianKhoiHanh2.length-1){
+                          alert ("Bạn vui lòng chọn thời điểm khởi hành cho tour: "+data.ten)
+                        }
+                        else{
+                          if(f.chon==true){
+                            thoidiemkhoihanh=f.id;
+                            return true;
+                          }
+                        }
+                    })
+                    let dsdv=[]
+                    data.dsdv.some((f,index)=>{
+                      dsdv.push(f.id)
+                    })
+                    ss.push({
+                      idtgkh: thoidiemkhoihanh,
+                      dsdv:dsdv
+                    })
+
+                  });
+                  //thông tin khách hàng nhớ đổi lại lên
+                  let thongtingui={
+                    idkh:1,
+                    infove:ss
+                  }
+                  axios.post("http://localhost:8080/ve/save", thongtingui, {
+                    headers: {
+                        'Content-Type': 'application/json' 
+                    }
+                })
+                .then(response => {
+                    alert("TĐặt tour thành công");
+                    setcart([])
+                })
+                .catch(error => {
+                    console.error("Lỗi:", error);
+                    alert("Đã xảy ra lỗi khi gửi dữ liệu");
+                });
+                
+              }
+            }} style={{ backgroundColor: "#7AB730" }} className="btn  w-100 mb-2"><strong><span style={{ color: "white" }}>Apply</span></strong></button>
             <hr />
             <h5>Total Cost: <span className="float-end">{total(cart)}</span></h5>
             <button className="btn   w-100" style={{ backgroundColor: "white", border: "2px solid #7AB730", color: "black" }}>

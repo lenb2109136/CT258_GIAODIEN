@@ -6,6 +6,8 @@ import { AppstoreOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-des
 import Cart from "./Cartdichvu";
 import Slider from "./SLiderdichVu";
 import axios from "axios";
+import { useContext } from "react";
+import { CartContext } from "./KhachHang";
 function kiemtra(a, u){
   for(let i=0;i<a.length;i++){
     if(a[i].batDau==u){
@@ -14,7 +16,10 @@ function kiemtra(a, u){
   }
   return -1;
 }
+
+
 export default () => {
+  const {cart,setcart}= useContext(CartContext)
   const [searchParams] = useSearchParams();
   const inde = searchParams.get("inde");
   const [loai, setloai] = useState([])
@@ -24,6 +29,7 @@ export default () => {
   const [collapsed, setCollapsed] = useState(true);
   const[dsdichvu,setdsdichvu]=useState([])
   const [indx, setindx] = useState(0)
+  
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -102,7 +108,7 @@ export default () => {
 
         </div>
         <hr style={{ color: "#7AB730" }}></hr>
-        <Slider ds={dsdichvu} />
+        <Slider inde={inde} ds={dsdichvu} />
       </div>
 
       <div className="bosung" style={{ display: "flex", gap: "20px", position: "fixed", width: "100%", zIndex: 20 }}>
@@ -229,10 +235,7 @@ export default () => {
             {dvall.map((data, index) => {
               if (index <= indx + 5 && index >= indx) {
                 return (
-                  // <Link key={index} to={"/tour?id=" + data.T_ID}
-                    // style={{ textDecoration: "none", color: "inherit" }}>
                      <Cart inde={inde} ten={data.ten} id={data.id} gia={data.gia} anh={data.anh} />
-                  // </Link>
                 );
               }
               return null;

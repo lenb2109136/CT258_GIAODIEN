@@ -6,6 +6,7 @@ import Comment from "./comment"
 import { useParams, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { CartContext } from "./KhachHang";
+import Slider from "./cartslider";
 function formatDate(dateString) {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0'); 
@@ -15,10 +16,18 @@ function formatDate(dateString) {
 }
 const TourInfo = () => {
     const {cart,setcart} =useContext(CartContext)
+    const [favorite, setfavorate] = useState([])
     const [searchParams] = useSearchParams();
     const id = searchParams.get('id')
     const [t, sett] = useState();
     const [chuachon,setchu]=useState(true)
+    useEffect(() => {
+        axios.get("http://localhost:8080/tour/getListTourfavourite")
+          .then(data => {
+            setfavorate(data.data.data)
+          })
+    
+      }, [])
     useEffect(() => {
         axios.get(`http://localhost:8080/tour/getinfortour?id=${id}`)
             .then(data => {
@@ -27,8 +36,8 @@ const TourInfo = () => {
     }, [])
     useEffect(()=>{
         for( let i=0;i<cart.length;i++){
-            if(cart.id==id){
-                alert("id đã tồn tại")
+            if(cart[i].id==id){
+               setchu(false)
             }
         }
     })
@@ -111,11 +120,11 @@ const TourInfo = () => {
                             }
                         </div>
                     </div>
-                    <button onClick={()=>{
+                    <button disabled={!chuachon} onClick={()=>{
                         let y=[...cart]
                         y.push({...t,dsdv:[]})
                        setcart(y)
-                    }} className="w-100" style={{ backgroundColor: "#7AB730", color: "white", border: "1px solid white", height: "30px", borderRadius: "10px" }}>
+                    }} className="w-100" style={{ backgroundColor:chuachon==true ?  "#7AB730" :"gray", color: "white", border: "1px solid white", height: "30px", borderRadius: "10px" }}>
                         <strong>ĐẶT TOUR</strong>
                     </button>
                 </div>
@@ -181,6 +190,10 @@ const TourInfo = () => {
                 </div>
             </div>
 
+            <hr></hr>
+            
+            <h2 class="mb-3">You might also like</h2>
+            <Slider ds={favorite} />
             <hr></hr>
             <h2 class="mb-3">Detailed schedule</h2>
             <div className="chan mt-4">

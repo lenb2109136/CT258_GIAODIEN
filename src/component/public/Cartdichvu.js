@@ -1,7 +1,20 @@
 import { useContext } from "react";
 import { CartContext } from "./KhachHang";
+function kiemtradachon (c,id){
+  for(let i=0;i<c.length;i++){
+    for(let u=0;u<c[i].dsdv.length;u++){
+        if(id==c[i].dsdv[u].id){
+          return true;
+        }
+    }
+  }
+  return false;
+}
 export default function TourCard(prop) {
+  
   const {cart,setcart}= useContext(CartContext);
+  console.log(cart)
+  console.log(prop.inde)
     return (
       <div
         style={prop.style!=null ? prop.style : {
@@ -86,13 +99,16 @@ export default function TourCard(prop) {
             fontSize: "16px",
             borderRadius: "25px",
             marginTop: "12px",
-            cursor: "pointer",
+            cursor: kiemtradachon(cart, prop.id) ? "none" :"pointer",
             transition: "0.3s",
-            background: "transparent",
+            background: kiemtradachon(cart,prop.id)==true?"none" :"transparent",
+            backgroundColor:"white"
           }}
           onMouseOver={(e) => {
-            e.target.style.background = "#d4a017";
-            e.target.style.color = "white";
+            if (!kiemtradachon(cart, prop.id)==true) { 
+              e.target.style.background = "#d4a017";
+              e.target.style.color = "white";
+            }
           }}
           onMouseOut={(e) => {
             e.target.style.background = "transparent";
@@ -100,16 +116,17 @@ export default function TourCard(prop) {
           }}
           onClick={()=>{
             let c= [...cart];
-            
+            console.log("danh sách dịch vụ: ")
+            console.log(c[prop.inde])
             c[prop.inde].dsdv.push({
               id:prop.id,
               ten:prop.ten,
               anh:prop.anh,
               gia:prop.gia
             })
-            console.log(c)
             setcart(c)
           }}
+          disabled={kiemtradachon(cart,prop.id)}
         >
           Chọn dịch vụ
         </button>
