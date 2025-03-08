@@ -71,13 +71,13 @@ const CheckoutPage = () => {
                                   borderRadius: "50%",
                                   display: "inline-block",
                                   position: "relative",
-                                  padding: "10px"
+                                  padding: "10px",
+                                  cursor:"pointer"
                                 }} onClick={(event) => {
                                   let j = [...cart]
                                   for (let p = 0; p < j[index].thoiGianKhoiHanh2.length; p++) {
                                     j[index].thoiGianKhoiHanh2[p].chon = false;
                                   }
-                                  alert("đã đi vào đây rồi")
                                   j[index].thoiGianKhoiHanh2[i].chon = true
                                   console.log(j)
                                   setcart(j)
@@ -189,7 +189,7 @@ const CheckoutPage = () => {
                     }
                 })
                 .then(response => {
-                    alert("TĐặt tour thành công");
+                    alert("Đặt tour thành công");
                     setcart([])
                 })
                 .catch(error => {

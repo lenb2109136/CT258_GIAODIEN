@@ -192,11 +192,13 @@ export default () => {
                     let  mm=kiemtra(filter.current.thoiLuong,brand.batDau)
                     // tt={...filter}
                      if(mm==-1){
+                      
                       filter.current.thoiLuong.push(brand)
                       console.log(filter)
                      }
                      else{
-                      filter.current.thoiLuong.pop(mm)
+                      filter.current.thoiLuong.splice(mm, 1);
+                      console.log(filter)
                      }
                   }}  type="checkbox" style={{ marginRight: "5px" }} /> {brand.batDau} - {brand.KetThuc} Ngày
                 </label>
@@ -211,7 +213,7 @@ export default () => {
                       filter.current.dsNgay.push(brand)
                      }
                      else{
-                      filter.current.dsNgay.pop(mm)
+                      filter.current.dsNgay.splice(mm, 1);
                      }
                   }} type="checkbox" style={{ marginRight: "5px" }} />  Ngày {brand.batDau} - {brand.KetThuc}
                 </label>
