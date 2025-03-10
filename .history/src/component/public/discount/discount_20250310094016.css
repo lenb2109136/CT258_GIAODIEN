@@ -1,0 +1,77 @@
+/* Discount.css */
+.discount-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  h2 {
+    font-size: 1.75rem;
+    letter-spacing: 0.5px;
+  }
+  
+  .input-group-text {
+    border-right: none;
+  }
+  
+  .form-control {
+    border-left: none;
+    transition: all 0.3s ease;
+  }
+  
+  .form-control:focus {
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
+    border-color: #007bff;
+  }
+  
+  .btn-add {
+    padding: 0.5rem 1.25rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-add:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+  }
+  
+  .card {
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .table {
+    margin-bottom: 0;
+  }
+  
+  .table-dark {
+    background-color: #343a40;
+    color: #fff;
+  }
+  
+  .table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+    transition: background-color 0.2s ease;
+  }
+  
+  .badge {
+    padding: 0.4em 0.8em;
+    font-size: 0.85rem;
+    border-radius: 12px;
+  }
+  
+  .btn-sm {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-outline-warning:hover {
+    background-color: #ffc107;
+    color: #fff;
+  }
+  
+  .btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: #fff;
+  }

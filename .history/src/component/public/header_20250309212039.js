@@ -48,7 +48,7 @@ export default () => {
                                 Đăng Nhập
                             </a>
                             <a
-                                onClick={() => navigate("/admin")}
+                                onClick={() => navigate("/account")}
                                 style={{ cursor: "pointer", color: "#333", padding: "0 10px", textDecoration: "none" }}
                             >
                                 Quản Lý Tài Khoản

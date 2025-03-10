@@ -17,14 +17,11 @@ import DV from "./component/public/dichvu";
 import About from "./component/public/about-us";
 import Contact from "./component/public/contact";
 import Login from "./component/public/login";
-import Admin from "./component/public/Admin"; 
-import SidebarAdmin from "./component/public/SidebarAdmin"; 
+import Admin from "./component/public/Admin"; // Admin dashboard
+import SidebarAdmin from "./component/public/SidebarAdmin"; // Assuming these are in the same folder
 import HeaderAdmin from "./component/public/HeaderAdmin";
-import Discount from './component/public/discount/index';
-import Category from './component/public/category/index';
-import TourAdmin from './component/public/tour/index';
-import Booking from './component/public/booking/index';
-import UserAdmin from './component/public/account/index'; 
+import Discount from './component/public/discount';
+
 
 function App() {
   return (
@@ -36,14 +33,11 @@ function App() {
           <Route path="profile" element={<div>Profile Page</div>} />
           <Route path="blank" element={<div>Blank Page (NFT/RTL)</div>} />
           <Route path="basic-tables" element={<div>Data Tables Page</div>} />
-          <Route path="discount" element={<Discount />} />
-          <Route path="category" element={<Category />} /> 
-          <Route path="tour" element={<TourAdmin />} /> 
-          <Route path="booking" element={<Booking />} /> 
-          <Route path="user" element={<UserAdmin />} /> 
+          <Route path="discount" element={<Discount />} /> 
           <Route path="signin" element={<Login initialTab="login" />} />
         </Route>
 
+    
         <Route
           path="/*"
           element={
@@ -74,28 +68,6 @@ function App() {
 }
 
 // Admin Layout Component to wrap admin pages with Sidebar and Header
-function AdminLayout() {
-  return (
-    <div className="admin-container">
-      <SidebarAdmin />
-      <div className="main-content">
-        <HeaderAdmin />
-        <Routes>
-          <Route index element={<Admin />} />
-          <Route path="notifications" element={<div>Notifications Page</div>} />
-          <Route path="profile" element={<div>Profile Page</div>} />
-          <Route path="blank" element={<div>Blank Page (NFT/RTL)</div>} />
-          <Route path="basic-tables" element={<div>Data Tables Page</div>} />
-          <Route path="discount" element={<Discount />} />
-          <Route path="category" element={<Category />} /> 
-          <Route path="tour" element={<TourAdmin />} /> 
-          <Route path="booking" element={<Booking />} /> 
-          <Route path="user" element={<UserAdmin />} /> 
-          <Route path="signin" element={<Login initialTab="login" />} />
-        </Routes>
-      </div>
-    </div>
-  );
-}
+
 
 export default App;

@@ -37,10 +37,10 @@ function App() {
           <Route path="blank" element={<div>Blank Page (NFT/RTL)</div>} />
           <Route path="basic-tables" element={<div>Data Tables Page</div>} />
           <Route path="discount" element={<Discount />} />
-          <Route path="category" element={<Category />} /> 
-          <Route path="tour" element={<TourAdmin />} /> 
-          <Route path="booking" element={<Booking />} /> 
-          <Route path="user" element={<UserAdmin />} /> 
+          <Route path="category" element={<Category />} /> {/* New Route for Category */}
+          <Route path="tour" element={<TourAdmin />} /> {/* New Route for TourAdmin */}
+          <Route path="booking" element={<Booking />} /> {/* New Route for Booking */}
+          <Route path="user" element={<UserAdmin />} /> {/* New Route for UserAdmin */}
           <Route path="signin" element={<Login initialTab="login" />} />
         </Route>
 
@@ -87,10 +87,10 @@ function AdminLayout() {
           <Route path="blank" element={<div>Blank Page (NFT/RTL)</div>} />
           <Route path="basic-tables" element={<div>Data Tables Page</div>} />
           <Route path="discount" element={<Discount />} />
-          <Route path="category" element={<Category />} /> 
-          <Route path="tour" element={<TourAdmin />} /> 
-          <Route path="booking" element={<Booking />} /> 
-          <Route path="user" element={<UserAdmin />} /> 
+          <Route path="category" element={<Category />} /> {/* New Route for Category */}
+          <Route path="tour" element={<TourAdmin />} /> {/* New Route for TourAdmin */}
+          <Route path="booking" element={<Booking />} /> {/* New Route for Booking */}
+          <Route path="user" element={<UserAdmin />} /> {/* New Route for UserAdmin */}
           <Route path="signin" element={<Login initialTab="login" />} />
         </Routes>
       </div>
