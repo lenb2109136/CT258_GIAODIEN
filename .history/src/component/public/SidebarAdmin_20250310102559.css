@@ -1,0 +1,97 @@
+/* SidebarAdmin.css */
+.sidebar {
+    width: 200px; /* Unchanged width */
+    height: 100vh;
+    position: fixed;
+    top: 60px; /* Offset for header */
+    left: 0;
+    background-color: #ffffff; /* White background for a cleaner look */
+    border-right: 1px solid #e9ecef;
+    overflow-y: auto;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05); /* Softer shadow */
+    transition: all 0.3s ease;
+  }
+  
+  .sidebar-title {
+    font-size: 1.25rem;
+    letter-spacing: 0.5px;
+    color: #007bff; /* Blue to match theme */
+    border-bottom: 2px solid #007bff; /* Blue border for emphasis */
+    margin-bottom: 1.5rem; /* More space below title */
+    padding: 15px;
+    font-weight: 600; /* Bolder title */
+    text-align: center; /* Centered title */
+  }
+  
+  .sidebar-item {
+    padding: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05); /* Subtle divider */
+    transition: background-color 0.3s ease;
+  }
+  
+  .sidebar-item:last-child {
+    border-bottom: none; /* Remove divider from the last item */
+  }
+  
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px 15px;
+    color: #495057; /* Softer dark gray */
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent; /* For active state border */
+  }
+  
+  .sidebar-link:hover {
+    background-color: #f8f9fa; /* Light gray on hover */
+    color: #007bff; /* Blue text on hover */
+    padding-left: 20px; /* Subtle indent on hover */
+  }
+  
+  .sidebar-link.active {
+    background-color: #e7f1ff; /* Light blue background for active link */
+    color: #007bff; /* Blue text for active link */
+    border-left: 3px solid #007bff; /* Blue left border for active link */
+  }
+  
+  .sidebar-icon {
+    margin-right: 8px;
+    font-size: 1.1rem;
+    width: 18px;
+    display: inline-block;
+    text-align: center;
+    color: #6c757d; /* Gray icons by default */
+    transition: color 0.3s ease;
+  }
+  
+  .sidebar-link:hover .sidebar-icon,
+  .sidebar-link.active .sidebar-icon {
+    color: #007bff; /* Blue icons on hover or when active */
+  }
+  
+  /* Responsive adjustments (optional) */
+  @media (max-width: 768px) {
+    .sidebar {
+      top: 50px; /* Adjust for smaller header on mobile */
+    }
+  
+    .sidebar-title {
+      font-size: 1.1rem;
+      padding: 10px;
+    }
+  
+    .sidebar-link {
+      padding: 8px 12px;
+      font-size: 0.9rem;
+    }
+  
+    .sidebar-icon {
+      font-size: 1rem;
+      margin-right: 6px;
+    }
+  }

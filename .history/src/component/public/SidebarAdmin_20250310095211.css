@@ -1,0 +1,88 @@
+/* SidebarAdmin.css */
+.sidebar {
+    width: 200px; /* Compact width as per your request */
+    height: 100vh; /* Full viewport height */
+    position: fixed; /* Fixed positioning */
+    top: 60px; /* Offset to account for a 60px header height */
+    left: 0;
+    background-color: #ffffff; /* Cleaner white background */
+    border-right: 1px solid #e9ecef; /* Subtle right border */
+    overflow-y: auto; /* Scroll if content overflows */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    transition: all 0.3s ease; /* Smooth transition for width changes if needed */
+    z-index: 100; /* Ensure it stays above content but below header */
+  }
+  
+  .sidebar-title {
+    font-size: 1.25rem; /* Slightly smaller title */
+    letter-spacing: 0.5px;
+    color: #007bff; /* Matching the blue theme */
+    border-bottom: 2px solid #007bff; /* Consistent blue bottom border */
+    margin-bottom: 1rem;
+    padding: 15px; /* Adjusted padding */
+    font-weight: 600; /* Bolder title */
+  }
+  
+  .sidebar-item {
+    padding: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05); /* Even subtler divider */
+  }
+  
+  .sidebar-item:last-child {
+    border-bottom: none; /* Remove divider from the last item */
+  }
+  
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px 15px; /* Compact padding */
+    color: #343a40; /* Dark gray for text */
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95rem; /* Slightly smaller text */
+    transition: all 0.3s ease; /* Smooth hover transition */
+  }
+  
+  .sidebar-link:hover {
+    background-color: #007bff; /* Blue background on hover */
+    color: #ffffff; /* White text on hover */
+    padding-left: 20px; /* Slight indent on hover */
+  }
+  
+  .sidebar-link:hover .sidebar-icon {
+    color: #ffffff; /* Ensure icon changes color on hover */
+  }
+  
+  .sidebar-icon {
+    margin-right: 10px; /* Consistent spacing */
+    font-size: 1.1rem; /* Slightly larger icon for visibility */
+    width: 20px; /* Fixed width for alignment */
+    display: inline-block;
+    text-align: center;
+    color: #6c757d; /* Gray icon color */
+  }
+  
+  /* Responsive adjustment */
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 180px; /* Slightly narrower on smaller screens */
+      top: 50px; /* Adjust for smaller header */
+    }
+  
+    .sidebar-title {
+      font-size: 1.1rem;
+      padding: 10px;
+    }
+  
+    .sidebar-link {
+      padding: 8px 12px;
+      font-size: 0.9rem;
+    }
+  
+    .sidebar-icon {
+      font-size: 1rem;
+      margin-right: 8px;
+    }
+  }

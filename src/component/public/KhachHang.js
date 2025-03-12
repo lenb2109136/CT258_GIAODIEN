@@ -7,6 +7,9 @@ export {CartContext}
 export default () => {
     const [cart,setcart] = useState([]); 
     const navigate=useNavigate();
+    if(localStorage.getItem("token")==null||localStorage.getItem("role")!="khachhang"){
+        navigate("/login")
+    }
     useEffect(()=>{
         setcart(JSON.parse(localStorage.getItem("cart")))
     },[])

@@ -35,7 +35,7 @@ const TourInfo = () => {
             })
     }, [])
     useEffect(()=>{
-        for( let i=0;i<cart.length;i++){
+        for( let i=0;i<cart?.length;i++){
             if(cart[i].id==id){
                setchu(false)
             }
@@ -136,7 +136,7 @@ const TourInfo = () => {
 
                 </div>
                 <div class="bg-white mb-3" style={{ padding: "30px" }}>
-
+                    <div dangerouslySetInnerHTML={{ __html: t.moTa }} />
                     <h2 class="mb-3">Dolor justo sea kasd lorem clita justo diam amet</h2>
                     <p>Sadipscing labore amet rebum est et justo gubergren. Et eirmod ipsum sit diam ut
                         magna lorem. Nonumy vero labore lorem sanctus rebum et lorem magna kasd, stet
@@ -209,7 +209,9 @@ const TourInfo = () => {
                                     <img src="https://cdn-icons-png.flaticon.com/128/226/226172.png" alt="Dropdown" className="icon-dropdown" style={{ width: "18px", height: "18px", marginLeft: "auto" }} />
                                 </div>
                                 <div id={"collapseContent" + (index + 1)} className="collapse mt-2" style={{ paddingLeft: "0px" }}>
-                                    <p style={{ textAlign: "start" }}>{data.moTa}</p>
+                                    {/* <p style={{ textAlign: "start" }}></p>
+                                     */}
+                                     <div dangerouslySetInnerHTML={{ __html: data.moTa }} />
                                 </div>
                             </div>
                         </>
