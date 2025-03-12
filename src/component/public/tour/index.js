@@ -1,7 +1,32 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap CSS
-
+import axios from 'axios';
+import { BottomNavigation, BottomNavigationAction } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import QuanLyUuDai from "./uudai"
 export default function Discount() {
+  const navigate= useNavigate()
+  const [dstour, setdstour] = useState([])
+  useEffect(() => {
+    axios.get("http://localhost:8080/tour/getadmintour")
+      .then(data => {
+        setdstour(data.data.data)
+      })
+  },[])
+  const [opentgkh,setopentgkh]= useState(false)
+  const [thongtin,setthongtin]=useState()
+  const [loai, setloai] = useState([])
+  const [loaichon, setloaichon] = useState(0);
+  const [value, setValue] = useState("recents");
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+  useEffect(() => {
+    axios.get("http://localhost:8080/loaitour/getall")
+      .then(data => {
+        setloai(data.data.data);
+      })
+  }, [])
   // Mock discount data
   const initialDiscounts = [
     { id: 1, code: 'DISCOUNT10', amount: 10, type: 'Percentage', status: 'Active', expiry: '2025-12-31' },
@@ -30,72 +55,84 @@ export default function Discount() {
     <div className="container mt-5 discount-container">
       <h2 className="mb-4 text-primary fw-bold">Quản lý Tour</h2>
 
+{opentgkh ? <QuanLyUuDai ds= {thongtin}></QuanLyUuDai> : null}
+      
       {/* Search Bar and Add Button */}
-      <div className="row mb-4 align-items-center">
-        <div className="col-md-6">
+      <div style={{display:"flex"}} className="row mb-4 align-items-center">
+        <div style={{display:"flex", alignItems:"center"}} className="col-md-8">
           <div className="input-group">
-            <span className="input-group-text bg-light">
+            <span style={{height:"38px"}} className="input-group-text bg-light">
               <i className="fas fa-search"></i>
             </span>
             <input
+            style={{width:"200px"}}
               type="text"
               className="form-control shadow-sm"
-              placeholder="Tìm kiếm mã giảm giá..."
+              placeholder="Tìm kiếm tour..."
               value={searchTerm}
               onChange={handleSearch}
             />
           </div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "10px" }}>
+        <div>
+          <BottomNavigation sx={{ width: 500 }} value={value} onChange={handleChange}>
+            {
+              loai?.map(data => {
+                return <BottomNavigationAction
+                  onClick={() => {
+                    setloaichon(data.id)
+                  }}
+                  label={data.ten}
+                  value={data.ten}
+                  icon={<img src={data.icon} alt="Recents" style={{ width: 24, height: 24 }} />}
+                />
+
+              })
+            }
+          </BottomNavigation>
         </div>
-        <div className="col-md-6 text-md-end mt-3 mt-md-0">
-          <button className="btn btn-primary btn-add shadow-sm">
-            <i className="fas fa-plus me-2"></i> Thêm mã giảm giá
+
+      </div>
+        </div>
+        <div className="col-md-4 text-md-end mt-3 mt-md-0">
+          <button style={{backgroundColor:"#7AB730",border:"0px"}} onClick={()=>{navigate("haha")}} className="btn btn-primary btn-add shadow-sm">
+            <i className="fas fa-plus me-2" ></i> Thêm mã giảm giá
           </button>
+          
         </div>
       </div>
 
       {/* Discounts Table */}
       <div className="card shadow-sm border-0">
         <div className="card-body p-0">
-          <table className="table table-hover table-striped mb-0">
+          <table style={{ width: "100%" }} className="table table-hover table-striped mb-0">
             <thead className="table-dark">
               <tr>
-                <th scope="col">#</th>
-                <th scope="col">Mã giảm giá</th>
-                <th scope="col">Giá trị</th>
-                <th scope="col">Loại</th>
-                <th scope="col">Trạng thái</th>
-                <th scope="col">Ngày hết hạn</th>
-                <th scope="col">Hành động</th>
+                <th scope="col">STT</th>
+                <th scope="col">Tên tour</th>
+                <th scope="col">Nhân viên hướng dẫn</th>
+                <th scope="col">Thông tin cơ bản</th>
+                <th scope="col">Ưu đãi áp dụng</th>
+                <th scope="col">Thao tác</th>
               </tr>
             </thead>
             <tbody>
-              {filteredDiscounts.length > 0 ? (
-                filteredDiscounts.map((discount) => (
-                  <tr key={discount.id}>
-                    <td>{discount.id}</td>
-                    <td className="fw-medium">{discount.code}</td>
+              {dstour.length > 0 ? (
+                dstour.map((data,index) => (
+                  <tr key={data.id}>
+                    <td>{index+1}</td>
+                    <td className="fw-medium">{data.ten}</td>
+                    <td>{data.nhanvien.ten}</td>
                     <td>
-                      {discount.amount}
-                      {discount.type === 'Percentage' ? '%' : ' USD'}
                     </td>
-                    <td>{discount.type}</td>
-                    <td>
-                      <span
-                        className={`badge ${
-                          discount.status === 'Active'
-                            ? 'bg-success-subtle text-success'
-                            : discount.status === 'Inactive'
-                            ? 'bg-warning-subtle text-warning'
-                            : 'bg-danger-subtle text-danger'
-                        }`}
-                      >
-                        {discount.status}
-                      </span>
-                    </td>
-                    <td>{discount.expiry}</td>
+                    <td><button onClick={()=>{
+                        setthongtin(data);
+                         setopentgkh(true)}} className="btn btn-outline-warning btn-sm me-2">
+                      <i  className="fas fa-edit"></i> Xem chi tiết
+                    </button></td>
                     <td>
                       <button className="btn btn-outline-warning btn-sm me-2">
-                        <i className="fas fa-edit"></i> Sửa
+                        <i className="fas fa-edit"></i> Xem chi tiết
                       </button>
                       <button className="btn btn-outline-danger btn-sm">
                         <i className="fas fa-trash"></i> Xóa
