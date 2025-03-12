@@ -4,6 +4,7 @@ import axios from 'axios';
 import { BottomNavigation, BottomNavigationAction } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import QuanLyUuDai from "./uudai"
+import AddTour from './ModalAddTour';
 export default function Discount() {
   const navigate= useNavigate()
   const [dstour, setdstour] = useState([])
@@ -53,7 +54,7 @@ export default function Discount() {
 
   return (
     <div className="container mt-5 discount-container">
-      <h2 className="mb-4 text-primary fw-bold">Quản lý Tour</h2>
+      <h2 className="mb-4 text-primary fw-bold">Quản lý Tour  <AddTour/></h2>
 
 {opentgkh ? <QuanLyUuDai ds= {thongtin}></QuanLyUuDai> : null}
       

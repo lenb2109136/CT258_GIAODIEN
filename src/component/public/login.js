@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Form, Button, Nav, Tab } from "react-bootstrap";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -48,12 +49,12 @@ const Login = () => {
                       <Form>
                         <Form.Group className="mb-3">
                           <Form.Label className="font-medium">Email</Form.Label>
-                          <Form.Control type="email" placeholder="Nhập email của bạn" required className="rounded-lg px-3 py-2 border border-gray-300 focus:ring focus:ring-blue-200" />
+                          <Form.Control id="sdt" type="email" placeholder="Nhập email của bạn" required className="rounded-lg px-3 py-2 border border-gray-300 focus:ring focus:ring-blue-200" />
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                          <Form.Label className="font-medium">Mật Khẩu</Form.Label>
-                          <Form.Control type="password" placeholder="Nhập mật khẩu" required className="rounded-lg px-3 py-2 border border-gray-300 focus:ring focus:ring-blue-200" />
+                          <Form.Label  className="font-medium">Mật Khẩu</Form.Label>
+                          <Form.Control id="pass" type="password" placeholder="Nhập mật khẩu" required className="rounded-lg px-3 py-2 border border-gray-300 focus:ring focus:ring-blue-200" />
                         </Form.Group>
 
                         <div className="flex items-center justify-between mb-3">
@@ -61,7 +62,27 @@ const Login = () => {
                           <a href="#" className="text-blue-500 text-sm hover:underline">Quên mật khẩu?</a>
                         </div>
 
-                        <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg shadow-md transition-all">
+                        <Button onClick={()=>{
+                          let f= new FormData()
+                          f.append("pass",document.getElementById("pass").value);
+                          f.append("sdt",document.getElementById("sdt").value);
+                          axios.post("http://localhost:8080/autho/login",f)
+                            .then((data)=>{
+                              if(data.data.status!="OK"){
+                                alert(data.data.message)
+                              }
+                              else{
+                                localStorage.setItem("token",data.data.data.token)
+                                localStorage.setItem("role",data.data.data.role)
+                                if(data.data.data.role==="khachhang"){
+                                  navigate("/khachhang/home")
+                                }
+                                else{
+                                  navigate("/admin")
+                                }
+                              }
+                            })
+                        }} type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg shadow-md transition-all">
                           Đăng Nhập
                         </Button>
                       </Form>
