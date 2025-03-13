@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import QuanLyUuDai from "./uudai"
 import AddTour from './ModalAddTour';
 import UpdateTour from './ModalUpdate';
+import api from '../../config/axiosconfig';
 const Context=React.createContext()
   export {Context};
 export default function Discount() {
@@ -22,6 +23,12 @@ export default function Discount() {
   const [thongtin,setthongtin]=useState()
   const [loai, setloai] = useState([])
   const [loaichon, setloaichon] = useState(0);
+  useEffect(()=>{
+      api.get(`tour/getl?id=${loaichon}`)
+      .then(data=>{
+        setdstour(data.data.data)
+      })
+  },[loaichon])
   const [value, setValue] = useState("recents");
   const ind=useRef(0)
   const handleChange = (event, newValue) => {

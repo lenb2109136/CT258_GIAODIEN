@@ -14,6 +14,17 @@ const UpdateTour= ({tours}) => {
   
   const [stateReload, setStateReload] = React.useState(true);
 
+  React.useEffect(()=>{
+    tour.thoiGianKhoiHanh2.forEach((v)=>{
+      if(v.thoiGian>new Date()){
+        v.canUpdate=false;
+
+      }else{
+        v.canUpdate=true;
+        setCanUpdate(true)
+      }
+    }) 
+  },[])
   const style = {
     position: "absolute",
     top: "50%",
@@ -32,7 +43,7 @@ const UpdateTour= ({tours}) => {
   const handleClose = () => setOpen(false);
   const [value, setValue] = React.useState("1");
   const [tour, setTour] = React.useState(tours);
-
+  const [canUpdate,setCanUpdate]=React.useState(false)
   const addNgayKhoiHanh = () => {
     tour.thoiGianKhoiHanh2.push({
       thoiGian: "2025-07-02T10:21:27",
@@ -124,7 +135,7 @@ const UpdateTour= ({tours}) => {
                 <div className="containercontainer">
                   <div className="row mt-2" style={{ alignItems: "center" }}>
                     <p className="col-3">Tên tour</p>
-                    <input
+                    <input disabled={!canUpdate}
                       value={tour.ten}
                       onChange={(e) => { 
                           tour.ten = e.target.value;
@@ -141,7 +152,7 @@ const UpdateTour= ({tours}) => {
                   </div>
                   <div className="row mt-2" style={{ alignItems: "center" }}>
                     <p className="col-3">Số ngày</p>
-                    <input
+                    <input disabled={!canUpdate}
                       min={0}
                       value={tour.soNgay}
                       onChange={(e) => {
@@ -161,7 +172,7 @@ const UpdateTour= ({tours}) => {
                   </div>
                   <div className="row mt-2" style={{ alignItems: "center" }}>
                     <p className="col-3">Số đêm</p>
-                    <input
+                    <input disabled={!canUpdate}
                       min={0}
                       value={tour.soDem}
                       onChange={(e) => {
@@ -181,7 +192,7 @@ const UpdateTour= ({tours}) => {
                   </div>
                   <div className="row mt-2" style={{ alignItems: "center" }}>
                     <p className="col-3">Số lượng người tham gia</p>
-                    <input
+                    <input disabled={!canUpdate}
                       min={0}
                       value={tour.soNguoiThamGia}
                       onChange={(e) => {
@@ -201,7 +212,7 @@ const UpdateTour= ({tours}) => {
                   </div>
                   <div className="row mt-2" style={{ alignItems: "center" }}>
                     <p className="col-3">Số lượng filefile</p>
-                    <input
+                    <input disabled={!canUpdate}
                       type="file"
                       style={{
                         borderRadius: "3px",
@@ -213,7 +224,7 @@ const UpdateTour= ({tours}) => {
                   </div>
                   <div className="row mt-2" style={{ alignItems: "center" }}>
                     <p className="col-3">Loại tour</p>
-                    <select
+                    <select disabled={!canUpdate}
                       onChange={(e) => {
                         tour.loaiTour = loaiTour[e.target.value];
                       }}
