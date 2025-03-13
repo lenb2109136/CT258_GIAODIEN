@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap CSS
 import axios from 'axios';
 import { BottomNavigation, BottomNavigationAction } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import QuanLyUuDai from "./uudai"
 import AddTour from './ModalAddTour';
+import UpdateTour from './ModalUpdate';
+const Context=React.createContext()
+  export {Context};
 export default function Discount() {
+  
   const navigate= useNavigate()
   const [dstour, setdstour] = useState([])
   useEffect(() => {
@@ -19,6 +23,7 @@ export default function Discount() {
   const [loai, setloai] = useState([])
   const [loaichon, setloaichon] = useState(0);
   const [value, setValue] = useState("recents");
+  const ind=useRef(0)
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -53,10 +58,12 @@ export default function Discount() {
   };
 
   return (
+    <Context.Provider value={{dstour,setdstour}}>
+
     <div className="container mt-5 discount-container">
       <h2 className="mb-4 text-primary fw-bold">Quản lý Tour  <AddTour/></h2>
 
-{opentgkh ? <QuanLyUuDai ds= {thongtin}></QuanLyUuDai> : null}
+{opentgkh ? <QuanLyUuDai ind={ind.current} setopen={setopentgkh} ds= {thongtin}></QuanLyUuDai> : null}
       
       {/* Search Bar and Add Button */}
       <div style={{display:"flex"}} className="row mb-4 align-items-center">
@@ -118,7 +125,7 @@ export default function Discount() {
               </tr>
             </thead>
             <tbody>
-              {dstour.length > 0 ? (
+              {dstour?.length > 0 ? (
                 dstour.map((data,index) => (
                   <tr key={data.id}>
                     <td>{index+1}</td>
@@ -128,13 +135,13 @@ export default function Discount() {
                     </td>
                     <td><button onClick={()=>{
                         setthongtin(data);
+                        ind.current=index
+
                          setopentgkh(true)}} className="btn btn-outline-warning btn-sm me-2">
                       <i  className="fas fa-edit"></i> Xem chi tiết
                     </button></td>
                     <td>
-                      <button className="btn btn-outline-warning btn-sm me-2">
-                        <i className="fas fa-edit"></i> Xem chi tiết
-                      </button>
+                      <UpdateTour tours={data}/>
                       <button className="btn btn-outline-danger btn-sm">
                         <i className="fas fa-trash"></i> Xóa
                       </button>
@@ -153,5 +160,6 @@ export default function Discount() {
         </div>
       </div>
     </div>
+    </Context.Provider>
   );
 }

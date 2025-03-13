@@ -10,11 +10,8 @@ import TabPanel from "@mui/lab/TabPanel";
 import { Editor } from "@tinymce/tinymce-react";
 import ModalCK from "./ModalCK";
 
-const AddTour = () => {
-  const handleEditorChange = (content, editor) => {
-    console.log("Content was updated:", content);
-  };
-
+const UpdateTour= ({tours}) => {
+  
   const [stateReload, setStateReload] = React.useState(true);
 
   const style = {
@@ -28,67 +25,13 @@ const AddTour = () => {
     p: 4,
     borderRadius: 2,
   };
-
-  const checkDate = (date1, date2) => {
-    if (date1 > date2 || date1 < new Date() || date2 < new Date()) {
-      alert(
-        "Ngày kết thúc và phaie lớn hơn ngày hiện tại và bé hơn ngày bắt đầu"
-      );
-    } else {
-    }
-  };
+ 
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [value, setValue] = React.useState("1");
-  const [tour, setTour] = React.useState({
-    thoiGianKhoiHanh: "2025-06-02T09:57:06",
-    soNgay: 4,
-    soDem: 4,
-    soNguoiThamGia: 5,
-    moTa: "...",
-    ten: "Pearl Island Getaway",
-    anh: "http://localhost:8080/datasource/1.jpeg",
-    loaiTour: {
-      id: 2,
-      ten: "culture",
-      icon: "https://cdn-icons-png.flaticon.com/128/1813/1813884.png",
-    },
-    nhanvien: {
-      id: 1,
-      ten: "Nguyễn Duy Anh",
-      anh: null,
-      soDienThoai: "0709302846",
-      socmnd: "09094347340232",
-      sdt: "0709302846",
-    },
-    thoiGianKhoiHanh2: [
-      {
-        thoiGian: "2025-07-02T10:21:27",
-        gia: 1800.0,
-        nhanVien: {
-          id: 1,
-          ten: "Nguyễn Duy Anh",
-          anh: null,
-          soDienThoai: "0709302846",
-          socmnd: "09094347340232",
-          sdt: "0709302846",
-        },
-        giaUuDai: [
-          {
-            id: 2,
-            gia: 1200.0,
-            ngayGioApDung: "2025-03-11T16:00:05",
-            ngayKetThuc: "2025-03-11T16:00:06",
-          },
-        ],
-        trangThai: 1,
-      },
-    ],
-    chan: [
-    ],
-  });
+  const [tour, setTour] = React.useState(tours);
 
   const addNgayKhoiHanh = () => {
     tour.thoiGianKhoiHanh2.push({
@@ -150,7 +93,9 @@ const AddTour = () => {
   };
   return (
     <div>
-      <Button onClick={handleOpen}>Open modal</Button>
+      <button onClick={handleOpen} className="btn btn-outline-warning btn-sm me-2">
+                        <i className="fas fa-edit"></i> Xem chi tiết
+                      </button>
       <Modal
         keepMounted
         open={open}
@@ -528,15 +473,7 @@ const AddTour = () => {
                 })}
               </TabPanel>
               <TabPanel value="4">
-                <Button onClick={()=>{
-                  tour.chan.push({ 
-                    moTa: "",
-                    ngayBatDau: new Date(),
-                    ngayKetThuc: new Date(),
-                    diaDiemDen: "Cần thơ",
-                  })
-                  setStateReload(!stateReload)
-                }} variant="outlined">
+                <Button onClick={addNgayKhoiHanh} variant="outlined">
                   + Thêm chặn
                 </Button>
                 {tour.chan.map((v, index) => {
@@ -605,7 +542,7 @@ const AddTour = () => {
                         </div>
                         <Button
                           onClick={() => {
-                            tour.chan.splice(index, 1);
+                            tour.thoiGianKhoiHanh2.splice(index, 1);
                             setStateReload(!stateReload);
                           }}
                           className="col-1 p-2"
@@ -625,4 +562,4 @@ const AddTour = () => {
     </div>
   );
 };
-export default AddTour;
+export default UpdateTour;

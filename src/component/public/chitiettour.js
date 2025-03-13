@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Footer from "./footer";
 import Header from "./header";
 import Comment from "./comment"
-import { useParams, useSearchParams } from "react-router-dom";
+import {  useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { CartContext } from "./KhachHang";
 import Slider from "./cartslider";
