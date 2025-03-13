@@ -6,25 +6,25 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
- import api from "../../config/axiosconfig";
+import api from "../../config/axiosconfig";
 import { Editor } from "@tinymce/tinymce-react";
 import ModalCK from "./ModalCK";
 
-const UpdateTour= ({tours}) => {
-  
+const UpdateTour = ({ tours }) => {
   const [stateReload, setStateReload] = React.useState(true);
 
-  React.useEffect(()=>{
-    tour.thoiGianKhoiHanh2.forEach((v)=>{
-      if(v.thoiGian>new Date()){
-        v.canUpdate=false;
-
-      }else{
-        v.canUpdate=true;
-        setCanUpdate(true)
+  React.useEffect(() => {
+    tour.thoiGianKhoiHanh2.forEach((v) => {
+      console.log(new Date(v.thoiGian) > new Date());
+      if (new Date(v.thoiGian) > new Date()) {
+        v.canUpdate = true;
+      } else {
+        v.canUpdate = false;
+        setCanUpdate(true);
       }
-    }) 
-  },[])
+    });
+    setStateReload(!stateReload);
+  }, []);
   const style = {
     position: "absolute",
     top: "50%",
@@ -36,16 +36,16 @@ const UpdateTour= ({tours}) => {
     p: 4,
     borderRadius: 2,
   };
- 
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [value, setValue] = React.useState("1");
   const [tour, setTour] = React.useState(tours);
-  const [canUpdate,setCanUpdate]=React.useState(false)
+  const [canUpdate, setCanUpdate] = React.useState(false);
   const addNgayKhoiHanh = () => {
     tour.thoiGianKhoiHanh2.push({
+      canUpdate:true,
       thoiGian: "2025-07-02T10:21:27",
       gia: 1800.0,
       nhanVien: {
@@ -89,14 +89,13 @@ const UpdateTour= ({tours}) => {
   }, []);
 
   const submit = () => {
-    alert("dchdhc")
     api
-      .post("tour/add", tour)
+      .post("tour/update", tour)
       .then((v) => {
         return v.data;
       })
       .then((v) => {
-        alert("Thêm thành công")
+        alert("cập nhật  thành công");
       })
       .catch((error) => {
         alert(error.response.data);
@@ -104,9 +103,12 @@ const UpdateTour= ({tours}) => {
   };
   return (
     <div>
-      <button onClick={handleOpen} className="btn btn-outline-warning btn-sm me-2">
-                        <i className="fas fa-edit"></i> Xem chi tiết
-                      </button>
+      <button
+        onClick={handleOpen}
+        className="btn btn-outline-warning btn-sm me-2"
+      >
+        <i className="fas fa-edit"></i> Xem chi tiết
+      </button>
       <Modal
         keepMounted
         open={open}
@@ -115,9 +117,9 @@ const UpdateTour= ({tours}) => {
         aria-describedby="keep-mounted-modal-description"
       >
         <Box sx={style}>
-          <h2 className="mb-4 text-primary fw-bold text-center">
-            Thêm tour mới <button onClick={submit}>Thêm tour</button>
-          </h2>
+        <h6 className="mb-4 text-primary fw-bold text-center">
+            Thêm tour mới <button style={{color:"white",marginLeft:"20px",border:"1px solid #0D6EFD",borderRadius:"10px",backgroundColor:"#0D6EFD",paddingLeft:"10px",paddingRight:"10px"}} onClick={submit}> + Cập nhật tour</button>
+          </h6>
           <Box sx={{ width: "100%", typography: "body1" }}>
             <TabContext value={value}>
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -135,11 +137,12 @@ const UpdateTour= ({tours}) => {
                 <div className="containercontainer">
                   <div className="row mt-2" style={{ alignItems: "center" }}>
                     <p className="col-3">Tên tour</p>
-                    <input disabled={!canUpdate}
+                    <input
+                      disabled={canUpdate}
                       value={tour.ten}
-                      onChange={(e) => { 
-                          tour.ten = e.target.value;
-                          setStateReload(!stateReload) 
+                      onChange={(e) => {
+                        tour.ten = e.target.value;
+                        setStateReload(!stateReload);
                       }}
                       placeholder="Vui lòng nhập tour"
                       className="col-6 p-2"
@@ -152,13 +155,14 @@ const UpdateTour= ({tours}) => {
                   </div>
                   <div className="row mt-2" style={{ alignItems: "center" }}>
                     <p className="col-3">Số ngày</p>
-                    <input disabled={!canUpdate}
+                    <input
+                      disabled={canUpdate}
                       min={0}
                       value={tour.soNgay}
                       onChange={(e) => {
-                        if (e.target.value > 0) { 
+                        if (e.target.value > 0) {
                           tour.soNgay = e.target.value;
-                          setStateReload(!stateReload)
+                          setStateReload(!stateReload);
                         }
                       }}
                       type="number"
@@ -172,13 +176,14 @@ const UpdateTour= ({tours}) => {
                   </div>
                   <div className="row mt-2" style={{ alignItems: "center" }}>
                     <p className="col-3">Số đêm</p>
-                    <input disabled={!canUpdate}
+                    <input
+                      disabled={canUpdate}
                       min={0}
                       value={tour.soDem}
                       onChange={(e) => {
-                        if (e.target.value > 0) { 
+                        if (e.target.value > 0) {
                           tour.soDem = e.target.value;
-                          setStateReload(!stateReload)
+                          setStateReload(!stateReload);
                         }
                       }}
                       type="number"
@@ -192,13 +197,14 @@ const UpdateTour= ({tours}) => {
                   </div>
                   <div className="row mt-2" style={{ alignItems: "center" }}>
                     <p className="col-3">Số lượng người tham gia</p>
-                    <input disabled={!canUpdate}
+                    <input
+                      disabled={canUpdate}
                       min={0}
                       value={tour.soNguoiThamGia}
                       onChange={(e) => {
-                        if (e.target.value > 0) { 
+                        if (e.target.value > 0) {
                           tour.soNguoiThamGia = e.target.value;
-                          setStateReload(!stateReload)
+                          setStateReload(!stateReload);
                         }
                       }}
                       type="number"
@@ -212,7 +218,8 @@ const UpdateTour= ({tours}) => {
                   </div>
                   <div className="row mt-2" style={{ alignItems: "center" }}>
                     <p className="col-3">Số lượng filefile</p>
-                    <input disabled={!canUpdate}
+                    <input
+                      disabled={canUpdate}
                       type="file"
                       style={{
                         borderRadius: "3px",
@@ -224,7 +231,8 @@ const UpdateTour= ({tours}) => {
                   </div>
                   <div className="row mt-2" style={{ alignItems: "center" }}>
                     <p className="col-3">Loại tour</p>
-                    <select disabled={!canUpdate}
+                    <select
+                      disabled={canUpdate}
                       onChange={(e) => {
                         tour.loaiTour = loaiTour[e.target.value];
                       }}
@@ -244,10 +252,10 @@ const UpdateTour= ({tours}) => {
               </TabPanel>
               <TabPanel value="2">
                 <Editor
-                   onEditorChange={(content) => tour.moTa=content}
+                  onEditorChange={(content) => (tour.moTa = content)}
                   apiKey="gmrlr5eof1cew5jiwsqpjawlsc3yv10fn13pxtr2peb8l5jm"
                   init={{
-                    plugins: [ 
+                    plugins: [
                       "anchor",
                       "autolink",
                       "charmap",
@@ -260,7 +268,7 @@ const UpdateTour= ({tours}) => {
                       "searchreplace",
                       "table",
                       "visualblocks",
-                      "wordcount", 
+                      "wordcount",
                       "checklist",
                       "mediaembed",
                       "casechange",
@@ -315,14 +323,15 @@ const UpdateTour= ({tours}) => {
                       <hr className="mt-2 mb-2" />
                       <div className="row mt-2 ml-1" style={{ gap: 15 }}>
                         <input
-                           value={v.thoiGian}
-                           defaultValue={new Date()} 
-                            onChange={(e) => { 
-                                if (new Date(e.target.value)>new Date()) { 
-                                v.thoiGian = e.target.value;
-                                setStateReload(!stateReload) 
-                                }
-                            }}
+                          disabled={!v.canUpdate}
+                          value={v.thoiGian}
+                          defaultValue={new Date()}
+                          onChange={(e) => {
+                            if (new Date(e.target.value) > new Date()) {
+                              v.thoiGian = e.target.value;
+                              setStateReload(!stateReload);
+                            }
+                          }}
                           style={{
                             outline: "none",
                             borderRadius: "5px",
@@ -333,17 +342,14 @@ const UpdateTour= ({tours}) => {
                           placeholder="ngày bắt đầu"
                         />
                         <input
-                        
-
-                        value={v.gia}
-                        onChange={(e) => {
-                          if (e.target.value > 0) { 
-                            v.gia = e.target.value;
-                            setStateReload(!stateReload)
-                          }
-                        }}
-
-
+                          disabled={!v.canUpdate}
+                          value={v.gia}
+                          onChange={(e) => {
+                            if (e.target.value > 0) {
+                              v.gia = e.target.value;
+                              setStateReload(!stateReload);
+                            }
+                          }}
                           style={{
                             outline: "none",
                             borderRadius: "5px",
@@ -354,13 +360,14 @@ const UpdateTour= ({tours}) => {
                           placeholder="Giá"
                         />
                         <select
+                          disabled={!v.canUpdate}
                           style={{
                             outline: "none",
                             borderRadius: "5px",
                             border: "1px solid lightgray",
                           }}
-                          onChange={(e)=>{  
-                            v.nhanVien=nhanVien[e.target.value]
+                          onChange={(e) => {
+                            v.nhanVien = nhanVien[e.target.value];
                           }}
                           className="col-3"
                         >
@@ -368,33 +375,39 @@ const UpdateTour= ({tours}) => {
                             return <option value={index}>{vv.ten}</option>;
                           })}
                         </select>
-                        <Button
-                          onClick={() => {
-                            tour.thoiGianKhoiHanh2.splice(index, 1);
-                            setStateReload(!stateReload);
-                          }}
-                          className="col-1 p-2"
-                          variant="outlined"
-                        >
-                          Xóa
-                        </Button>
-                        <Button
-                          onClick={() => {
-                            const today = new Date(); // Lấy ngày hiện tại
-                            const futureDate = new Date();
-                            futureDate.setDate(today.getDate() + 2);
-                            v.giaUuDai.push({
-                              gia: 1200.0,
-                              ngayGioApDung: today,
-                              ngayKetThuc: futureDate,
-                            });
-                            setStateReload(!stateReload);
-                          }}
-                          className="col-1 p-2"
-                          variant="outlined"
-                        >
-                          + ưu đãi
-                        </Button>
+                        {v.canUpdate ? (
+                          <>
+                            <Button
+                              onClick={() => {
+                                tour.thoiGianKhoiHanh2.splice(index, 1);
+                                setStateReload(!stateReload);
+                              }}
+                              className="col-1 p-2"
+                              variant="outlined"
+                            >
+                              Xóa
+                            </Button>
+                            <Button
+                              onClick={() => {
+                                const today = new Date();
+                                const futureDate = new Date();
+                                futureDate.setDate(today.getDate() + 2);
+                                v.giaUuDai.push({
+                                  gia: 1200.0,
+                                  ngayGioApDung: today,
+                                  ngayKetThuc: futureDate,
+                                });
+                                setStateReload(!stateReload);
+                              }}
+                              className="col-1 p-2"
+                              variant="outlined"
+                            >
+                              + ưu đãi
+                            </Button>
+                          </>
+                        ) : (
+                          <p></p>
+                        )}
                       </div>
                       <div
                         style={{
@@ -410,14 +423,15 @@ const UpdateTour= ({tours}) => {
                                 style={{ gap: 15 }}
                               >
                                 <input
-                                  defaultValue={new Date()} 
+                                  disabled={!v.canUpdate}
+                                  defaultValue={new Date()}
                                   value={vv.ngayGioApDung}
-                                onChange={(e) => { 
-                                    if (new Date(e.target.value)>new Date()) { 
-                                        vv.ngayGioApDung=e.target.value
-                                        setStateReload(!stateReload)
+                                  onChange={(e) => {
+                                    if (new Date(e.target.value) > new Date()) {
+                                      vv.ngayGioApDung = e.target.value;
+                                      setStateReload(!stateReload);
                                     }
-                                }} 
+                                  }}
                                   style={{
                                     outline: "none",
                                     borderRadius: "5px",
@@ -428,13 +442,14 @@ const UpdateTour= ({tours}) => {
                                   placeholder="ngày bắt đầu"
                                 />
                                 <input
-                                value={vv.ngayKetThuc}
-                                onChange={(e) => { 
-                                    if (new Date(e.target.value)>new Date()) { 
-                                        vv.ngayKetThuc=e.target.value
-                                        setStateReload(!stateReload)
+                                  disabled={!v.canUpdate}
+                                  value={vv.ngayKetThuc}
+                                  onChange={(e) => {
+                                    if (new Date(e.target.value) > new Date()) {
+                                      vv.ngayKetThuc = e.target.value;
+                                      setStateReload(!stateReload);
                                     }
-                                }} 
+                                  }}
                                   defaultValue={vv.ngayKetThuc}
                                   style={{
                                     outline: "none",
@@ -446,34 +461,36 @@ const UpdateTour= ({tours}) => {
                                   placeholder="ngày bắt đầu"
                                 />
                                 <input
+                                  disabled={!v.canUpdate}
                                   value={vv.gia}
                                   style={{
                                     outline: "none",
                                     borderRadius: "5px",
                                     border: "1px solid lightgray",
                                   }}
-                                  onChange={(e)=>{
-
-                                    if(e.target.value>0){
-                                        vv.gia=e.target.value
-                                        setStateReload(!stateReload)
-                                    } 
+                                  onChange={(e) => {
+                                    if (e.target.value > 0) {
+                                      vv.gia = e.target.value;
+                                      setStateReload(!stateReload);
+                                    }
                                   }}
                                   min={0}
                                   type="number"
                                   className="col-3"
                                   placeholder="Giá giảm"
                                 />
-                                <Button
-                                  onClick={() => {
-                                    v.giaUuDai.splice(index, 1);
-                                    setStateReload(!stateReload);
-                                  }}
-                                  className="col-1 p-2"
-                                  variant="outlined"
-                                >
-                                  Xóa
-                                </Button>
+                                {v.canUpdate && (
+                                  <Button
+                                    onClick={() => {
+                                      v.giaUuDai.splice(index, 1);
+                                      setStateReload(!stateReload);
+                                    }}
+                                    className="col-1 p-2"
+                                    variant="outlined"
+                                  >
+                                    Xóa
+                                  </Button>
+                                )}
                               </div>
                             </>
                           );
@@ -484,21 +501,25 @@ const UpdateTour= ({tours}) => {
                 })}
               </TabPanel>
               <TabPanel value="4">
-                <Button onClick={addNgayKhoiHanh} variant="outlined">
-                  + Thêm chặn
-                </Button>
+                {!canUpdate && (
+                  <Button onClick={addNgayKhoiHanh} variant="outlined">
+                    + Thêm chặn
+                  </Button>
+                )}
                 {tour.chan.map((v, index) => {
                   return (
                     <>
                       <hr className="mt-2 mb-2" />
                       <div className="row mt-2 ml-1" style={{ gap: 15 }}>
-                        <input value={v.ngayBatDau}
-                       onChange={(e)=>{
-                        if(new Date()<new Date(e.target.value)){
-                            v.ngayBatDau=e.target.value
-                            setStateReload(!stateReload)
-                        } 
-                      }}
+                        <input
+                          value={v.ngayBatDau}
+                          disabled={canUpdate}
+                          onChange={(e) => {
+                            if (new Date() < new Date(e.target.value)) {
+                              v.ngayBatDau = e.target.value;
+                              setStateReload(!stateReload);
+                            }
+                          }}
                           defaultValue={v.thoiGian}
                           style={{
                             outline: "none",
@@ -510,13 +531,14 @@ const UpdateTour= ({tours}) => {
                           placeholder="ngày bắt đầu"
                         />
                         <input
-                         value={v.ngayKetThuc}
-                         onChange={(e)=>{
-                          if(new Date()<new Date(e.target.value)){
-                              v.ngayKetThuc=e.target.value
-                              setStateReload(!stateReload)
-                          } 
-                        }}
+                          disabled={canUpdate}
+                          value={v.ngayKetThuc}
+                          onChange={(e) => {
+                            if (new Date() < new Date(e.target.value)) {
+                              v.ngayKetThuc = e.target.value;
+                              setStateReload(!stateReload);
+                            }
+                          }}
                           defaultValue={new Date()}
                           style={{
                             outline: "none",
@@ -528,14 +550,15 @@ const UpdateTour= ({tours}) => {
                           placeholder="ngày bắt đầu"
                         />
                         <input
+                          disabled={canUpdate}
                           style={{
                             outline: "none",
                             borderRadius: "5px",
                             border: "1px solid lightgray",
                           }}
-                          onChange={(e)=>{
-                            v.diaDiemDen=e.target.value
-                            setStateReload(!stateReload)
+                          onChange={(e) => {
+                            v.diaDiemDen = e.target.value;
+                            setStateReload(!stateReload);
                           }}
                           type="text"
                           className="col-2"
@@ -551,16 +574,18 @@ const UpdateTour= ({tours}) => {
                             tour={tour}
                           />
                         </div>
-                        <Button
-                          onClick={() => {
-                            tour.thoiGianKhoiHanh2.splice(index, 1);
-                            setStateReload(!stateReload);
-                          }}
-                          className="col-1 p-2"
-                          variant="outlined"
-                        >
-                          Xóa
-                        </Button>
+                        {!canUpdate && (
+                          <Button
+                            onClick={() => {
+                              tour.thoiGianKhoiHanh2.splice(index, 1);
+                              setStateReload(!stateReload);
+                            }}
+                            className="col-1 p-2"
+                            variant="outlined"
+                          >
+                            Xóa
+                          </Button>
+                        )}
                       </div>
                     </>
                   );

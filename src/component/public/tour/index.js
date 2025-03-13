@@ -110,9 +110,7 @@ export default function Discount() {
       </div>
         </div>
         <div className="col-md-4 text-md-end mt-3 mt-md-0">
-          <button style={{backgroundColor:"#7AB730",border:"0px"}} onClick={()=>{navigate("haha")}} className="btn btn-primary btn-add shadow-sm">
-            <i className="fas fa-plus me-2" ></i> Thêm mã giảm giá
-          </button>
+          
           
         </div>
       </div>
@@ -149,9 +147,6 @@ export default function Discount() {
                     </button></td>
                     <td>
                       <UpdateTour tours={data}/>
-                      <button className="btn btn-outline-danger btn-sm">
-                        <i className="fas fa-trash"></i> Xóa
-                      </button>
                     </td>
                   </tr>
                 ))

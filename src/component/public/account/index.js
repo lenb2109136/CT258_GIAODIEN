@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css"; // Bootstrap CSS
 import api from "../../config/axiosconfig";
-
+import LS from "./lichsudattour"
 export default function Discount() {
+  const [openlsdattour,setopen] = useState(false)
+  const nv= useRef(0)
   const initialDiscounts = [
     {
       id: 1,
@@ -88,9 +90,9 @@ export default function Discount() {
   };
 
   return (
-    <div className="container mt-5 discount-container">
+    <div className="row">
       <h2 className="mb-4 text-primary fw-bold">Quản lý Tài khoản</h2>
-
+    {openlsdattour ? <LS setopen={setopen} nv={nv.current}></LS> : null}
       {/* Search Bar and Add Button */}
       <div className="row mb-4 align-items-center">
         <div className="col-md-6">
@@ -117,7 +119,7 @@ export default function Discount() {
       {/* Discounts Table */}
       <div className="card shadow-sm border-0">
         <div className="card-body p-0">
-          <table className="table table-hover table-striped mb-0">
+          <table style={{width:"80%"}} className="table table-hover table-striped mb-0">
             <thead className="table-dark">
               <tr>
                 <th scope="col">#</th>
@@ -134,7 +136,10 @@ export default function Discount() {
             <tbody>
               {filteredDiscounts.length > 0 ? (
                 data.map((discount, index) => (
-                  <tr key={discount.id}>
+                  <tr style={{cursor:"pointer"}} key={discount.id} onClick={()=>{
+                      nv.current=discount.id
+                      setopen(true)
+                  }}>
                     <td>{discount.id}</td>
                     <td className="fw-medium">
                       <input

@@ -10,10 +10,7 @@ import TabPanel from "@mui/lab/TabPanel";
 import { Editor } from "@tinymce/tinymce-react";
 import ModalCK from "./ModalCK";
 
-const AddTour = () => {
-  const handleEditorChange = (content, editor) => {
-    console.log("Content was updated:", content);
-  };
+const AddTour = () => { 
 
   const [stateReload, setStateReload] = React.useState(true);
 
@@ -134,8 +131,7 @@ const AddTour = () => {
       });
   }, []);
 
-  const submit = () => {
-    alert("dchdhc")
+  const submit = () => { 
     api
       .post("tour/add", tour)
       .then((v) => {
@@ -150,7 +146,7 @@ const AddTour = () => {
   };
   return (
     <div>
-      <Button onClick={handleOpen}>Open modal</Button>
+      <Button onClick={handleOpen}>Thêm mới tour</Button>
       <Modal
         keepMounted
         open={open}
@@ -159,9 +155,9 @@ const AddTour = () => {
         aria-describedby="keep-mounted-modal-description"
       >
         <Box sx={style}>
-          <h2 className="mb-4 text-primary fw-bold text-center">
-            Thêm tour mới <button onClick={submit}>Thêm tour</button>
-          </h2>
+        <h6 className="mb-4 text-primary fw-bold text-center">
+            Thêm tour mới <button style={{color:"white",marginLeft:"20px",border:"1px solid #0D6EFD",borderRadius:"10px",backgroundColor:"#0D6EFD",paddingLeft:"10px",paddingRight:"10px"}} onClick={submit}> + Thêm tour mới</button>
+          </h6>
           <Box sx={{ width: "100%", typography: "body1" }}>
             <TabContext value={value}>
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
