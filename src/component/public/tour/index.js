@@ -84,8 +84,14 @@ export default function Discount() {
               type="text"
               className="form-control shadow-sm"
               placeholder="Tìm kiếm tour..."
-              value={searchTerm}
-              onChange={handleSearch}
+             
+              // value={searchTerm}
+              onChange={(e)=>{
+                  api.post(`tour/getten?ten=${e.target.value}&id=${loaichon}`)
+                    .then(data=>{
+                      setdstour(data.data.data)
+                    })
+              }}
             />
           </div>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "10px" }}>
@@ -134,7 +140,9 @@ export default function Discount() {
                 dstour.map((data,index) => (
                   <tr key={data.id}>
                     <td>{index+1}</td>
-                    <td className="fw-medium">{data.ten}</td>
+                    <td style={{cursor:"pointer"}} onClick={()=>{
+                        navigate(`/khachhang/tour?id=${data.id}`)
+                    }} className="fw-medium">{data.ten}</td>
                     <td>{data.nhanvien.ten}</td>
                     <td>
                     </td>
@@ -145,6 +153,7 @@ export default function Discount() {
                          setopentgkh(true)}} className="btn btn-outline-warning btn-sm me-2">
                       <i  className="fas fa-edit"></i> Xem chi tiết
                     </button></td>
+                    
                     <td>
                       <UpdateTour tours={data}/>
                     </td>

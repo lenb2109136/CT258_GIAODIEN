@@ -107,7 +107,7 @@ const UpdateTour = ({ tours }) => {
         onClick={handleOpen}
         className="btn btn-outline-warning btn-sm me-2"
       >
-        <i className="fas fa-edit"></i> Xem chi tiết
+        <i className="fas fa-edit"></i> Cập nhật
       </button>
       <Modal
         keepMounted
@@ -118,7 +118,7 @@ const UpdateTour = ({ tours }) => {
       >
         <Box sx={style}>
         <h6 className="mb-4 text-primary fw-bold text-center">
-            Thêm tour mới <button style={{color:"white",marginLeft:"20px",border:"1px solid #0D6EFD",borderRadius:"10px",backgroundColor:"#0D6EFD",paddingLeft:"10px",paddingRight:"10px"}} onClick={submit}> + Cập nhật tour</button>
+            Cập nhật tour <button style={{color:"white",marginLeft:"20px",border:"1px solid #0D6EFD",borderRadius:"10px",backgroundColor:"#0D6EFD",paddingLeft:"10px",paddingRight:"10px"}} onClick={submit}> + Cập nhật tour</button>
           </h6>
           <Box sx={{ width: "100%", typography: "body1" }}>
             <TabContext value={value}>

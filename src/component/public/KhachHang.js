@@ -7,7 +7,7 @@ export {CartContext}
 export default () => {
     const [cart,setcart] = useState([]); 
     const navigate=useNavigate();
-    if(localStorage.getItem("token")==null||localStorage.getItem("role")!="khachhang"){
+    if(localStorage.getItem("token")==null){
         navigate("/login")
     }
     useEffect(()=>{

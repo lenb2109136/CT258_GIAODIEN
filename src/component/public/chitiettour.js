@@ -136,7 +136,7 @@ const TourInfo = () => {
 
                 </div>
                 <div class="bg-white mb-3" style={{ padding: "30px" }}>
-                    <div dangerouslySetInnerHTML={{ __html: t.moTa }} />
+                    {/* <div dangerouslySetInnerHTML={{ __html: t.moTa }} /> */}
                     <h2 class="mb-3">Dolor justo sea kasd lorem clita justo diam amet</h2>
                     <p>Sadipscing labore amet rebum est et justo gubergren. Et eirmod ipsum sit diam ut
                         magna lorem. Nonumy vero labore lorem sanctus rebum et lorem magna kasd, stet
