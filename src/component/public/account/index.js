@@ -103,33 +103,26 @@ export default function Discount() {
             <input
               type="text"
               className="form-control shadow-sm"
-              placeholder="Tìm kiếm mã giảm giá..."
+              placeholder="Nhập số điện thoại khách hàng..."
               value={sdt}
               onChange={handleSearch}
             />
           </div>
         </div>
-        <div className="col-md-6 text-md-end mt-3 mt-md-0">
-          <button className="btn btn-primary btn-add shadow-sm">
-            <i className="fas fa-plus me-2"></i> Thêm mã tài khoản
-          </button>
-        </div>
       </div>
 
       {/* Discounts Table */}
-      <div className="card shadow-sm border-0">
-        <div className="card-body p-0">
-          <table style={{width:"80%"}} className="table table-hover table-striped mb-0">
+      {/* <div className="card  shadow-sm border-0">
+        <div className="card-body p-0"> */}
+          <table style={{width:"99%", marginLeft:"15px"}} className="table table-hover table-striped mb-0">
             <thead className="table-dark">
               <tr>
-                <th scope="col">#</th>
                 <th scope="col">Số điện thoại</th>
                 <th scope="col">Tên</th>
                 <th scope="col">Email</th>
                 <th scope="col">CCCD</th>
                 <th scope="col">Giới tính</th>
                 <th scope="col">Địa chỉ</th>
-                <th scope="col">Năm sinh</th>
                 <th scope="col">Thao tác</th>
               </tr>
             </thead>
@@ -140,7 +133,6 @@ export default function Discount() {
                       nv.current=discount.id
                       setopen(true)
                   }}>
-                    <td>{discount.id}</td>
                     <td className="fw-medium">
                       <input
                         onChange={(e) => {
@@ -226,7 +218,7 @@ export default function Discount() {
                         value={discount.diaChi}
                       />
                     </td>
-                    <td>
+                    {/* <td>
                         <input
                         onChange={(e) => {
                           data[index].isUpdate = true;
@@ -240,9 +232,9 @@ export default function Discount() {
                         }}
                         value={discount.namSinh}
                       />
-                    </td>
+                    </td> */}
                     <td>
-                      <button
+                      <button style={{border:"1px solid #7AB730"}}
                         onClick={() => {
                           api
                             .post("admin/khachhang/update", discount)
@@ -256,13 +248,10 @@ export default function Discount() {
                         disabled={discount.isUpdate === undefined}
                         className="btn btn-outline-warning btn-sm me-2"
                       >
-                        <i className="fas fa-edit"></i>{" "}
+                        <i style={{color:"#7AB730",border:"1px solid #7AB730"}} className="fas fa-edit"></i>{" "}
                         {discount.isUpdate !== undefined ? "Update" : ""}
                       </button>
 
-                      <button className="btn btn-outline-danger btn-sm">
-                        <i className="fas fa-trash"></i> Xóa
-                      </button>
                     </td>
                   </tr>
                 ))
@@ -276,7 +265,7 @@ export default function Discount() {
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+    //   </div>
+    // </div>
   );
 }
