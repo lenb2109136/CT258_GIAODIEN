@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { BottomNavigation, BottomNavigationAction } from "@mui/material";
 import { Link } from "react-router-dom";
 import { Menu, Button } from "antd";
@@ -6,6 +6,7 @@ import { AppstoreOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-des
 import Cart from "../carttour";
 import Slider from "./cartslider";
 import axios from "axios";
+import { CartContext } from "./KhachHang";
 function kiemtra(a, u){
   for(let i=0;i<a.length;i++){
     if(a[i].batDau==u){
@@ -14,7 +15,19 @@ function kiemtra(a, u){
   }
   return -1;
 }
+function kiemtraa(a, id) {
+  if (!Array.isArray(a) || a.length === 0) 
+    return true; 
+  
+  for (let d of a) {
+    if (d.id === id) return false; 
+  }
+  return true; 
+}
+
 export default () => {
+  const { cart, setcart } = useContext(CartContext)
+  console.log(cart)
   const [loai, setloai] = useState([])
   const [loaichon, setloaichon] = useState(0);
   const [value, setValue] = useState("recents");

@@ -10,7 +10,34 @@ import TabPanel from "@mui/lab/TabPanel";
 import { Editor } from "@tinymce/tinymce-react";
 import ModalCK from "./ModalCK";
 
+function themVaoChuoi(chuoi1, chuoi2) {
+  let tt = chuoi1.lastIndexOf(","); 
+  let result = chuoi1.slice(0, tt + 1);
+
+  if (chuoi1.includes(',')) {
+      return result + chuoi2 + ",";
+  } else {
+      return chuoi2 + ", ";
+  }
+}
+
 const AddTour = () => { 
+
+  const [inputValue, setInputValue] = React.useState("");  
+  const [suggestions, setSuggestions] = React.useState([]); 
+  const tagsRef = React.useRef("hanhphuc, kham pha");
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setInputValue(value);
+    const lastTag = value.split(",").pop().trim();
+    
+    const storedTags = tagsRef.current.split(",").map(tag => tag.trim());
+    const matchedSuggestions = storedTags.filter(tag => tag.startsWith(lastTag));
+
+    setSuggestions(matchedSuggestions);
+  };
+
 
   const [stateReload, setStateReload] = React.useState(true);
 
@@ -36,11 +63,14 @@ const AddTour = () => {
   };
 
   const [open, setOpen] = React.useState(false);
+  const tag= React.useRef("")
+  
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [value, setValue] = React.useState("1");
   const [tour, setTour] = React.useState({
     thoiGianKhoiHanh: "2025-06-02T09:57:06",
+    tags:"",
     soNgay: 4,
     soDem: 4,
     soNguoiThamGia: 5,
@@ -116,6 +146,7 @@ const AddTour = () => {
   };
   const [loaiTour, setLoaiTour] = React.useState([]);
   const [nhanVien, setNhanVien] = React.useState([]);
+ 
   React.useEffect(() => {
     api
       .get("loaitour/getall")
@@ -129,6 +160,10 @@ const AddTour = () => {
       .then((v) => {
         setNhanVien(v);
       });
+      api.get("tour/gettags")
+      .then(data=>{
+        tagsRef.current=data.data.data
+      })
   }, []);
 
   const submit = () => { 
@@ -165,7 +200,7 @@ const AddTour = () => {
                   onChange={handleChange}
                   aria-label="lab API tabs example"
                 >
-                  <Tab label="Thông tin cơ bảnbản" value="1" />
+                  <Tab label="Thông tin cơ bản" value="1" />
                   <Tab label="Mô tả" value="2" />
                   <Tab label="Thông tin khởi hành" value="3" />
                   <Tab label="Thông tin chặn" value="4" />
@@ -181,7 +216,7 @@ const AddTour = () => {
                           tour.ten = e.target.value;
                           setStateReload(!stateReload) 
                       }}
-                      placeholder="Vui lòng nhập tour"
+                      placeholder="Vui lòng nhập tên tour"
                       className="col-6 p-2"
                       style={{
                         borderRadius: "3px",
@@ -190,6 +225,41 @@ const AddTour = () => {
                       }}
                     />
                   </div>
+                  <div>
+      <div className="row mt-2" style={{ alignItems: "center" }}>
+        <p className="col-3">Tags</p>
+        <input
+          onChange={handleInputChange}
+          placeholder="Nhập tags gợi ý"
+          className="col-6 p-2"
+          id="tags"
+          style={{
+            borderRadius: "3px",
+            outline: "none",
+            border: "1px solid lightgray",
+          }}
+        />
+      </div>
+
+      {suggestions.length > 0 && (
+        <div style={{ border: "1px solid lightgray", marginTop: "5px",
+        width:"500px", height:"200px",left:"320px", border:"2px solid #7AB730", borderRadius:"10px",
+        padding: "5px",position:"absolute", backgroundColor:"white",zIndex:5 }}>
+          {suggestions.map((suggestion, index) => (
+            <button onClick={()=>{
+                let t={...tour}
+                t.tags=themVaoChuoi(document.getElementById("tags").value,suggestion);
+                console.log(t)
+                document.getElementById("tags").value=themVaoChuoi(tour.tags,suggestion)
+                setTour(t)
+            }} key={index} style={{ margin: "0", padding: "3px 0", 
+              paddingLeft:"10px",paddingRight:"10px",marginLeft:"7px",marginTop:"7px"
+            ,backgroundColor:"#7AB730",color:"white",border:"0px",borderRadius:"10px" }
+            }>{suggestion}</button>
+          ))}
+        </div>
+      )}
+    </div>
                   <div className="row mt-2" style={{ alignItems: "center" }}>
                     <p className="col-3">Số ngày</p>
                     <input
@@ -217,6 +287,7 @@ const AddTour = () => {
                       value={tour.soDem}
                       onChange={(e) => {
                         if (e.target.value > 0) { 
+
                           tour.soDem = e.target.value;
                           setStateReload(!stateReload)
                         }

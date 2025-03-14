@@ -121,9 +121,10 @@ const TourInfo = () => {
                         </div>
                     </div>
                     <button disabled={!chuachon} onClick={()=>{
-                        let y=[...cart]
-                        y.push({...t,dsdv:[]})
-                       setcart(y)
+                       let y = Array.isArray(cart) ? [...cart] : [];
+                       y.push({ ...t, dsdv: [] });
+                       setcart(y);
+                       
                     }} className="w-100" style={{ backgroundColor:chuachon==true ?  "#7AB730" :"gray", color: "white", border: "1px solid white", height: "30px", borderRadius: "10px" }}>
                         <strong>ĐẶT TOUR</strong>
                     </button>

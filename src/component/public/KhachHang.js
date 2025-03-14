@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import api from "../config/axiosconfig";
 
 const CartContext = createContext();
 export {CartContext}
@@ -19,6 +20,7 @@ export default () => {
     return (
         <CartContext.Provider value={{cart,setcart}}>
             <div>
+                
                 <Outlet />
                 <div style={{
                     position: "fixed",

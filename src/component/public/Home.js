@@ -5,6 +5,7 @@ import axios from "axios";
 import anh1 from "../../img/carousel-1.jpg";
 import anh2 from "../../img/carousel-2.jpg";
 import about from "../../img/about.jpg";
+import api from "../config/axiosconfig";
 
 const Home = () => {
   const [dshometour, setdshometour] = useState([]);
@@ -18,7 +19,6 @@ const Home = () => {
   return (
     <>
       <div className="container-fluid bg-light pt-3 d-none d-lg-block"></div>
-
       <div className="container-fluid p-0">
         <div id="header-carousel" className="carousel slide" data-ride="carousel">
           <div className="carousel-inner">
