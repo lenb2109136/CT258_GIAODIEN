@@ -61,13 +61,13 @@ export default function (prop) {
                                         return <div style={{marginLeft:"30px"}}>
 
                                             <p style={{marginBottom:"10px",marginTop:"20px"}}><strong>Ngày giờ áp dụng : </strong> {formatDate(d.ngayGioApDung)}</p>
-                                            <input style={{padding:"10px",borderRadius:"5px"}} disabled={new Date(d.ngayKetThuc) > new Date() ?false:true} onChange={(e)=>thayDoi(e.target.value,"ngayGioApDung",index,i)} defaultValue={d.ngayGioApDung}  type="datetime-local"/>
+                                            <input style={{padding:"10px",borderRadius:"5px"}} disabled={true} onChange={(e)=>thayDoi(e.target.value,"ngayGioApDung",index,i)} defaultValue={d.ngayGioApDung}  type="datetime-local"/>
                                             <p style={{marginBottom:"10px",marginTop:"20px"}}><strong>Ngày giờ kết thúc : </strong>  {formatDate(d.ngayKetThuc)}</p>
-                                            <input  disabled={new Date(d.ngayKetThuc) < new Date()} style={{cursor:new Date(d.ngayKetThuc) > new Date() ? "pointer" : "none",padding:"10px",borderRadius:"5px"}}  onChange={(e)=>thayDoi(e.target.value,"ngayKetThuc",index,i)} defaultValue={d.ngayKetThuc} type="datetime-local"/>
+                                            <input  disabled={true} style={{cursor:new Date(d.ngayKetThuc) > new Date() ? "pointer" : "none",padding:"10px",borderRadius:"5px"}}  onChange={(e)=>thayDoi(e.target.value,"ngayKetThuc",index,i)} defaultValue={d.ngayKetThuc} type="datetime-local"/>
                                            <div style={{marginTop:"20px"}}>
-                                           <span style={{display:"inline-block"}}><strong>Giá áp dụng:</strong> </span><input onChange={(e)=>thayDoi(e.target.value,"gia",index,i)}  type="number" style={{paddingLeft:"15px", border:"0px", borderBottom:"1px solid black",outline:"none",marginLeft:"20px"}}  defaultValue={d.gia}></input>
+                                           <span style={{display:"inline-block"}}><strong>Giá áp dụng: {d.gia}</strong> </span>
                                            </div>
-                                            <button onClick={()=>{submit(d)}} disabled={new Date(d.ngayKetThuc) > new Date() ?false:true} style={{backgroundColor:"#7AB730", color:"white", border:"0px", borderRadius:"5px", padding:"6px",marginTop:"1%",paddingBlock:"10px",display:"block",marginTop:"20px"}}>   {new Date(d.ngayKetThuc) > new Date() ? "Cập nhật" : "Ko có thao tác "}</button>
+                                            
                                             <hr></hr>
                                         </div>
                                 })

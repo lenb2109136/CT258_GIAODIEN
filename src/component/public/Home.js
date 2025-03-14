@@ -11,7 +11,8 @@ const Home = () => {
   const [dshometour, setdshometour] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:8080/tour/gethometour").then((data) => {
+    let o=localStorage.getItem("sdt")
+    axios.get(`http://localhost:8080/tour/gethometour?sdt=${o}`).then((data) => {
       setdshometour(data.data.data);
     });
   }, []);

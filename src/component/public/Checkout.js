@@ -82,7 +82,7 @@ const CheckoutPage = () => {
                                     padding: "10px",
                                     cursor: "pointer",
                                   }}
-                                  checked={data?.thoiGianKhoiHanh2?.length === 1} // Sử dụng `checked`
+                                  // checked={data?.thoiGianKhoiHanh2?.length === 1} 
                                   onClick={(event) => {
                                     let j = [...cart];
                                     for (let p = 0; p < j[index].thoiGianKhoiHanh2.length; p++) {

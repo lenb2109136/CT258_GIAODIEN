@@ -15,15 +15,7 @@ function kiemtra(a, u){
   }
   return -1;
 }
-function kiemtraa(a, id) {
-  if (!Array.isArray(a) || a.length === 0) 
-    return true; 
-  
-  for (let d of a) {
-    if (d.id === id) return false; 
-  }
-  return true; 
-}
+
 
 export default () => {
   const { cart, setcart } = useContext(CartContext)
@@ -59,8 +51,8 @@ export default () => {
     giaKetThuc:-1,
     dsNgay:[],
     thoiLuong:[],
-    loai:0
-
+    loai:0,
+    sdt:localStorage.getItem("sdt")
   })
   useEffect(() => {
     axios.get("http://localhost:8080/tour/getListTourfavourite")
@@ -76,13 +68,15 @@ export default () => {
       })
   }, [])
   useEffect(() => {
-    axios.get("http://localhost:8080/tour/getListTour")
+    let o=localStorage.getItem("sdt")
+    axios.get(`http://localhost:8080/tour/getListTour?sdt=${o}`)
       .then(data => {
         setlisttour(data.data.data)
       })
   }, [])
   useEffect(() => {
-    axios.get(`http://localhost:8080/tour/getListTourByLoai?idloai=${loaichon}`)
+    let o=localStorage.getItem("sdt")
+    axios.get(`http://localhost:8080/tour/getListTourByLoai?idloai=${loaichon}&sdt=${o}`)
       .then(data => {
         setlisttour(data.data.data)
       })

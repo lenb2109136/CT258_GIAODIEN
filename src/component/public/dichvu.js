@@ -69,31 +69,7 @@ export default () => {
         setdvall(data.data.data)
     })
   },[])
-  useEffect(() => {
-    axios.get("http://localhost:8080/tour/getListTourfavourite")
-      .then(data => {
-        setfavorate(data.data.data)
-      })
-
-  }, [])
-  useEffect(() => {
-    axios.get("http://localhost:8080/loaitour/getall")
-      .then(data => {
-        setloai(data.data.data);
-      })
-  }, [])
-  useEffect(() => {
-    axios.get("http://localhost:8080/tour/getListTour")
-      .then(data => {
-        setlisttour(data.data.data)
-      })
-  }, [])
-  useEffect(() => {
-    axios.get(`http://localhost:8080/tour/getListTourByLoai?idloai=${loaichon}`)
-      .then(data => {
-        setlisttour(data.data.data)
-      })
-  }, [loaichon])
+ 
   return (
     <div className="row">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "10px" }}>

@@ -29,7 +29,8 @@ const TourInfo = () => {
     
       }, [])
     useEffect(() => {
-        axios.get(`http://localhost:8080/tour/getinfortour?id=${id}`)
+        let o=localStorage.getItem("sdt")
+        axios.get(`http://localhost:8080/tour/getinfortour?id=${id}&idnv=${o}`)
             .then(data => {
                 sett(data.data.data);
             })
