@@ -60,7 +60,7 @@ export default () => {
 
   })
   useEffect(()=>{
-    axios.get("http://localhost:8080/dichvu/getphuhop")
+    axios.get(`http://localhost:8080/dichvu/phuhop?id=${cart[inde].id}`)
     .then(data=>{
         setdsdichvu(data.data.data)
     })

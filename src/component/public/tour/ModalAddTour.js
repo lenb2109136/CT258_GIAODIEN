@@ -6,37 +6,46 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
- import api from "../../config/axiosconfig";
+import api from "../../config/axiosconfig";
 import { Editor } from "@tinymce/tinymce-react";
 import ModalCK from "./ModalCK";
+import axios from "axios";
 
 function themVaoChuoi(chuoi1, chuoi2) {
-  let tt = chuoi1.lastIndexOf(","); 
+  let tt = chuoi1.lastIndexOf(",");
   let result = chuoi1.slice(0, tt + 1);
 
   if (chuoi1.includes(',')) {
-      return result + chuoi2 + ",";
+    return result + chuoi2 + ",";
   } else {
-      return chuoi2 + ", ";
+    return chuoi2 + ", ";
   }
 }
 
-const AddTour = () => { 
+const AddTour = () => {
 
-  const [inputValue, setInputValue] = React.useState("");  
-  const [suggestions, setSuggestions] = React.useState([]); 
-  const tagsRef = React.useRef("hanhphuc, kham pha");
+  const [inputValue, setInputValue] = React.useState("");
+  const [suggestions, setSuggestions] = React.useState([]);
+  const [tagsthongthuong, settagsthongthuong] = React.useState([])
+  const [tagsgoiy, settagsgoiy] = React.useState([])
+  const tagsRef = React.useRef("");
 
   const handleInputChange = (e) => {
-    const value = e.target.value;
-    setInputValue(value);
-    const lastTag = value.split(",").pop().trim();
-    
-    const storedTags = tagsRef.current.split(",").map(tag => tag.trim());
-    const matchedSuggestions = storedTags.filter(tag => tag.startsWith(lastTag));
+    const inputValue = e.target.value;
+    const lastTag = inputValue.substring(inputValue.lastIndexOf(",") + 1).trim();
 
-    setSuggestions(matchedSuggestions);
+    api.get(`http://localhost:8080/tourtagsrecomment/getthongthuong?tags=${lastTag}`)
+      .then(data => {
+        settagsthongthuong(data.data.data);
+      });
+
+    api.get(`http://localhost:8080/tourtagsrecomment/getrecomment?tags=${e.target.value}`)
+      .then(data => {
+
+        settagsgoiy(data.data.data)
+      })
   };
+
 
 
   const [stateReload, setStateReload] = React.useState(true);
@@ -63,14 +72,14 @@ const AddTour = () => {
   };
 
   const [open, setOpen] = React.useState(false);
-  const tag= React.useRef("")
-  
+  const tag = React.useRef("")
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [value, setValue] = React.useState("1");
   const [tour, setTour] = React.useState({
     thoiGianKhoiHanh: "2025-06-02T09:57:06",
-    tags:"",
+    tags: "",
     soNgay: 4,
     soDem: 4,
     soNguoiThamGia: 5,
@@ -119,15 +128,15 @@ const AddTour = () => {
 
   const addNgayKhoiHanh = () => {
     let now = new Date();
-now.setDate(now.getDate() + 1);
+    now.setDate(now.getDate() + 1);
     tour.thoiGianKhoiHanh2.push({
-      thoiGian: now.toISOString(), 
+      thoiGian: now.toISOString(),
       gia: 1800.0,
       nhanVien: null,
       giaUuDai: [],
       trangThai: 0,
-  });
-  
+    });
+
     setStateReload(!stateReload);
   };
 
@@ -136,34 +145,34 @@ now.setDate(now.getDate() + 1);
   };
   const [loaiTour, setLoaiTour] = React.useState([]);
   const [nhanVien, setNhanVien] = React.useState([]);
- 
+
   React.useEffect(() => {
     api
       .get("loaitour/getall")
       .then((v) => {
         setLoaiTour(v.data.data);
       })
-      .then((v) => {});
+      .then((v) => { });
     api
       .get("nhanvien/getall")
       .then((v) => v.data)
       .then((v) => {
         setNhanVien(v);
       });
-      api.get("tour/gettags")
-      .then(data=>{
-        tagsRef.current=data.data.data
+    api.get("tour/gettags")
+      .then(data => {
+        tagsRef.current = data.data.data
       })
   }, []);
 
-  const submit = () => { 
+  const submit = () => {
     api
       .post("tour/add", tour)
       .then((v) => {
-        if(v.data.status!="OK"){
+        if (v.data.status != "OK") {
           alert(v.data.message)
         }
-        else{
+        else {
           alert("Thêm thông tour thành công")
         }
       })
@@ -182,8 +191,8 @@ now.setDate(now.getDate() + 1);
         aria-describedby="keep-mounted-modal-description"
       >
         <Box sx={style}>
-        <h6 className="mb-4 text-primary fw-bold text-center">
-            Thêm tour mới <button style={{color:"white",marginLeft:"20px",border:"1px solid #0D6EFD",borderRadius:"10px",backgroundColor:"#0D6EFD",paddingLeft:"10px",paddingRight:"10px"}} onClick={submit}> + Thêm tour mới</button>
+          <h6 className="mb-4 text-primary fw-bold text-center">
+            Thêm tour mới <button style={{ color: "white", marginLeft: "20px", border: "1px solid #0D6EFD", borderRadius: "10px", backgroundColor: "#0D6EFD", paddingLeft: "10px", paddingRight: "10px" }} onClick={submit}> + Thêm tour mới</button>
           </h6>
           <Box sx={{ width: "100%", typography: "body1" }}>
             <TabContext value={value}>
@@ -199,161 +208,243 @@ now.setDate(now.getDate() + 1);
                 </TabList>
               </Box>
               <TabPanel value="1">
-                <div className="containercontainer">
-                  <div className="row mt-2" style={{ alignItems: "center" }}>
-                    <p className="col-3">Tên tour</p>
-                    <input
-                      value={tour.ten}
-                      onChange={(e) => { 
-                          tour.ten = e.target.value;
-                          setStateReload(!stateReload) 
-                      }}
-                      placeholder="Vui lòng nhập tên tour"
-                      className="col-6 p-2"
-                      style={{
-                        borderRadius: "3px",
-                        outline: "none",
-                        border: "1px solid lightgray",
-                      }}
-                    />
-                  </div>
-                  <div>
-      <div className="row mt-2" style={{ alignItems: "center" }}>
-        <p className="col-3">Tags</p>
-        <input
-          onChange={handleInputChange}
-          placeholder="Nhập tags gợi ý"
-          className="col-6 p-2"
-          id="tags"
-          style={{
-            borderRadius: "3px",
-            outline: "none",
-            border: "1px solid lightgray",
-          }}
-        />
-      </div>
+                <div className="row">
+                  <div style={{ width: "60%" }}>
+                    <div className="containercontainer">
+                      <div className="row mt-2" style={{ alignItems: "center" }}>
+                        <p className="col-3">Tên tour</p>
+                        <input
+                          value={tour.ten}
+                          onChange={(e) => {
+                            tour.ten = e.target.value;
+                            setStateReload(!stateReload)
+                          }}
+                          placeholder="Vui lòng nhập tên tour"
+                          className="col-9 p-2"
+                          style={{
+                            borderRadius: "3px",
+                            outline: "none",
+                            border: "1px solid lightgray",
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <div className="row mt-2" style={{ alignItems: "center" }}>
+                          <p className="col-3">Tags</p>
+                          <input
+                            onChange={(e) => { handleInputChange(e) }}
+                            placeholder="Nhập tags gợi ý"
+                            className="col-9 p-2"
+                            id="tags"
+                            style={{
+                              borderRadius: "3px",
+                              outline: "none",
+                              border: "1px solid lightgray",
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="row mt-2" style={{ alignItems: "center" }}>
+                        <p className="col-3">Số ngày</p>
+                        <input
+                          min={0}
+                          value={tour.soNgay}
+                          onChange={(e) => {
+                            if (e.target.value > 0) {
+                              tour.soNgay = e.target.value;
+                              setStateReload(!stateReload)
+                            }
+                          }}
+                          type="number"
+                          style={{
+                            borderRadius: "3px",
+                            outline: "none",
+                            border: "1px solid lightgray",
+                          }}
+                          className="col-9 p-2"
+                        />
+                      </div>
+                      <div className="row mt-2" style={{ alignItems: "center" }}>
+                        <p className="col-3">Số đêm</p>
+                        <input
+                          min={0}
+                          value={tour.soDem}
+                          onChange={(e) => {
+                            if (e.target.value > 0) {
 
-      {/* {suggestions.length > 0 && (
-        <div style={{ border: "1px solid lightgray", marginTop: "5px",
-        width:"500px", height:"200px",left:"320px", border:"2px solid #7AB730", borderRadius:"10px",
-        padding: "5px",position:"absolute", backgroundColor:"white",zIndex:5 }}>
-          {suggestions.map((suggestion, index) => (
-            <button onClick={()=>{
-                let t={...tour}
-                t.tags=themVaoChuoi(document.getElementById("tags").value,suggestion);
-                console.log(t)
-                document.getElementById("tags").value=themVaoChuoi(tour.tags,suggestion)
-                setTour(t)
-            }} key={index} style={{ margin: "0", padding: "3px 0", 
-              paddingLeft:"10px",paddingRight:"10px",marginLeft:"7px",marginTop:"7px"
-            ,backgroundColor:"#7AB730",color:"white",border:"0px",borderRadius:"10px" }
-            }>{suggestion}</button>
-          ))}
-        </div>
-      )} */}
-    </div>
-                  <div className="row mt-2" style={{ alignItems: "center" }}>
-                    <p className="col-3">Số ngày</p>
-                    <input
-                      min={0}
-                      value={tour.soNgay}
-                      onChange={(e) => {
-                        if (e.target.value > 0) { 
-                          tour.soNgay = e.target.value;
-                          setStateReload(!stateReload)
-                        }
-                      }}
-                      type="number"
-                      style={{
-                        borderRadius: "3px",
-                        outline: "none",
-                        border: "1px solid lightgray",
-                      }}
-                      className="col-6 p-2"
-                    />
-                  </div>
-                  <div className="row mt-2" style={{ alignItems: "center" }}>
-                    <p className="col-3">Số đêm</p>
-                    <input
-                      min={0}
-                      value={tour.soDem}
-                      onChange={(e) => {
-                        if (e.target.value > 0) { 
+                              tour.soDem = e.target.value;
+                              setStateReload(!stateReload)
+                            }
+                          }}
+                          type="number"
+                          style={{
+                            borderRadius: "3px",
+                            outline: "none",
+                            border: "1px solid lightgray",
+                          }}
+                          className="col-9 p-2"
+                        />
+                      </div>
+                      <div className="row mt-2" style={{ alignItems: "center" }}>
+                        <p className="col-3">Số lượng người tham gia</p>
+                        <input
+                          min={0}
+                          value={tour.soNguoiThamGia}
+                          onChange={(e) => {
+                            if (e.target.value > 0) {
+                              tour.soNguoiThamGia = e.target.value;
+                              setStateReload(!stateReload)
+                            }
+                          }}
+                          type="number"
+                          style={{
+                            borderRadius: "3px",
+                            outline: "none",
+                            border: "1px solid lightgray",
+                          }}
+                          className="col-9 p-2"
+                        />
+                      </div>
+                      <div className="row mt-2" style={{ alignItems: "center" }}>
+                        <p className="col-3">Số lượng filefile</p>
+                        <input
+                          type="file"
+                          style={{
+                            borderRadius: "3px",
+                            outline: "none",
+                            border: "1px solid lightgray",
+                          }}
+                          className="col-9 p2"
+                        />
+                      </div>
+                      <div className="row mt-2" style={{ alignItems: "center" }}>
+                        <p className="col-3">Loại tour</p>
+                        <select
+                          onChange={(e) => {
+                            tour.loaiTour = loaiTour[e.target.value];
+                          }}
+                          style={{
+                            borderRadius: "3px",
+                            outline: "none",
+                            border: "1px solid lightgray",
+                          }}
+                          className="col-9 p-2"
+                        >
+                          {loaiTour.map((v, index) => {
+                            return <option value={index}>{v.ten}</option>;
+                          })}
+                        </select>
+                      </div>
 
-                          tour.soDem = e.target.value;
-                          setStateReload(!stateReload)
-                        }
-                      }}
-                      type="number"
-                      style={{
-                        borderRadius: "3px",
-                        outline: "none",
-                        border: "1px solid lightgray",
-                      }}
-                      className="col-6 p-2"
-                    />
+                    </div>
                   </div>
-                  <div className="row mt-2" style={{ alignItems: "center" }}>
-                    <p className="col-3">Số lượng người tham gia</p>
-                    <input
-                      min={0}
-                      value={tour.soNguoiThamGia}
-                      onChange={(e) => {
-                        if (e.target.value > 0) { 
-                          tour.soNguoiThamGia = e.target.value;
-                          setStateReload(!stateReload)
-                        }
-                      }}
-                      type="number"
-                      style={{
-                        borderRadius: "3px",
-                        outline: "none",
-                        border: "1px solid lightgray",
-                      }}
-                      className="col-6 p-2"
-                    />
-                  </div>
-                  <div className="row mt-2" style={{ alignItems: "center" }}>
-                    <p className="col-3">Số lượng filefile</p>
-                    <input
-                      type="file"
-                      style={{
-                        borderRadius: "3px",
-                        outline: "none",
-                        border: "1px solid lightgray",
-                      }}
-                      className="col-6 p2"
-                    />
-                  </div>
-                  <div className="row mt-2" style={{ alignItems: "center" }}>
-                    <p className="col-3">Loại tour</p>
-                    <select
-                      onChange={(e) => {
-                        tour.loaiTour = loaiTour[e.target.value];
-                      }}
-                      style={{
-                        borderRadius: "3px",
-                        outline: "none",
-                        border: "1px solid lightgray",
-                      }}
-                      className="col-6 p-2"
-                    >
-                      {loaiTour.map((v, index) => {
-                        return <option value={index}>{v.ten}</option>;
-                      })}
-                    </select>
+                  <div style={{ width: "40%" }}>
+                    <div>
+                      <p>tags gợi ý:</p>
+                      <div>
+                        {tagsthongthuong.map((du, index) =>
+                          du !== "" ? (
+                            <button
+                              key={index}
+                              style={{
+                                color: "#0D6EFD",
+                                border: "1px solid #0D6EFD",
+                                paddingLeft: "7px",
+                                paddingRight: "7px",
+                                marginRight: "7px",
+                                marginTop: "10px",
+                                backgroundColor: "white",
+                                borderRadius: "2px",
+                                transition: "background-color 0.3s ease, color 0.3s ease",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.target.style.backgroundColor = "#0D6EFD";
+                                e.target.style.color = "white";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.target.style.backgroundColor = "white";
+                                e.target.style.color = "#0D6EFD";
+                              }}
+                              onClick={() => {
+                                let t = document.getElementById("tags").value;
+
+                                if (!t.includes(",")) {
+                                  document.getElementById("tags").value = du;
+                                } else {
+                                  let arr = t.split(",");
+                                  arr[arr.length - 1] = du;
+                                  document.getElementById("tags").value = arr.join(",") + ",";
+                                }
+
+                              }}
+                            >
+                              {du}
+                            </button>
+                          ) : null
+                        )}
+
+
+                      </div>
+                    </div>
+                    <div>
+                      <p>tags có thể dùng:</p>
+                      <div>
+                        {tagsgoiy.map((du, index) =>
+                          du !== "" ? (
+                            <button
+                              key={index}
+                              style={{
+                                color: "#0D6EFD",
+                                border: "1px solid #0D6EFD",
+                                paddingLeft: "7px",
+                                paddingRight: "7px",
+                                marginRight: "7px",
+                                marginTop: "10px",
+                                backgroundColor: "white",
+                                borderRadius: "2px",
+                                transition: "background-color 0.3s ease, color 0.3s ease",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.target.style.backgroundColor = "#0D6EFD";
+                                e.target.style.color = "white";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.target.style.backgroundColor = "white";
+                                e.target.style.color = "#0D6EFD";
+                              }}
+                              onClick={() => {
+                                let t = document.getElementById("tags").value;
+
+                                if (!t.includes(",")) {
+                                  document.getElementById("tags").value = du;
+                                } else {
+                                  let arr = t.split(",");
+                                  arr[arr.length - 1] = du;
+                                  document.getElementById("tags").value = arr.join(",") + ",";
+                                }
+
+                              }}
+                            >
+                              {du}
+                            </button>
+                          ) : null
+                        )}
+
+
+                      </div>
+                    </div>
                   </div>
                 </div>
               </TabPanel>
               <TabPanel value="2">
-              <Editor
-                   onEditorChange={(content) => {
-                    tour.moTa=content 
+                <Editor
+                  onEditorChange={(content) => {
+                    tour.moTa = content
                     setStateReload(!stateReload)
-                   }}
-                   apiKey="gmrlr5eof1cew5jiwsqpjawlsc3yv10fn13pxtr2peb8l5jm"
+                  }}
+                  apiKey="gmrlr5eof1cew5jiwsqpjawlsc3yv10fn13pxtr2peb8l5jm"
                   init={{
-                    plugins: [ 
+                    plugins: [
                       "anchor",
                       "autolink",
                       "charmap",
@@ -366,7 +457,7 @@ now.setDate(now.getDate() + 1);
                       "searchreplace",
                       "table",
                       "visualblocks",
-                      "wordcount", 
+                      "wordcount",
                       "checklist",
                       "mediaembed",
                       "casechange",
@@ -422,14 +513,14 @@ now.setDate(now.getDate() + 1);
                       <hr className="mt-2 mb-2" />
                       <div className="row mt-2 ml-1" style={{ gap: 15 }}>
                         <input
-                           value={v.thoiGian}
-                           defaultValue={new Date()} 
-                            onChange={(e) => { 
-                                if (new Date(e.target.value)>new Date()) { 
-                                v.thoiGian = e.target.value;
-                                setStateReload(!stateReload) 
-                                }
-                            }}
+                          value={v.thoiGian}
+                          defaultValue={new Date()}
+                          onChange={(e) => {
+                            if (new Date(e.target.value) > new Date()) {
+                              v.thoiGian = e.target.value;
+                              setStateReload(!stateReload)
+                            }
+                          }}
                           style={{
                             outline: "none",
                             borderRadius: "5px",
@@ -440,15 +531,15 @@ now.setDate(now.getDate() + 1);
                           placeholder="ngày bắt đầu"
                         />
                         <input
-                        
 
-                        value={v.gia}
-                        onChange={(e) => {
-                          if (e.target.value > 0) { 
-                            v.gia = e.target.value;
-                            setStateReload(!stateReload)
-                          }
-                        }}
+
+                          value={v.gia}
+                          onChange={(e) => {
+                            if (e.target.value > 0) {
+                              v.gia = e.target.value;
+                              setStateReload(!stateReload)
+                            }
+                          }}
 
 
                           style={{
@@ -466,11 +557,11 @@ now.setDate(now.getDate() + 1);
                             borderRadius: "5px",
                             border: "1px solid lightgray",
                           }}
-                          onChange={(e)=>{  
+                          onChange={(e) => {
                             // alert(e.target.value)
                             // v.nhanVien=nhanVien[e.target.value]
-                            let tt={...tour}
-                            tt.thoiGianKhoiHanh2[index].nhanVien=nhanVien[e.target.value];
+                            let tt = { ...tour }
+                            tt.thoiGianKhoiHanh2[index].nhanVien = nhanVien[e.target.value];
                             setTour(tt)
                           }}
                           className="col-3"
@@ -521,14 +612,14 @@ now.setDate(now.getDate() + 1);
                                 style={{ gap: 15 }}
                               >
                                 <input
-                                  defaultValue={new Date()} 
+                                  defaultValue={new Date()}
                                   value={vv.ngayGioApDung}
-                                onChange={(e) => { 
-                                    if (new Date(e.target.value)>new Date()) { 
-                                        vv.ngayGioApDung=e.target.value
-                                        setStateReload(!stateReload)
+                                  onChange={(e) => {
+                                    if (new Date(e.target.value) > new Date()) {
+                                      vv.ngayGioApDung = e.target.value
+                                      setStateReload(!stateReload)
                                     }
-                                }} 
+                                  }}
                                   style={{
                                     outline: "none",
                                     borderRadius: "5px",
@@ -539,13 +630,13 @@ now.setDate(now.getDate() + 1);
                                   placeholder="ngày bắt đầu"
                                 />
                                 <input
-                                value={vv.ngayKetThuc}
-                                onChange={(e) => { 
-                                    if (new Date(e.target.value)>new Date()) { 
-                                        vv.ngayKetThuc=e.target.value
-                                        setStateReload(!stateReload)
+                                  value={vv.ngayKetThuc}
+                                  onChange={(e) => {
+                                    if (new Date(e.target.value) > new Date()) {
+                                      vv.ngayKetThuc = e.target.value
+                                      setStateReload(!stateReload)
                                     }
-                                }} 
+                                  }}
                                   defaultValue={vv.ngayKetThuc}
                                   style={{
                                     outline: "none",
@@ -563,12 +654,12 @@ now.setDate(now.getDate() + 1);
                                     borderRadius: "5px",
                                     border: "1px solid lightgray",
                                   }}
-                                  onChange={(e)=>{
+                                  onChange={(e) => {
 
-                                    if(e.target.value>0){
-                                        vv.gia=e.target.value
-                                        setStateReload(!stateReload)
-                                    } 
+                                    if (e.target.value > 0) {
+                                      vv.gia = e.target.value
+                                      setStateReload(!stateReload)
+                                    }
                                   }}
                                   min={0}
                                   type="number"
@@ -595,8 +686,8 @@ now.setDate(now.getDate() + 1);
                 })}
               </TabPanel>
               <TabPanel value="4">
-                <Button onClick={()=>{
-                  tour.chan.push({ 
+                <Button onClick={() => {
+                  tour.chan.push({
                     moTa: "",
                     ngayBatDau: 1,
                     ngayKetThuc: 1,
@@ -612,12 +703,12 @@ now.setDate(now.getDate() + 1);
                       <hr className="mt-2 mb-2" />
                       <div className="row mt-2 ml-1" style={{ gap: 15 }}>
                         <input value={v.ngayBatDau}
-                       onChange={(e)=>{
-                        if(e.target.value>0){
-                            v.ngayBatDau=e.target.value
-                            setStateReload(!stateReload)
-                        } 
-                      }}
+                          onChange={(e) => {
+                            if (e.target.value > 0) {
+                              v.ngayBatDau = e.target.value
+                              setStateReload(!stateReload)
+                            }
+                          }}
                           defaultValue={1}
                           style={{
                             outline: "none",
@@ -629,13 +720,13 @@ now.setDate(now.getDate() + 1);
                           placeholder="Ngày bắt đầu"
                         />
                         <input
-                         value={v.ngayKetThuc}
-                         onChange={(e)=>{
-                          if(e.target.value>0){
-                              v.ngayKetThuc=e.target.value
+                          value={v.ngayKetThuc}
+                          onChange={(e) => {
+                            if (e.target.value > 0) {
+                              v.ngayKetThuc = e.target.value
                               setStateReload(!stateReload)
-                          } 
-                        }}
+                            }
+                          }}
                           defaultValue={1}
                           style={{
                             outline: "none",
@@ -653,8 +744,8 @@ now.setDate(now.getDate() + 1);
                             borderRadius: "5px",
                             border: "1px solid lightgray",
                           }}
-                          onChange={(e)=>{
-                            v.diaDiemDen=e.target.value
+                          onChange={(e) => {
+                            v.diaDiemDen = e.target.value
                             setStateReload(!stateReload)
                           }}
                           type="text"
