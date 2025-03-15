@@ -91,53 +91,43 @@ const AddTour = () => {
       sdt: "0709302846",
     },
     thoiGianKhoiHanh2: [
-      {
-        thoiGian: "2025-07-02T10:21:27",
-        gia: 1800.0,
-        nhanVien: {
-          id: 1,
-          ten: "Nguyễn Duy Anh",
-          anh: null,
-          soDienThoai: "0709302846",
-          socmnd: "09094347340232",
-          sdt: "0709302846",
-        },
-        giaUuDai: [
-          {
-            id: 2,
-            gia: 1200.0,
-            ngayGioApDung: "2025-03-11T16:00:05",
-            ngayKetThuc: "2025-03-11T16:00:06",
-          },
-        ],
-        trangThai: 1,
-      },
+      // {
+      //   thoiGian: "2025-07-02T10:21:27",
+      //   gia: 1800.0,
+      //   nhanVien: {
+      //     id: 1,
+      //     ten: "Nguyễn Duy Anh",
+      //     anh: null,
+      //     soDienThoai: "0709302846",
+      //     socmnd: "09094347340232",
+      //     sdt: "0709302846",
+      //   },
+      //   giaUuDai: [
+      //     {
+      //       id: 2,
+      //       gia: 1200.0,
+      //       ngayGioApDung: "2025-03-11T16:00:05",
+      //       ngayKetThuc: "2025-03-11T16:00:06",
+      //     },
+      //   ],
+      //   trangThai: 1,
+      // },
     ],
     chan: [
     ],
   });
 
   const addNgayKhoiHanh = () => {
+    let now = new Date();
+now.setDate(now.getDate() + 1);
     tour.thoiGianKhoiHanh2.push({
-      thoiGian: "2025-07-02T10:21:27",
+      thoiGian: now.toISOString(), 
       gia: 1800.0,
-      nhanVien: {
-        id: 1,
-        ten: "Nguyễn Duy Anh",
-        anh: null,
-        soDienThoai: "0709302846",
-        socmnd: "09094347340232",
-        sdt: "0709302846",
-      },
-      giaUuDai: [
-        {
-          gia: 1200.0,
-          ngayGioApDung: "2025-03-11T16:00:05",
-          ngayKetThuc: "2025-03-11T16:00:06",
-        },
-      ],
+      nhanVien: null,
+      giaUuDai: [],
       trangThai: 0,
-    });
+  });
+  
     setStateReload(!stateReload);
   };
 
@@ -170,10 +160,12 @@ const AddTour = () => {
     api
       .post("tour/add", tour)
       .then((v) => {
-        return v.data;
-      })
-      .then((v) => {
-        alert("Thêm thành công")
+        if(v.data.status!="OK"){
+          alert(v.data.message)
+        }
+        else{
+          alert("Thêm thông tour thành công")
+        }
       })
       .catch((error) => {
         alert(error.response.data);
@@ -241,7 +233,7 @@ const AddTour = () => {
         />
       </div>
 
-      {suggestions.length > 0 && (
+      {/* {suggestions.length > 0 && (
         <div style={{ border: "1px solid lightgray", marginTop: "5px",
         width:"500px", height:"200px",left:"320px", border:"2px solid #7AB730", borderRadius:"10px",
         padding: "5px",position:"absolute", backgroundColor:"white",zIndex:5 }}>
@@ -258,7 +250,7 @@ const AddTour = () => {
             }>{suggestion}</button>
           ))}
         </div>
-      )}
+      )} */}
     </div>
                   <div className="row mt-2" style={{ alignItems: "center" }}>
                     <p className="col-3">Số ngày</p>
@@ -354,9 +346,12 @@ const AddTour = () => {
                 </div>
               </TabPanel>
               <TabPanel value="2">
-                <Editor
-                   onEditorChange={(content) => tour.moTa=content}
-                  apiKey="gmrlr5eof1cew5jiwsqpjawlsc3yv10fn13pxtr2peb8l5jm"
+              <Editor
+                   onEditorChange={(content) => {
+                    tour.moTa=content 
+                    setStateReload(!stateReload)
+                   }}
+                   apiKey="gmrlr5eof1cew5jiwsqpjawlsc3yv10fn13pxtr2peb8l5jm"
                   init={{
                     plugins: [ 
                       "anchor",
@@ -413,7 +408,8 @@ const AddTour = () => {
                         Promise.reject("See docs to implement AI Assistant")
                       ),
                   }}
-                  initialValue="Welcome to TinyMCE!"
+                  value={tour.moTa}
+                  initialValue={tour.moTa}
                 />
               </TabPanel>
               <TabPanel value="3">
@@ -471,7 +467,11 @@ const AddTour = () => {
                             border: "1px solid lightgray",
                           }}
                           onChange={(e)=>{  
-                            v.nhanVien=nhanVien[e.target.value]
+                            // alert(e.target.value)
+                            // v.nhanVien=nhanVien[e.target.value]
+                            let tt={...tour}
+                            tt.thoiGianKhoiHanh2[index].nhanVien=nhanVien[e.target.value];
+                            setTour(tt)
                           }}
                           className="col-3"
                         >
@@ -598,8 +598,8 @@ const AddTour = () => {
                 <Button onClick={()=>{
                   tour.chan.push({ 
                     moTa: "",
-                    ngayBatDau: new Date(),
-                    ngayKetThuc: new Date(),
+                    ngayBatDau: 1,
+                    ngayKetThuc: 1,
                     diaDiemDen: "Cần thơ",
                   })
                   setStateReload(!stateReload)
@@ -613,40 +613,41 @@ const AddTour = () => {
                       <div className="row mt-2 ml-1" style={{ gap: 15 }}>
                         <input value={v.ngayBatDau}
                        onChange={(e)=>{
-                        if(new Date()<new Date(e.target.value)){
+                        if(e.target.value>0){
                             v.ngayBatDau=e.target.value
                             setStateReload(!stateReload)
                         } 
                       }}
-                          defaultValue={v.thoiGian}
+                          defaultValue={1}
                           style={{
                             outline: "none",
                             borderRadius: "5px",
                             border: "1px solid lightgray",
                           }}
-                          type="datetime-local"
+                          type="number"
                           className="col-2"
-                          placeholder="ngày bắt đầu"
+                          placeholder="Ngày bắt đầu"
                         />
                         <input
                          value={v.ngayKetThuc}
                          onChange={(e)=>{
-                          if(new Date()<new Date(e.target.value)){
+                          if(e.target.value>0){
                               v.ngayKetThuc=e.target.value
                               setStateReload(!stateReload)
                           } 
                         }}
-                          defaultValue={new Date()}
+                          defaultValue={1}
                           style={{
                             outline: "none",
                             borderRadius: "5px",
                             border: "1px solid lightgray",
                           }}
-                          type="datetime-local"
+                          type="number"
                           className="col-2"
-                          placeholder="ngày bắt đầu"
+                          placeholder="Ngày kết thúc"
                         />
                         <input
+                          value={v.diaDiemDen}
                           style={{
                             outline: "none",
                             borderRadius: "5px",

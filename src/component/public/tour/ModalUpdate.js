@@ -92,10 +92,12 @@ const UpdateTour = ({ tours }) => {
     api
       .post("tour/update", tour)
       .then((v) => {
-        return v.data;
-      })
-      .then((v) => {
-        alert("cập nhật  thành công");
+        if(v.data.status!="OK"){
+          alert(v.data.message)
+        }
+        else{
+          alert("cập nhật thông tin tour thành công")
+        }
       })
       .catch((error) => {
         alert(error.response.data);
@@ -127,7 +129,7 @@ const UpdateTour = ({ tours }) => {
                   onChange={handleChange}
                   aria-label="lab API tabs example"
                 >
-                  <Tab label="Thông tin cơ bảnbản" value="1" />
+                  <Tab label="Thông tin cơ bản" value="1" />
                   <Tab label="Mô tả" value="2" />
                   <Tab label="Thông tin khởi hành" value="3" />
                   <Tab label="Thông tin chặn" value="4" />
@@ -251,11 +253,14 @@ const UpdateTour = ({ tours }) => {
                 </div>
               </TabPanel>
               <TabPanel value="2">
-                <Editor
-                  onEditorChange={(content) => (tour.moTa = content)}
-                  apiKey="gmrlr5eof1cew5jiwsqpjawlsc3yv10fn13pxtr2peb8l5jm"
+              <Editor
+                   onEditorChange={(content) => {
+                    tour.moTa=content 
+                    setStateReload(!stateReload)
+                   }}
+                   apiKey="gmrlr5eof1cew5jiwsqpjawlsc3yv10fn13pxtr2peb8l5jm"
                   init={{
-                    plugins: [
+                    plugins: [ 
                       "anchor",
                       "autolink",
                       "charmap",
@@ -268,7 +273,7 @@ const UpdateTour = ({ tours }) => {
                       "searchreplace",
                       "table",
                       "visualblocks",
-                      "wordcount",
+                      "wordcount", 
                       "checklist",
                       "mediaembed",
                       "casechange",
@@ -310,7 +315,8 @@ const UpdateTour = ({ tours }) => {
                         Promise.reject("See docs to implement AI Assistant")
                       ),
                   }}
-                  initialValue="Welcome to TinyMCE!"
+                  value={tour.moTa}
+                  initialValue={tour.moTa}
                 />
               </TabPanel>
               <TabPanel value="3">
@@ -502,7 +508,15 @@ const UpdateTour = ({ tours }) => {
               </TabPanel>
               <TabPanel value="4">
                 {!canUpdate && (
-                  <Button onClick={addNgayKhoiHanh} variant="outlined">
+                  <Button onClick={()=>{
+                    tour.chan.push({ 
+                      moTa: "",
+                      ngayBatDau: new Date(),
+                      ngayKetThuc: new Date(),
+                      diaDiemDen: "Cần thơ",
+                    })
+                    setStateReload(!stateReload)
+                  }} variant="outlined">
                     + Thêm chặn
                   </Button>
                 )}
@@ -515,7 +529,7 @@ const UpdateTour = ({ tours }) => {
                           value={v.ngayBatDau}
                           disabled={canUpdate}
                           onChange={(e) => {
-                            if (new Date() < new Date(e.target.value)) {
+                            if (e.target.value>0) {
                               v.ngayBatDau = e.target.value;
                               setStateReload(!stateReload);
                             }
@@ -526,7 +540,7 @@ const UpdateTour = ({ tours }) => {
                             borderRadius: "5px",
                             border: "1px solid lightgray",
                           }}
-                          type="datetime-local"
+                          type="number"
                           className="col-2"
                           placeholder="ngày bắt đầu"
                         />
@@ -534,8 +548,8 @@ const UpdateTour = ({ tours }) => {
                           disabled={canUpdate}
                           value={v.ngayKetThuc}
                           onChange={(e) => {
-                            if (new Date() < new Date(e.target.value)) {
-                              v.ngayKetThuc = e.target.value;
+                            if (e.target.value>0) {
+                              v.ngayBatDau = e.target.value;
                               setStateReload(!stateReload);
                             }
                           }}
@@ -545,7 +559,7 @@ const UpdateTour = ({ tours }) => {
                             borderRadius: "5px",
                             border: "1px solid lightgray",
                           }}
-                          type="datetime-local"
+                          type="number"
                           className="col-2"
                           placeholder="ngày bắt đầu"
                         />
@@ -556,6 +570,8 @@ const UpdateTour = ({ tours }) => {
                             borderRadius: "5px",
                             border: "1px solid lightgray",
                           }}
+
+                          value={v.diaDiemDen}
                           onChange={(e) => {
                             v.diaDiemDen = e.target.value;
                             setStateReload(!stateReload);
