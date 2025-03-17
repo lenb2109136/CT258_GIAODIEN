@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
-import TourCard from './carttour';
+import TourCard from './carttour'; // Sử dụng TourCard thay vì Cart
 import { Link } from 'react-router-dom';
 
 const TourSlider = props => {
@@ -13,6 +13,7 @@ const TourSlider = props => {
     const vector1 = [tour1.T_SONGAY || 0, tour1.T_SODEM || 0, tour1.gia || 0];
     const vector2 = [tour2.T_SONGAY || 0, tour2.T_SODEM || 0, tour2.gia || 0];
 
+    // Tính tích vô hướng và độ lớn của vector
     let dotProduct = 0;
     for (let i = 0; i < vector1.length; i++) {
       dotProduct += vector1[i] * vector2[i];
@@ -32,7 +33,7 @@ const TourSlider = props => {
 
     // 1. So sánh loại tour (LT_ID)
     if (tour1.LT_ID === tour2.LT_ID) {
-      similarity += 0.1;
+      similarity += 0.1; // Tăng độ tương đồng nếu cùng loại tour
     }
 
     // 2. So sánh điểm đến trong bảng chan (dựa trên T_ID)
@@ -42,15 +43,15 @@ const TourSlider = props => {
       chanTour2.some(c2 => c1.C_DIADIEMDEN === c2.C_DIADIEMDEN)
     ).length;
     if (commonDestinations > 0) {
-      similarity += 0.05 * commonDestinations;
+      similarity += 0.05 * commonDestinations; // Tăng độ tương đồng dựa trên số điểm đến chung
     }
 
     // 3. So sánh thời gian khởi hành (T_THOIGIANKHOIHANH)
     const time1 = new Date(tour1.T_THOIGIANKHOIHANH).getTime();
     const time2 = new Date(tour2.T_THOIGIANKHOIHANH).getTime();
-    const timeDiff = Math.abs(time1 - time2) / (1000 * 60 * 60 * 24);
+    const timeDiff = Math.abs(time1 - time2) / (1000 * 60 * 60 * 24); // Chênh lệch tính bằng ngày
     if (timeDiff <= 7) {
-      similarity += 0.1 * (1 - timeDiff / 7);
+      similarity += 0.1 * (1 - timeDiff / 7); // Tương đồng giảm dần nếu cách xa đến 7 ngày
     }
 
     // 4. So sánh tags (T_TAGS)
@@ -58,16 +59,17 @@ const TourSlider = props => {
     const tags2 = (tour2.T_TAGS || '').split(',').map(tag => tag.trim());
     const commonTags = tags1.filter(tag => tags2.includes(tag)).length;
     if (commonTags > 0) {
-      similarity += 0.05 * commonTags;
+      similarity += 0.05 * commonTags; // Tăng độ tương đồng dựa trên số tag chung
     }
 
+    // Giới hạn similarity trong khoảng [0, 1]
     return Math.min(Math.max(similarity, 0), 1);
   };
 
-  const getRecommendedTours = (selectedTour, allTours, chanData) => {
+  const getRecommendedTours = (selectedTour, allTours) => {
     const similarities = allTours.map(tour => ({
       tour,
-      similarity: calculateSimilarity(selectedTour, tour, chanData),
+      similarity: calculateSimilarity(selectedTour, tour),
     }));
 
     const sortedTours = similarities
@@ -80,8 +82,7 @@ const TourSlider = props => {
   const handleTourClick = selectedTour => {
     const recommendedTours = getRecommendedTours(
       selectedTour,
-      props.allTours || props.ds,
-      props.chanData || [] // Truyền dữ liệu chan từ props
+      props.allTours || props.ds
     );
     setDisplayTours(recommendedTours);
     if (props.onTourClick) {

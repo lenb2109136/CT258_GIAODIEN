@@ -1,15 +1,15 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react'; // Thêm useState và useEffect
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
-import TourCard from './carttour';
-import { Link } from 'react-router-dom';
+import Cart from '../carttour';
+import { Link } from 'react-router-dom'; // Xóa useParams nếu không dùng
 
 const TourSlider = props => {
   const sliderRef = useRef(null);
   const scrollAmount = 300;
-  const [displayTours, setDisplayTours] = useState(props.ds || []);
+  const [displayTours, setDisplayTours] = useState(props.ds || []); // State để quản lý danh sách tour hiển thị
 
-  const calculateSimilarity = (tour1, tour2, chanData) => {
-    // Vector cơ bản: Số ngày, số đêm, giá
+  // Hàm tính độ tương đồng Cosine giữa hai tour
+  const calculateSimilarity = (tour1, tour2) => {
     const vector1 = [tour1.T_SONGAY || 0, tour1.T_SODEM || 0, tour1.gia || 0];
     const vector2 = [tour2.T_SONGAY || 0, tour2.T_SODEM || 0, tour2.gia || 0];
 
@@ -30,63 +30,37 @@ const TourSlider = props => {
         ? 0
         : dotProduct / (magnitude1 * magnitude2);
 
-    // 1. So sánh loại tour (LT_ID)
+    // Bonus nếu cùng loại tour (LT_ID)
     if (tour1.LT_ID === tour2.LT_ID) {
       similarity += 0.1;
     }
 
-    // 2. So sánh điểm đến trong bảng chan (dựa trên T_ID)
-    const chanTour1 = chanData.filter(chan => chan.T_ID === tour1.T_ID);
-    const chanTour2 = chanData.filter(chan => chan.T_ID === tour2.T_ID);
-    const commonDestinations = chanTour1.filter(c1 =>
-      chanTour2.some(c2 => c1.C_DIADIEMDEN === c2.C_DIADIEMDEN)
-    ).length;
-    if (commonDestinations > 0) {
-      similarity += 0.05 * commonDestinations;
-    }
-
-    // 3. So sánh thời gian khởi hành (T_THOIGIANKHOIHANH)
-    const time1 = new Date(tour1.T_THOIGIANKHOIHANH).getTime();
-    const time2 = new Date(tour2.T_THOIGIANKHOIHANH).getTime();
-    const timeDiff = Math.abs(time1 - time2) / (1000 * 60 * 60 * 24);
-    if (timeDiff <= 7) {
-      similarity += 0.1 * (1 - timeDiff / 7);
-    }
-
-    // 4. So sánh tags (T_TAGS)
-    const tags1 = (tour1.T_TAGS || '').split(',').map(tag => tag.trim());
-    const tags2 = (tour2.T_TAGS || '').split(',').map(tag => tag.trim());
-    const commonTags = tags1.filter(tag => tags2.includes(tag)).length;
-    if (commonTags > 0) {
-      similarity += 0.05 * commonTags;
-    }
-
-    return Math.min(Math.max(similarity, 0), 1);
+    return similarity;
   };
 
-  const getRecommendedTours = (selectedTour, allTours, chanData) => {
+  // Hàm lấy danh sách tour gợi ý dựa trên tour được chọn
+  const getRecommendedTours = (selectedTour, allTours) => {
     const similarities = allTours.map(tour => ({
       tour,
-      similarity: calculateSimilarity(selectedTour, tour, chanData),
+      similarity: calculateSimilarity(selectedTour, tour),
     }));
 
+    // Sắp xếp theo độ tương đồng giảm dần và loại bỏ tour trùng với tour được chọn
     const sortedTours = similarities
       .filter(item => item.tour.T_ID !== selectedTour.T_ID)
       .sort((a, b) => b.similarity - a.similarity);
 
+    // Lấy top 5 tour tương đồng nhất
     return sortedTours.slice(0, 5).map(item => item.tour);
   };
 
+  // Xử lý khi nhấp vào tour
   const handleTourClick = selectedTour => {
     const recommendedTours = getRecommendedTours(
       selectedTour,
-      props.allTours || props.ds,
-      props.chanData || [] // Truyền dữ liệu chan từ props
+      props.allTours || props.ds
     );
-    setDisplayTours(recommendedTours);
-    if (props.onTourClick) {
-      props.onTourClick(selectedTour);
-    }
+    setDisplayTours(recommendedTours); // Cập nhật slider với các tour gợi ý
   };
 
   const scrollLeft = () => {
@@ -101,6 +75,7 @@ const TourSlider = props => {
     }
   };
 
+  // Cập nhật displayTours khi props.ds thay đổi
   useEffect(() => {
     setDisplayTours(props.ds || []);
   }, [props.ds]);
@@ -123,22 +98,20 @@ const TourSlider = props => {
                 marginLeft: '6%',
               }}
               onClick={e => {
-                e.preventDefault();
-                handleTourClick(data);
+                e.preventDefault(); // Ngăn chuyển hướng ngay lập tức để cập nhật slider trước
+                handleTourClick(data); // Cập nhật slider
                 setTimeout(() => {
-                  window.location.href = `/khachhang/tour?id=${data.T_ID}`;
-                }, 100);
+                  window.location.href = `/khachhang/tour?id=${data.T_ID}`; // Chuyển hướng sau khi cập nhật
+                }, 100); // Delay nhẹ để slider cập nhật
               }}
             >
-              <TourCard
+              <Cart
                 ten={data.T_TEN}
                 id={data.T_ID}
                 gia={data.gia}
                 ngay={data.T_SONGAY}
                 anh={data.T_ANH}
                 dem={data.T_SODEM}
-                lt_id={data.LT_ID}
-                onTourSelect={handleTourClick}
               />
             </Link>
           ))

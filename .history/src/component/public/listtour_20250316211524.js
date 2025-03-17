@@ -13,7 +13,7 @@ import axios from 'axios';
 
 function kiemtra(a, u) {
   for (let i = 0; i < a.length; i++) {
-    if (a[i].batDau === u) {
+    if (a[i].batDau == u) {
       return i;
     }
   }
@@ -21,15 +21,14 @@ function kiemtra(a, u) {
 }
 
 export default () => {
-  const [loai, setLoai] = useState([]);
-  const [loaichon, setLoaichon] = useState(0);
+  const [loai, setloai] = useState([]);
+  const [loaichon, setloaichon] = useState(0);
   const [value, setValue] = useState('recents');
   const [collapsed, setCollapsed] = useState(true);
-  const [indx, setIndx] = useState(0);
-  const [listtour, setListtour] = useState([]);
-  const [favorite, setFavorite] = useState([]);
+  const [indx, setindx] = useState(0);
+  const [listtour, setlisttour] = useState([]);
+  const [favorite, setfavorate] = useState([]);
   const [allTours, setAllTours] = useState([]);
-  const [chanData, setChanData] = useState([]); // Thêm state cho chanData
 
   const thoiLuong = useRef([
     { batDau: 1, KetThuc: 3 },
@@ -53,7 +52,7 @@ export default () => {
     loai: 0,
   });
 
-  const calculateSimilarity = (tour1, tour2, chanData) => {
+  const calculateSimilarity = (tour1, tour2) => {
     const vector1 = [tour1.T_SONGAY || 0, tour1.T_SODEM || 0, tour1.gia || 0];
     const vector2 = [tour2.T_SONGAY || 0, tour2.T_SODEM || 0, tour2.gia || 0];
 
@@ -78,36 +77,13 @@ export default () => {
       similarity += 0.1;
     }
 
-    const chanTour1 = chanData.filter(chan => chan.T_ID === tour1.T_ID);
-    const chanTour2 = chanData.filter(chan => chan.T_ID === tour2.T_ID);
-    const commonDestinations = chanTour1.filter(c1 =>
-      chanTour2.some(c2 => c1.C_DIADIEMDEN === c2.C_DIADIEMDEN)
-    ).length;
-    if (commonDestinations > 0) {
-      similarity += 0.05 * commonDestinations;
-    }
-
-    const time1 = new Date(tour1.T_THOIGIANKHOIHANH).getTime();
-    const time2 = new Date(tour2.T_THOIGIANKHOIHANH).getTime();
-    const timeDiff = Math.abs(time1 - time2) / (1000 * 60 * 60 * 24);
-    if (timeDiff <= 7) {
-      similarity += 0.1 * (1 - timeDiff / 7);
-    }
-
-    const tags1 = (tour1.T_TAGS || '').split(',').map(tag => tag.trim());
-    const tags2 = (tour2.T_TAGS || '').split(',').map(tag => tag.trim());
-    const commonTags = tags1.filter(tag => tags2.includes(tag)).length;
-    if (commonTags > 0) {
-      similarity += 0.05 * commonTags;
-    }
-
-    return Math.min(Math.max(similarity, 0), 1);
+    return similarity;
   };
 
   const getRecommendedTours = selectedTour => {
     const similarities = allTours.map(tour => ({
       tour,
-      similarity: calculateSimilarity(selectedTour, tour, chanData),
+      similarity: calculateSimilarity(selectedTour, tour),
     }));
 
     const sortedTours = similarities
@@ -119,7 +95,8 @@ export default () => {
 
   const handleTourSelect = selectedTour => {
     const recommendedTours = getRecommendedTours(selectedTour);
-    setFavorite(recommendedTours);
+    setfavorate(recommendedTours);
+    // Lưu cả tour được chọn và danh sách favorite vào sessionStorage
     sessionStorage.setItem('selectedTour', JSON.stringify(selectedTour));
     sessionStorage.setItem(
       'recommendedTours',
@@ -127,58 +104,52 @@ export default () => {
     );
   };
 
-  // Lấy dữ liệu từ API
+  // Khôi phục favorite từ sessionStorage khi component mount
   useEffect(() => {
     const storedFavorite = JSON.parse(
       sessionStorage.getItem('recommendedTours')
     );
     if (storedFavorite && storedFavorite.length > 0) {
-      setFavorite(storedFavorite);
+      setfavorate(storedFavorite);
     } else {
+      // Nếu không có dữ liệu trong sessionStorage, gọi API để lấy danh sách mặc định
       axios
         .get('http://localhost:8080/tour/getListTourfavourite')
-        .then(response => {
-          setFavorite(response.data.data);
+        .then(data => {
+          setfavorate(data.data.data);
           sessionStorage.setItem(
             'recommendedTours',
-            JSON.stringify(response.data.data)
+            JSON.stringify(data.data.data)
           );
         });
     }
   }, []);
 
   useEffect(() => {
-    axios.get('http://localhost:8080/tour/getListTour').then(response => {
-      setAllTours(response.data.data);
+    axios.get('http://localhost:8080/tour/getListTour').then(data => {
+      setAllTours(data.data.data);
     });
   }, []);
 
   useEffect(() => {
-    axios.get('http://localhost:8080/loaitour/getall').then(response => {
-      setLoai(response.data.data);
+    axios.get('http://localhost:8080/loaitour/getall').then(data => {
+      setloai(data.data.data);
     });
   }, []);
 
   useEffect(() => {
-    axios.get('http://localhost:8080/tour/getListTour').then(response => {
-      setListtour(response.data.data);
+    axios.get('http://localhost:8080/tour/getListTour').then(data => {
+      setlisttour(data.data.data);
     });
   }, []);
 
   useEffect(() => {
     axios
       .get(`http://localhost:8080/tour/getListTourByLoai?idloai=${loaichon}`)
-      .then(response => {
-        setListtour(response.data.data);
+      .then(data => {
+        setlisttour(data.data.data);
       });
   }, [loaichon]);
-
-  // Lấy dữ liệu từ bảng chan
-  useEffect(() => {
-    axios.get('http://localhost:8080/chan/getall').then(response => {
-      setChanData(response.data.data); // Giả sử API trả về danh sách chan
-    });
-  }, []);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -198,27 +169,30 @@ export default () => {
           marginTop: '10px',
         }}
       >
-        <BottomNavigation
-          sx={{ width: 500 }}
-          value={value}
-          onChange={handleChange}
-        >
-          {loai?.map(data => (
-            <BottomNavigationAction
-              key={data.id}
-              onClick={() => setLoaichon(data.id)}
-              label={data.ten}
-              value={data.ten}
-              icon={
-                <img
-                  src={data.icon}
-                  alt={data.ten}
-                  style={{ width: 24, height: 24 }}
-                />
-              }
-            />
-          ))}
-        </BottomNavigation>
+        <div>
+          <BottomNavigation
+            sx={{ width: 500 }}
+            value={value}
+            onChange={handleChange}
+          >
+            {loai?.map(data => (
+              <BottomNavigationAction
+                onClick={() => {
+                  setloaichon(data.id);
+                }}
+                label={data.ten}
+                value={data.ten}
+                icon={
+                  <img
+                    src={data.icon}
+                    alt="Recents"
+                    style={{ width: 24, height: 24 }}
+                  />
+                }
+              />
+            ))}
+          </BottomNavigation>
+        </div>
       </div>
 
       <div style={{ width: '100%', marginBottom: '15px' }}>
@@ -234,7 +208,6 @@ export default () => {
         <Slider
           ds={favorite}
           allTours={allTours}
-          chanData={chanData}
           onTourClick={handleTourSelect}
         />
       </div>
@@ -296,9 +269,9 @@ export default () => {
               <p style={{ fontWeight: 'bold' }}>KHOẢNG GIÁ</p>
               <div style={{ display: 'flex', gap: '5px', marginTop: '5px' }}>
                 <input
-                  onChange={event =>
-                    (filter.current.giaBatDau = parseFloat(event.target.value))
-                  }
+                  onChange={event => {
+                    filter.current.giaBatDau = parseFloat(event.target.value);
+                  }}
                   type="number"
                   placeholder="₫ TỪ"
                   style={{
@@ -309,9 +282,9 @@ export default () => {
                   }}
                 />
                 <input
-                  onChange={event =>
-                    (filter.current.giaKetThuc = parseFloat(event.target.value))
-                  }
+                  onChange={event => {
+                    filter.current.giaKetThuc = parseFloat(event.target.value);
+                  }}
                   type="number"
                   placeholder="₫ ĐẾN"
                   style={{
@@ -340,14 +313,18 @@ export default () => {
                       'http://localhost:8080/tour/getfilter',
                       filter.current,
                       {
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
                       }
                     )
                     .then(response => {
-                      setListtour(response.data.data);
+                      setlisttour(response.data.data);
                       console.log(response.data);
                     })
-                    .catch(error => console.error(error));
+                    .catch(error => {
+                      console.error(error);
+                    });
                 }}
               >
                 Áp dụng
@@ -392,16 +369,18 @@ export default () => {
                 >
                   <input
                     onClick={() => {
-                      const mm = kiemtra(
-                        filter.current.thoiLuong,
-                        brand.batDau
-                      );
-                      if (mm === -1) filter.current.thoiLuong.push(brand);
-                      else filter.current.thoiLuong.splice(mm, 1);
+                      let mm = kiemtra(filter.current.thoiLuong, brand.batDau);
+                      if (mm == -1) {
+                        filter.current.thoiLuong.push(brand);
+                        console.log(filter);
+                      } else {
+                        filter.current.thoiLuong.splice(mm, 1);
+                        console.log(filter);
+                      }
                     }}
                     type="checkbox"
                     style={{ marginRight: '5px' }}
-                  />
+                  />{' '}
                   {brand.batDau} - {brand.KetThuc} Ngày
                 </label>
               ))}
@@ -420,13 +399,16 @@ export default () => {
                 >
                   <input
                     onClick={() => {
-                      const mm = kiemtra(filter.current.dsNgay, brand.batDau);
-                      if (mm === -1) filter.current.dsNgay.push(brand);
-                      else filter.current.dsNgay.splice(mm, 1);
+                      let mm = kiemtra(filter.current.dsNgay, brand.batDau);
+                      if (mm == -1) {
+                        filter.current.dsNgay.push(brand);
+                      } else {
+                        filter.current.dsNgay.splice(mm, 1);
+                      }
                     }}
                     type="checkbox"
                     style={{ marginRight: '5px' }}
-                  />
+                  />{' '}
                   Ngày {brand.batDau} - {brand.KetThuc}
                 </label>
               ))}
@@ -453,13 +435,13 @@ export default () => {
                 return (
                   <Link
                     key={index}
-                    to={`/khachhang/tour?id=${data.T_ID}`}
+                    to={'/khachhang/tour?id=' + data.T_ID}
                     style={{ textDecoration: 'none', color: 'inherit' }}
                     onClick={e => {
                       e.preventDefault();
-                      handleTourSelect(data);
+                      handleTourSelect(data); // Cập nhật slider trong trang hiện tại
                       setTimeout(() => {
-                        window.location.href = `/khachhang/tour?id=${data.T_ID}`;
+                        window.location.href = `/khachhang/tour?id=${data.T_ID}`; // Chuyển hướng
                       }, 100);
                     }}
                   >
@@ -509,7 +491,7 @@ export default () => {
                   color: indx === 0 ? 'gray' : 'rgb(212, 160, 23)',
                   cursor: indx === 0 ? 'default' : 'pointer',
                 }}
-                onClick={() => indx > 0 && setIndx(indx - 6)}
+                onClick={() => indx > 0 && setindx(indx - 6)}
               >
                 Quay Lại
               </p>
@@ -518,10 +500,10 @@ export default () => {
               <p
                 style={{
                   color:
-                    indx >= listtour.length - 6 ? 'gray' : 'rgb(212, 160, 23)',
-                  cursor: indx >= listtour.length - 6 ? 'default' : 'pointer',
+                    indx >= listtour.length - 1 ? 'gray' : 'rgb(212, 160, 23)',
+                  cursor: indx >= listtour.length - 1 ? 'default' : 'pointer',
                 }}
-                onClick={() => indx < listtour.length - 6 && setIndx(indx + 6)}
+                onClick={() => indx < listtour.length - 1 && setindx(indx + 6)}
               >
                 Kế Tiếp
               </p>

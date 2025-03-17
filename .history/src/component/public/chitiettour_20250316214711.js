@@ -20,12 +20,11 @@ const TourInfo = () => {
   const { cart, setcart } = useContext(CartContext);
   const [favorite, setFavorite] = useState([]);
   const [allTours, setAllTours] = useState([]);
-  const [chanData, setChanData] = useState([]);
+  const [chanData, setChanData] = useState([]); // Thêm state cho chanData
   const [searchParams] = useSearchParams();
   const id = searchParams.get('id');
-  const [t, sett] = useState(null);
+  const [t, sett] = useState();
   const [chuachon, setchu] = useState(true);
-  const [isLoading, setIsLoading] = useState(true); // Thêm trạng thái tải
 
   const calculateSimilarity = (tour1, tour2, chanData) => {
     const vector1 = [tour1.T_SONGAY || 0, tour1.T_SODEM || 0, tour1.gia || 0];
@@ -52,12 +51,8 @@ const TourInfo = () => {
       similarity += 0.1;
     }
 
-    const chanTour1 = Array.isArray(chanData)
-      ? chanData.filter(chan => chan.T_ID === tour1.T_ID)
-      : [];
-    const chanTour2 = Array.isArray(chanData)
-      ? chanData.filter(chan => chan.T_ID === tour2.T_ID)
-      : [];
+    const chanTour1 = chanData.filter(chan => chan.T_ID === tour1.T_ID);
+    const chanTour2 = chanData.filter(chan => chan.T_ID === tour2.T_ID);
     const commonDestinations = chanTour1.filter(c1 =>
       chanTour2.some(c2 => c1.C_DIADIEMDEN === c2.C_DIADIEMDEN)
     ).length;
@@ -83,7 +78,6 @@ const TourInfo = () => {
   };
 
   const getRecommendedTours = selectedTour => {
-    if (!Array.isArray(allTours) || !selectedTour) return [];
     const similarities = allTours.map(tour => ({
       tour,
       similarity: calculateSimilarity(selectedTour, tour, chanData),
@@ -106,65 +100,53 @@ const TourInfo = () => {
     );
   };
 
+  // Lấy danh sách tất cả tour
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [toursResponse, chanResponse, tourInfoResponse] =
-          await Promise.all([
-            axios.get('http://localhost:8080/tour/getListTour'),
-            axios.get('http://localhost:8080/chan/getall'),
-            axios.get(`http://localhost:8080/tour/getinfortour?id=${id}`),
-          ]);
+    axios.get('http://localhost:8080/tour/getListTour').then(response => {
+      setAllTours(response.data.data);
+    });
+  }, []);
 
-        setAllTours(
-          Array.isArray(toursResponse.data.data) ? toursResponse.data.data : []
-        );
-        setChanData(
-          Array.isArray(chanResponse.data.data) ? chanResponse.data.data : []
-        );
-        sett(tourInfoResponse.data.data || null);
-      } catch (error) {
-        console.error('Lỗi khi lấy dữ liệu:', error);
-        setAllTours([]);
-        setChanData([]);
-        sett(null);
-      } finally {
-        setIsLoading(false); // Đánh dấu tải hoàn tất
-      }
-    };
+  // Lấy dữ liệu từ bảng chan
+  useEffect(() => {
+    axios.get('http://localhost:8080/chan/getall').then(response => {
+      setChanData(response.data.data); // Giả sử API trả về danh sách chan
+    });
+  }, []);
 
-    fetchData();
+  // Lấy thông tin tour chi tiết
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8080/tour/getinfortour?id=${id}`)
+      .then(response => {
+        sett(response.data.data);
+      });
   }, [id]);
 
+  // Kiểm tra tour trong giỏ hàng
   useEffect(() => {
     const isInCart = cart?.some(item => item.id == id);
     setchu(!isInCart);
   }, [cart, id]);
 
+  // Tính tour gợi ý
   useEffect(() => {
-    if (isLoading) return; // Không tính toán khi đang tải
-
     const storedRecommendedTours = JSON.parse(
       sessionStorage.getItem('recommendedTours')
     );
     const selectedTour =
       JSON.parse(sessionStorage.getItem('selectedTour')) || t;
-
     if (storedRecommendedTours && storedRecommendedTours.length > 0) {
       setFavorite(storedRecommendedTours);
-    } else if (selectedTour && allTours.length > 0) {
+    } else if (selectedTour && allTours.length > 0 && chanData.length > 0) {
       const recommendedTours = getRecommendedTours(selectedTour);
       setFavorite(
         recommendedTours.length > 0 ? recommendedTours : allTours.slice(0, 5)
       );
     }
-  }, [allTours, t, chanData, isLoading]);
+  }, [allTours, t, chanData]);
 
   const [activeTab, setActiveTab] = useState('Giới thiệu chung');
-
-  if (isLoading) {
-    return <div>Loading...</div>; // Hiển thị loading khi dữ liệu chưa sẵn sàng
-  }
 
   return (
     <>
@@ -311,6 +293,7 @@ const TourInfo = () => {
                 Sadipscing labore amet rebum est et justo gubergren. Et eirmod
                 ipsum sit diam ut magna lorem...
               </p>
+              {/* Nội dung giới thiệu chung */}
             </div>
           </div>
         )}

@@ -23,9 +23,8 @@ const TourInfo = () => {
   const [chanData, setChanData] = useState([]);
   const [searchParams] = useSearchParams();
   const id = searchParams.get('id');
-  const [t, sett] = useState(null);
+  const [t, sett] = useState();
   const [chuachon, setchu] = useState(true);
-  const [isLoading, setIsLoading] = useState(true); // Thêm trạng thái tải
 
   const calculateSimilarity = (tour1, tour2, chanData) => {
     const vector1 = [tour1.T_SONGAY || 0, tour1.T_SODEM || 0, tour1.gia || 0];
@@ -83,7 +82,6 @@ const TourInfo = () => {
   };
 
   const getRecommendedTours = selectedTour => {
-    if (!Array.isArray(allTours) || !selectedTour) return [];
     const similarities = allTours.map(tour => ({
       tour,
       similarity: calculateSimilarity(selectedTour, tour, chanData),
@@ -107,33 +105,54 @@ const TourInfo = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [toursResponse, chanResponse, tourInfoResponse] =
-          await Promise.all([
-            axios.get('http://localhost:8080/tour/getListTour'),
-            axios.get('http://localhost:8080/chan/getall'),
-            axios.get(`http://localhost:8080/tour/getinfortour?id=${id}`),
-          ]);
-
-        setAllTours(
-          Array.isArray(toursResponse.data.data) ? toursResponse.data.data : []
-        );
-        setChanData(
-          Array.isArray(chanResponse.data.data) ? chanResponse.data.data : []
-        );
-        sett(tourInfoResponse.data.data || null);
-      } catch (error) {
-        console.error('Lỗi khi lấy dữ liệu:', error);
+    axios
+      .get('http://localhost:8080/tour/getListTour')
+      .then(response => {
+        if (response.data && Array.isArray(response.data.data)) {
+          setAllTours(response.data.data);
+        } else {
+          console.error('Dữ liệu tour không hợp lệ:', response.data);
+          setAllTours([]);
+        }
+      })
+      .catch(error => {
+        console.error('Lỗi khi lấy danh sách tour:', error);
         setAllTours([]);
-        setChanData([]);
-        sett(null);
-      } finally {
-        setIsLoading(false); // Đánh dấu tải hoàn tất
-      }
-    };
+      });
+  }, []);
 
-    fetchData();
+  useEffect(() => {
+    axios
+      .get('http://localhost:8080/chan/getall')
+      .then(response => {
+        if (response.data && Array.isArray(response.data.data)) {
+          setChanData(response.data.data);
+        } else {
+          console.error('Dữ liệu chan không hợp lệ:', response.data);
+          setChanData([]);
+        }
+      })
+      .catch(error => {
+        console.error('Lỗi khi lấy dữ liệu chan:', error);
+        setChanData([]);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8080/tour/getinfortour?id=${id}`)
+      .then(response => {
+        if (response.data && response.data.data) {
+          sett(response.data.data);
+        } else {
+          console.error('Dữ liệu tour chi tiết không hợp lệ:', response.data);
+          sett(null);
+        }
+      })
+      .catch(error => {
+        console.error('Lỗi khi lấy thông tin tour:', error);
+        sett(null);
+      });
   }, [id]);
 
   useEffect(() => {
@@ -142,8 +161,6 @@ const TourInfo = () => {
   }, [cart, id]);
 
   useEffect(() => {
-    if (isLoading) return; // Không tính toán khi đang tải
-
     const storedRecommendedTours = JSON.parse(
       sessionStorage.getItem('recommendedTours')
     );
@@ -152,19 +169,15 @@ const TourInfo = () => {
 
     if (storedRecommendedTours && storedRecommendedTours.length > 0) {
       setFavorite(storedRecommendedTours);
-    } else if (selectedTour && allTours.length > 0) {
+    } else if (selectedTour && allTours.length > 0 && chanData.length > 0) {
       const recommendedTours = getRecommendedTours(selectedTour);
       setFavorite(
         recommendedTours.length > 0 ? recommendedTours : allTours.slice(0, 5)
       );
     }
-  }, [allTours, t, chanData, isLoading]);
+  }, [allTours, t, chanData]);
 
   const [activeTab, setActiveTab] = useState('Giới thiệu chung');
-
-  if (isLoading) {
-    return <div>Loading...</div>; // Hiển thị loading khi dữ liệu chưa sẵn sàng
-  }
 
   return (
     <>
@@ -311,6 +324,7 @@ const TourInfo = () => {
                 Sadipscing labore amet rebum est et justo gubergren. Et eirmod
                 ipsum sit diam ut magna lorem...
               </p>
+              {/* Nội dung giới thiệu chung */}
             </div>
           </div>
         )}
