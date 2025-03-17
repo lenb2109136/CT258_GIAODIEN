@@ -48,14 +48,14 @@ export default function ({ nv }) {
     return (
         <div style={{ border:"2px solid #7AB730",width: "100%",backgroundColor:"white", height: "500px", zIndex: 20 }}>
            
-            <h3 style={{marginTop:"60px"}}>Lịch sử đặt tour</h3>
+            <h3 style={{marginTop:"60px", color:"#7AB730"}}>Lịch sử đặt tour</h3>
             <div className="row">
                 <div style={{ display: "flex"}} className="col-6">
-                    <p style={{marginTop:"20px"}}>Thời điểm bắt đầu: </p>{" "}
+                    <p style={{marginTop:"20px",marginLeft:"10%"}}>Thời điểm bắt đầu: </p>
                     <input
                         id="bd"
                         type="datetime-local"
-                        style={{borderRadius:"10px",padding:"10px",marginLeft:"18px"}}
+                        style={{borderRadius:"10px",padding:"10px",marginLeft:"18px",cursor:"pointer"}}
                         value={bd}
                         onChange={(e) => {
                             setBd(e.target.value);
@@ -64,11 +64,11 @@ export default function ({ nv }) {
                     />
                 </div>
                 <div style={{ display: "flex" ,justifyContent:"center" }} className="col-6">
-                    <p style={{marginTop:"20px"}}>Thời điểm kết thúc: </p>
+                    <p style={{marginTop:"20px",marginLeft:"10%"}}>Thời điểm kết thúc: </p>
                     <input
                         id="kt"
                         type="datetime-local"
-                        style={{borderRadius:"10px",padding:"10px",marginLeft:"18px"}}
+                        style={{borderRadius:"10px",padding:"10px",marginLeft:"18px",cursor:"pointer"}}
                         value={kt}
                         onChange={(e) => {
                             setKt(e.target.value);
@@ -78,7 +78,7 @@ export default function ({ nv }) {
                 </div>
             </div>
             <div>
-                <table style={{ marginTop: "10px" }}>
+                <table style={{ width:"95%", marginTop: "10px", marginLeft:"3%" }}>
                     <thead>
                         <tr>
                             <th style={{ backgroundColor: "#7AB730", color: "white" }}>STT</th>
@@ -111,7 +111,7 @@ export default function ({ nv }) {
                                                 
                                             })
                                     }}
-                                    style={{backgroundColor:"white",color:"#7AB730",paddingLeft:"10px",paddingRight:"10px"}} >Xóa</button>
+                                    style={{backgroundColor:"white",color:"#7AB730",paddingLeft:"10px",paddingRight:"10px",borderRadius:"5px"}} >Xóa</button>
                                 </td>
                             </tr>
                         ))}
