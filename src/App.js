@@ -25,7 +25,7 @@ import Category from './component/public/category/index';
 import TourAdmin from './component/public/tour/index';
 import Booking from './component/public/booking/index';
 import UserAdmin from './component/public/account/index';
-
+import LichSu from "./component/public/LichSuDat"
 function App() {
   
   return (
@@ -56,6 +56,7 @@ function App() {
           <Route path='dichvu' element={<DV />} />
           <Route path='about' element={<About />} />
           <Route path='contact' element={<Contact />} />
+          <Route path='lichsu' element={<LichSu />} />
         </Route>
 
 

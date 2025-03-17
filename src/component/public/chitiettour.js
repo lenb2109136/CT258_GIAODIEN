@@ -130,6 +130,7 @@ const TourInfo = () => {
                         let y = Array.isArray(cart) ? [...cart] : [];
                         y.push({ ...t, dsdv: [] });
                         setcart(y);
+                        localStorage.setItem("cart",JSON.stringify(y))
 
                     }} className="w-100" style={{ backgroundColor: chuachon == true ? "#7AB730" : "gray", color: "white", border: "1px solid white", height: "30px", borderRadius: "10px" }}>
                         <strong>ĐẶT TOUR</strong>

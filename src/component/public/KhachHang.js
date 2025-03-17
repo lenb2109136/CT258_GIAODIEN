@@ -14,9 +14,9 @@ export default () => {
     useEffect(()=>{
         setcart(JSON.parse(localStorage.getItem("cart")))
     },[])
-    useEffect(()=>{
-        localStorage.setItem("cart",JSON.stringify(cart))
-    },[cart])
+    // useEffect(()=>{
+    //     localStorage.setItem("cart",JSON.stringify(cart))
+    // },[cart])
     return (
         <CartContext.Provider value={{cart,setcart}}>
             <div>

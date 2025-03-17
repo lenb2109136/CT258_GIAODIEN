@@ -34,7 +34,7 @@ export default function (prop) {
                     filterArray(prop.dsl, dv)?.map(data => {
                         return <>
                             <div style={{
-                                width: "23.2%", height: "200px", marginLeft: "10px", border: "1px solid #7AB730",
+                                width: "30%", height: "200px", marginLeft: "10px", border: "1px solid #7AB730",
                                 borderRadius: "10px"
                             }}>
                                 <img style={{ width: "66%", height: "120px", textAlign: "center", marginLeft: "15%", marginTop: "5%", borderRadius: "20px" }} src={data.anh}></img>

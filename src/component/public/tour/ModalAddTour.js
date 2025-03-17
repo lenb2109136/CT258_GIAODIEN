@@ -21,6 +21,23 @@ function themVaoChuoi(chuoi1, chuoi2) {
     return chuoi2 + ", ";
   }
 }
+function filterTags(tagsthongthuong, tagsgoiy, inputTags) {
+  if (!tagsgoiy || tagsgoiy.length === 0) {
+    tagsgoiy = [];
+  }
+  if (!inputTags || inputTags.trim() === '') {
+    inputTags = '';
+  }
+  let inputTagsArray = inputTags.split(",").map(tag => tag.trim()).filter(tag => tag !== "");
+  let allTagsToRemove = [...tagsgoiy, ...inputTagsArray];
+  
+  let filteredTags = tagsthongthuong.filter(tag => !allTagsToRemove.includes(tag));
+  
+  return filteredTags;
+}
+
+
+
 
 const AddTour = () => {
 
@@ -180,6 +197,12 @@ const AddTour = () => {
         alert(error.response.data);
       });
   };
+  React.useEffect(()=>{
+    settagsthongthuong(tagsthongthuong,tagsgoiy,document.getElementById("tags"))
+  },[])
+  React.useEffect(()=>{
+    settagsthongthuong(tagsthongthuong,tagsgoiy,document.getElementById("tags"))
+  },[tagsgoiy])
   return (
     <div>
       <Button onClick={handleOpen}>Thêm mới tour</Button>
@@ -386,9 +409,9 @@ const AddTour = () => {
 
                       </div>
                     </div>
-                    <div>
-                      <p>tags có thể dùng:</p>
-                      <div>
+                    <div style={{marginTop:"12px"}}>
+                      <p >tags có thể dùng:</p>
+                      <div >
                         {tagsgoiy.map((du, index) =>
                           du !== "" ? (
                             <button
