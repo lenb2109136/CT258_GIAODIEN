@@ -3,41 +3,47 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Footer from "./footer";
 import Header from "./header";
 import Comment from "./comment"
-import { useParams, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { CartContext } from "./KhachHang";
 import Slider from "./cartslider";
 function formatDate(dateString) {
     const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0'); 
-    const month = String(date.getMonth() + 1).padStart(2, '0'); 
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
 }
+const isValidHTML = (str) => {
+    const regex = /<\/?[a-z][\s\S]*>/i;
+    return regex.test(str);
+};
+
 const TourInfo = () => {
-    const {cart,setcart} =useContext(CartContext)
+    const { cart, setcart } = useContext(CartContext)
     const [favorite, setfavorate] = useState([])
     const [searchParams] = useSearchParams();
     const id = searchParams.get('id')
     const [t, sett] = useState();
-    const [chuachon,setchu]=useState(true)
+    const [chuachon, setchu] = useState(true)
     useEffect(() => {
         axios.get("http://localhost:8080/tour/getListTourfavourite")
-          .then(data => {
-            setfavorate(data.data.data)
-          })
-    
-      }, [])
+            .then(data => {
+                setfavorate(data.data.data)
+            })
+
+    }, [])
     useEffect(() => {
-        axios.get(`http://localhost:8080/tour/getinfortour?id=${id}`)
+        let o = localStorage.getItem("sdt")
+        axios.get(`http://localhost:8080/tour/getinfortour?id=${id}&idnv=${o}`)
             .then(data => {
                 sett(data.data.data);
             })
     }, [])
-    useEffect(()=>{
-        for( let i=0;i<cart?.length;i++){
-            if(cart[i].id==id){
-               setchu(false)
+    useEffect(() => {
+        for (let i = 0; i < cart?.length; i++) {
+            if (cart[i].id == id) {
+                setchu(false)
             }
         }
     })
@@ -69,7 +75,7 @@ const TourInfo = () => {
                 <div className="col-md-6">
 
                     <div class="position-relative">
-                        <img style={{height:"500px",width:"600px"}} class="img-fluid " src={t?.anh} alt="" />
+                        <img style={{ height: "500px", width: "600px" }} class="img-fluid " src={t?.anh} alt="" />
                         <div class="blog-date">
                             <h6 class="font-weight-bold mb-n1">01</h6>
                             <small class="text-white text-uppercase">Jan</small>
@@ -89,7 +95,7 @@ const TourInfo = () => {
                         <p>Thông tin khởi hành chi tiết</p>
                         <ul>
                             {
-                                t?.thoiGianKhoiHanh2.map(data=>{
+                                t?.thoiGianKhoiHanh2.map(data => {
                                     return <li>Khởi hành: {formatDate(data.thoiGian)}</li>
                                 })
                             }
@@ -112,7 +118,7 @@ const TourInfo = () => {
                                         <div className="col-md-6">
                                             <ul className="list-unstyled">
                                                 <li>{formatDate(data.thoiGian)}</li>
-                                               
+
                                             </ul>
                                         </div>
                                     </>
@@ -120,11 +126,13 @@ const TourInfo = () => {
                             }
                         </div>
                     </div>
-                    <button disabled={!chuachon} onClick={()=>{
-                        let y=[...cart]
-                        y.push({...t,dsdv:[]})
-                       setcart(y)
-                    }} className="w-100" style={{ backgroundColor:chuachon==true ?  "#7AB730" :"gray", color: "white", border: "1px solid white", height: "30px", borderRadius: "10px" }}>
+                    <button disabled={!chuachon} onClick={() => {
+                        let y = Array.isArray(cart) ? [...cart] : [];
+                        y.push({ ...t, dsdv: [] });
+                        setcart(y);
+                        localStorage.setItem("cart",JSON.stringify(y))
+
+                    }} className="w-100" style={{ backgroundColor: chuachon == true ? "#7AB730" : "gray", color: "white", border: "1px solid white", height: "30px", borderRadius: "10px" }}>
                         <strong>ĐẶT TOUR</strong>
                     </button>
                 </div>
@@ -136,62 +144,15 @@ const TourInfo = () => {
 
                 </div>
                 <div class="bg-white mb-3" style={{ padding: "30px" }}>
-                    <div dangerouslySetInnerHTML={{ __html: t.moTa }} />
-                    <h2 class="mb-3">Dolor justo sea kasd lorem clita justo diam amet</h2>
-                    <p>Sadipscing labore amet rebum est et justo gubergren. Et eirmod ipsum sit diam ut
-                        magna lorem. Nonumy vero labore lorem sanctus rebum et lorem magna kasd, stet
-                        amet magna accusam consetetur eirmod. Kasd accusam sit ipsum sadipscing et at at
-                        sanctus et. Ipsum sit gubergren dolores et, consetetur justo invidunt at et
-                        aliquyam ut et vero clita. Diam sea sea no sed dolores diam nonumy, gubergren
-                        sit stet no diam kasd vero.</p>
-                    <p>Voluptua est takimata stet invidunt sed rebum nonumy stet, clita aliquyam dolores
-                        vero stet consetetur elitr takimata rebum sanctus. Sit sed accusam stet sit
-                        nonumy kasd diam dolores, sanctus lorem kasd duo dolor dolor vero sit et. Labore
-                        ipsum duo sanctus amet eos et. Consetetur no sed et aliquyam ipsum justo et,
-                        clita lorem sit vero amet amet est dolor elitr, stet et no diam sit. Dolor erat
-                        justo dolore sit invidunt.</p>
-                    <h4 class="mb-3">Est dolor lorem et ea</h4>
-                    <img class="img-fluid w-50 float-left mr-4 mb-2" src="img/blog-2.jpg" />
-                    <p>Diam dolor est labore duo invidunt ipsum clita et, sed et lorem voluptua tempor
-                        invidunt at est sanctus sanctus. Clita dolores sit kasd diam takimata justo diam
-                        lorem sed. Magna amet sed rebum eos. Clita no magna no dolor erat diam tempor
-                        rebum consetetur, sanctus labore sed nonumy diam lorem amet eirmod. No at tempor
-                        sea diam kasd, takimata ea nonumy elitr sadipscing gubergren erat. Gubergren at
-                        lorem invidunt sadipscing rebum sit amet ut ut, voluptua diam dolores at
-                        sadipscing stet. Clita dolor amet dolor ipsum vero ea ea eos. Invidunt sed diam
-                        dolores takimata dolor dolore dolore sit. Sit ipsum erat amet lorem et, magna
-                        sea at sed et eos. Accusam eirmod kasd lorem clita sanctus ut consetetur et. Et
-                        duo tempor sea kasd clita ipsum et.
-                    </p>
-                    <p>Diam dolor est labore duo invidunt ipsum clita et, sed et lorem voluptua tempor
-                        invidunt at est sanctus sanctus. Clita dolores sit kasd diam takimata justo diam
-                        lorem sed. Magna amet sed rebum eos. Clita no magna no dolor erat diam tempor
-                        rebum consetetur, sanctus labore sed nonumy diam lorem amet eirmod. No at tempor
-                        sea diam kasd, takimata ea nonumy elitr sadipscing gubergren erat. Gubergren at
-                        lorem invidunt sadipscing rebum sit amet ut ut, voluptua diam dolores at
-                        sadipscing stet. Clita dolor amet dolor ipsum vero ea ea eos. Invidunt sed diam
-                        dolores takimata dolor dolore dolore sit. Sit ipsum erat amet lorem et, magna
-                        sea at sed et eos. Accusam eirmod kasd lorem clita sanctus ut consetetur et. Et
-                        duo tempor sea kasd clita ipsum et.
-                    </p>
-                    <h5 class="mb-3">Est dolor lorem et ea</h5>
-                    <img class="img-fluid w-50 float-right ml-4 mb-2" src="img/blog-3.jpg" />
-                    <p>Diam dolor est labore duo invidunt ipsum clita et, sed et lorem voluptua tempor
-                        invidunt at est sanctus sanctus. Clita dolores sit kasd diam takimata justo diam
-                        lorem sed. Magna amet sed rebum eos. Clita no magna no dolor erat diam tempor
-                        rebum consetetur, sanctus labore sed nonumy diam lorem amet eirmod. No at tempor
-                        sea diam kasd, takimata ea nonumy elitr sadipscing gubergren erat. Gubergren at
-                        lorem invidunt sadipscing rebum sit amet ut ut, voluptua diam dolores at
-                        sadipscing stet. Clita dolor amet dolor ipsum vero ea ea eos. Invidunt sed diam
-                        dolores takimata dolor dolore dolore sit. Sit ipsum erat amet lorem et, magna
-                        sea at sed et eos. Accusam eirmod kasd lorem clita sanctus ut consetetur et. Et
-                        duo tempor sea kasd clita ipsum et. Takimata kasd diam justo est eos erat
-                        aliquyam et ut.</p>
+
+                    {t?.moTa && isValidHTML(t.moTa) && (
+                        <div dangerouslySetInnerHTML={{ __html: t.moTa }} />
+                    )}
                 </div>
             </div>
 
             <hr></hr>
-            
+
             <h2 class="mb-3">You might also like</h2>
             <Slider ds={favorite} />
             <hr></hr>
@@ -211,7 +172,10 @@ const TourInfo = () => {
                                 <div id={"collapseContent" + (index + 1)} className="collapse mt-2" style={{ paddingLeft: "0px" }}>
                                     {/* <p style={{ textAlign: "start" }}></p>
                                      */}
-                                     <div dangerouslySetInnerHTML={{ __html: data.moTa }} />
+                                    {data?.moTa && (
+                                        <div dangerouslySetInnerHTML={{ __html: data.moTa }} />
+                                    )}
+
                                 </div>
                             </div>
                         </>

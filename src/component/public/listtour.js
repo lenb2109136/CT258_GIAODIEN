@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { BottomNavigation, BottomNavigationAction } from "@mui/material";
 import { Link } from "react-router-dom";
 import { Menu, Button } from "antd";
@@ -6,6 +6,7 @@ import { AppstoreOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-des
 import Cart from "../carttour";
 import Slider from "./cartslider";
 import axios from "axios";
+import { CartContext } from "./KhachHang";
 function kiemtra(a, u){
   for(let i=0;i<a.length;i++){
     if(a[i].batDau==u){
@@ -14,7 +15,11 @@ function kiemtra(a, u){
   }
   return -1;
 }
+
+
 export default () => {
+  const { cart, setcart } = useContext(CartContext)
+  console.log(cart)
   const [loai, setloai] = useState([])
   const [loaichon, setloaichon] = useState(0);
   const [value, setValue] = useState("recents");
@@ -46,8 +51,8 @@ export default () => {
     giaKetThuc:-1,
     dsNgay:[],
     thoiLuong:[],
-    loai:0
-
+    loai:0,
+    sdt:localStorage.getItem("sdt")
   })
   useEffect(() => {
     axios.get("http://localhost:8080/tour/getListTourfavourite")
@@ -63,13 +68,15 @@ export default () => {
       })
   }, [])
   useEffect(() => {
-    axios.get("http://localhost:8080/tour/getListTour")
+    let o=localStorage.getItem("sdt")
+    axios.get(`http://localhost:8080/tour/getListTour?sdt=${o}`)
       .then(data => {
         setlisttour(data.data.data)
       })
   }, [])
   useEffect(() => {
-    axios.get(`http://localhost:8080/tour/getListTourByLoai?idloai=${loaichon}`)
+    let o=localStorage.getItem("sdt")
+    axios.get(`http://localhost:8080/tour/getListTourByLoai?idloai=${loaichon}&sdt=${o}`)
       .then(data => {
         setlisttour(data.data.data)
       })

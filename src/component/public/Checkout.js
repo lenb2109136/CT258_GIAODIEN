@@ -10,6 +10,14 @@ function formatDate(dateString) {
   const year = date.getFullYear();
   return `${day}/${month}/${year}`;
 }
+function isFutureDate(dateStr) {
+  let parts = dateStr.split("/");
+  let inputDate = new Date(parts[2], parts[1] - 1, parts[0]);
+  let today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return inputDate > today;
+}
+
 function total(a) {
   let gia = 0;
   for (let o = 0; o < a?.length; o++) {
@@ -28,7 +36,6 @@ const CheckoutPage = () => {
   const navigator = useNavigate()
   const { cart, setcart } = useContext(CartContext)
   return (
-
     <div className="container my-5">
       <div className="row">
         {/* Shopping Cart Section */}
@@ -44,7 +51,7 @@ const CheckoutPage = () => {
             </thead>
             <tbody>
               {
-                cart?.length <0  ? <div style={{ width: "100%", textAlign: "center" }}>
+                cart?.length < 0 ? <div style={{ width: "100%", textAlign: "center" }}>
                   <div style={{ marginLeft: "70%" }}><img src="https://cdn-icons-png.flaticon.com/128/10608/10608904.png" alt="Không tìm thấy" />
                     <p>Bạn chưa chọn tour nào </p></div>
                 </div> : null
@@ -62,39 +69,48 @@ const CheckoutPage = () => {
                       <td>
                         {
                           data?.thoiGianKhoiHanh2?.map((d, i) => {
-                            return <>
-                              <div style={{ paddingTop: "10px" }}>
-                                <input style={{
-                                  width: "20px",
-                                  height: "20px",
-                                  border: "2px solid #7AB730",
-                                  borderRadius: "50%",
-                                  display: "inline-block",
-                                  position: "relative",
-                                  padding: "10px",
-                                  cursor:"pointer"
-                                }} onClick={(event) => {
-                                  let j = [...cart]
-                                  for (let p = 0; p < j[index].thoiGianKhoiHanh2.length; p++) {
-                                    j[index].thoiGianKhoiHanh2[p].chon = false;
-                                  }
-                                  j[index].thoiGianKhoiHanh2[i].chon = true
-                                  console.log(j)
-                                  setcart(j)
-                                  console.log(j)
-                                }} name={"bbb" + index} type="radio"></input>
-                                <span style={{ marginLeft: "10px" }}>Ngày Khởi Hành: {formatDate(d.thoiGian)}</span>
-                              </div>
-                            </>
-                          })
+                            return isFutureDate(formatDate(d.thoiGian)) ? (
+                              <div key={i} style={{ paddingTop: "10px" }}>
+                                <input
+                                  style={{
+                                    width: "20px",
+                                    height: "20px",
+                                    border: "2px solid #7AB730",
+                                    borderRadius: "50%",
+                                    display: "inline-block",
+                                    position: "relative",
+                                    padding: "10px",
+                                    cursor: "pointer",
+                                  }}
+                                  // checked={data?.thoiGianKhoiHanh2?.length === 1} 
+                                  onClick={(event) => {
+                                    let j = [...cart];
+                                    for (let p = 0; p < j[index].thoiGianKhoiHanh2.length; p++) {
+                                      j[index].thoiGianKhoiHanh2[p].chon = false;
+                                    }
+                                    j[index].thoiGianKhoiHanh2[i].chon = true;
+                                    console.log(j);
+                                    setcart(j);
+                                  }}
+                                  name={"bbb" + index}
+                                  type="radio"
+                                />
 
+                                <span style={{ marginLeft: "10px" }}>
+                                  Ngày Khởi Hành: {formatDate(d.thoiGian)}
+                                </span>
+                              </div>
+                            ) : null;
+                          })
                         }
+
 
                       </td>
                       <td ><div>
                         <div><button style={{ backgroundColor: "#7AB730", border: "1px solid white", paddingLeft: "10px", paddingRight: "10px", color: "white", borderRadius: "7px" }} onClick={() => {
                           let t = [...cart]
-                          t.pop(index)
+                          t.splice(index,1)
+                          localStorage.setItem("cart",JSON.stringify(t))
                           setcart(t)
                         }}>
                           remove
@@ -124,7 +140,8 @@ const CheckoutPage = () => {
                             <strong><p>{de.gia}</p></strong>
                             <button style={{ backgroundColor: "#7AB730", border: "1px solid white", paddingLeft: "10px", paddingRight: "10px", color: "white", borderRadius: "7px" }} onClick={() => {
                               let t = [...cart]
-                              t[index].dsdv.pop(id)
+                              t[index].dsdv.splice(id,1)
+                              localStorage.setItem("cart",JSON.stringify(t))
                               setcart(t)
                             }}>remove</button>
 
@@ -147,56 +164,61 @@ const CheckoutPage = () => {
           <div className="  p-3">
             <h4 cla>Order Summary</h4>
             <p>Số lượng tour: {cart?.length} <span className="float-end">{total(cart)}</span></p>
-            <input type="text" className="form-control my-2" placeholder="Enter your phone" />
-            <input type="text" className="form-control my-2" placeholder="Enter your name" />
-            <button onClick={()=>{
-              if(cart.length==0){
+            <input type="text" className="form-control my-2" value={localStorage.getItem("ten")} />
+            <input type="text" className="form-control my-2" value={localStorage.getItem("sdt")} />
+            <button onClick={() => {
+              if (cart.length == 0) {
                 alert("Vui lòng chọn nhiều hơn 1 tour");
               }
-              else{
-                  let ss=[]
-                  cart.forEach(data => {
-                    let thoidiemkhoihanh=0;
-                    data.thoiGianKhoiHanh2.some((f,index)=>{
-                        if(f.chon==false&&index==data.thoiGianKhoiHanh2.length-1){
-                          alert ("Bạn vui lòng chọn thời điểm khởi hành cho tour: "+data.ten)
-                        }
-                        else{
-                          if(f.chon==true){
-                            thoidiemkhoihanh=f.id;
-                            return true;
-                          }
-                        }
-                    })
-                    let dsdv=[]
-                    data.dsdv.some((f,index)=>{
-                      dsdv.push(f.id)
-                    })
-                    ss.push({
-                      idtgkh: thoidiemkhoihanh,
-                      dsdv:dsdv
-                    })
-
-                  });
-                  //thông tin khách hàng nhớ đổi lại lên
-                  let thongtingui={
-                    idkh:1,
-                    infove:ss
-                  }
-                  axios.post("http://localhost:8080/ve/save", thongtingui, {
-                    headers: {
-                        'Content-Type': 'application/json' 
+              else {
+                let ss = []
+                cart.forEach(data => {
+                  let thoidiemkhoihanh = 0;
+                  data.thoiGianKhoiHanh2.some((f, index) => {
+                    if (f.chon == false && index == data.thoiGianKhoiHanh2.length - 1) {
+                      alert("Bạn vui lòng chọn thời điểm khởi hành cho tour: " + data.ten)
                     }
+                    else {
+                      if (f.chon == true) {
+                        thoidiemkhoihanh = f.id;
+                        return true;
+                      }
+                    }
+                  })
+                  let dsdv = []
+                  data.dsdv.some((f, index) => {
+                    dsdv.push(f.id)
+                  })
+                  ss.push({
+                    idtgkh: thoidiemkhoihanh,
+                    dsdv: dsdv
+                  })
+
+                });
+                let thongtingui = {
+                  idkh: 1,
+                  infove: ss
+                }
+                axios.post("http://localhost:8080/ve/save", thongtingui, {
+                  headers: {
+                    'Content-Type': 'application/json'
+                  }
                 })
-                .then(response => {
-                    alert("Đặt tour thành công");
-                    setcart([])
-                })
-                .catch(error => {
+                  .then(response => {
+                    if (response.data.status != "OK") {
+                      alert(response.data.message)
+                    }
+                    else {
+                      alert("Đặt tour thành công");
+                      localStorage.setItem("cart",JSON.stringify([]))
+                      setcart([])
+                    }
+                  })
+                  .catch(error => {
                     console.error("Lỗi:", error);
                     alert("Đã xảy ra lỗi khi gửi dữ liệu");
-                });
-                
+                  });
+
               }
             }} style={{ backgroundColor: "#7AB730" }} className="btn  w-100 mb-2"><strong><span style={{ color: "white" }}>Apply</span></strong></button>
             <hr />

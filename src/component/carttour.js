@@ -1,4 +1,17 @@
+import { useContext } from "react";
+import { CartContext } from "./public/KhachHang";
+
+function kiemtraa(a, id) {
+  if (!Array.isArray(a) || a.length === 0) 
+    return true; 
+  
+  for (let d of a) {
+    if (d.id === id) return false; 
+  }
+  return true; 
+}
 export default function TourCard(prop) {
+    const { cart, setcart } = useContext(CartContext)
     return (
       <div
         style={prop.style!=null ? prop.style : {
@@ -87,17 +100,19 @@ export default function TourCard(prop) {
             cursor: "pointer",
             transition: "0.3s",
             background: "transparent",
+            outline:"none"
           }}
-          onMouseOver={(e) => {
+          onMouseOver={kiemtraa(cart, prop.id) ? (e) => {
             e.target.style.background = "#d4a017";
             e.target.style.color = "white";
-          }}
+        } : undefined}
+        
           onMouseOut={(e) => {
             e.target.style.background = "transparent";
             e.target.style.color = "#d4a017";
           }}
         >
-          Đặt tour ngay
+          {kiemtraa(cart,prop.id) ? "Đặt tour ngay" : "Tour đã được đặt"}
         </button>
       </div>
     );
