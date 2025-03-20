@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { CartContext } from "./KhachHang";
 import { useNavigate } from "react-router-dom";
@@ -52,7 +52,11 @@ const CheckoutPage = () => {
             tong+=giamGia>0?giamGia:vv.gia;
           }
         })
+        v?.dsdv?.forEach(d=>{
+          tong+=d.gia;
+         })
      })
+     
      setTong(tong);
   }
 
@@ -74,6 +78,9 @@ const CheckoutPage = () => {
 
   const navigator = useNavigate()
   const { cart, setcart } = useContext(CartContext)
+  useEffect(()=>{
+    tinhToan()
+  },[])
   return (
     <div className="container my-5">
       <div className="row">
@@ -260,7 +267,7 @@ const CheckoutPage = () => {
               }
             }} style={{ backgroundColor: "#7AB730" }} className="btn  w-100 mb-2"><strong><span style={{ color: "white" }}>Apply</span></strong></button>
             <hr />
-            <h5>Total Cost: <span className="float-end">{total(cart)}</span></h5>
+            <h5>Total Cost: <span className="float-end">{tong}</span></h5>
             <button className="btn   w-100" style={{ backgroundColor: "white", border: "2px solid #7AB730", color: "black" }}>
               <strong><span>Checkout</span></strong>
             </button>
