@@ -4,7 +4,7 @@ import axios from "axios";
 function formatDateTime(input) {
     let date = new Date(input);
     let day = String(date.getDate()).padStart(2, '0');
-    let month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+    let month = String(date.getMonth() + 1).padStart(2, '0');
     let year = date.getFullYear();
     let hours = String(date.getHours()).padStart(2, '0');
     let minutes = String(date.getMinutes()).padStart(2, '0');
@@ -13,25 +13,23 @@ function formatDateTime(input) {
     return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 }
 function isFutureDate(dateTimeStr) {
-    // Chuyển đổi chuỗi thành đối tượng Date
     let [date, time] = dateTimeStr.split(" ");
     let [day, month, year] = date.split("/").map(Number);
     let [hour, minute, second] = time.split(":").map(Number);
 
     let inputDate = new Date(year, month - 1, day, hour, minute, second);
-    let now = new Date(); // Lấy thời gian hiện tại
+    let now = new Date(); 
 
     return inputDate > now;
 }
 export default function ({ nv,setopen }) {
-    const today = new Date().toISOString().slice(0, 16); // Lấy ngày hiện tại (yyyy-MM-ddTHH:mm)
-    const firstDay = new Date(new Date().getFullYear(), 0, 1).toISOString().slice(0, 16); // 1/1 của năm hiện tại
+    const today = new Date().toISOString().slice(0, 16); 
+    const firstDay = new Date(new Date().getFullYear(), 0, 1).toISOString().slice(0, 16); 
 
     const [bd, setBd] = useState(firstDay);
     const [kt, setKt] = useState(today);
     const [dsve, setDsve] = useState([]);
 
-    // Hàm gọi API
     const fetchData = (bdValue, ktValue) => {
         let t = new FormData();
         t.append("id", nv);
@@ -43,7 +41,6 @@ export default function ({ nv,setopen }) {
         });
     };
 
-    // Gọi API lần đầu tiên khi component mount
     useEffect(() => {
         fetchData(firstDay, today);
     }, []);

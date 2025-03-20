@@ -109,7 +109,8 @@ const CheckoutPage = () => {
                       <td ><div>
                         <div><button style={{ backgroundColor: "#7AB730", border: "1px solid white", paddingLeft: "10px", paddingRight: "10px", color: "white", borderRadius: "7px" }} onClick={() => {
                           let t = [...cart]
-                          t.pop(index)
+                          t.splice(index,1)
+                          localStorage.setItem("cart",JSON.stringify(t))
                           setcart(t)
                         }}>
                           remove
@@ -139,7 +140,8 @@ const CheckoutPage = () => {
                             <strong><p>{de.gia}</p></strong>
                             <button style={{ backgroundColor: "#7AB730", border: "1px solid white", paddingLeft: "10px", paddingRight: "10px", color: "white", borderRadius: "7px" }} onClick={() => {
                               let t = [...cart]
-                              t[index].dsdv.pop(id)
+                              t[index].dsdv.splice(id,1)
+                              localStorage.setItem("cart",JSON.stringify(t))
                               setcart(t)
                             }}>remove</button>
 
@@ -193,7 +195,6 @@ const CheckoutPage = () => {
                   })
 
                 });
-                //thông tin khách hàng nhớ đổi lại lên
                 let thongtingui = {
                   idkh: 1,
                   infove: ss
@@ -209,6 +210,7 @@ const CheckoutPage = () => {
                     }
                     else {
                       alert("Đặt tour thành công");
+                      localStorage.setItem("cart",JSON.stringify([]))
                       setcart([])
                     }
                   })

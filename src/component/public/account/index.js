@@ -91,7 +91,7 @@ export default function Discount() {
 
   return (
     <div className="row">
-      <h2 className="mb-4 text-primary fw-bold">Quản lý Tài khoản</h2>
+      <h2  style={{marginTop:"20px"}} className="mb-4 text-primary fw-bold">Quản lý Tài khoản</h2>
     {openlsdattour ? <LS setopen={setopen} nv={nv.current}></LS> : null}
       {/* Search Bar and Add Button */}
       <div className="row mb-4 align-items-center">
