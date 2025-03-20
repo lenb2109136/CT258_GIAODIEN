@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { CartContext } from "./KhachHang";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +18,9 @@ function isFutureDate(dateStr) {
   return inputDate > today;
 }
 
+
+
+
 function total(a) {
   let gia = 0;
   for (let o = 0; o < a?.length; o++) {
@@ -33,6 +36,42 @@ function total(a) {
   }
 }
 const CheckoutPage = () => {
+  const [tong,setTong]=useState(0);
+
+  const tinhToan=()=>{
+    let tong=0;
+     cart.forEach(v=>{
+        v.thoiGianKhoiHanh2.forEach(vv=>{
+          if(vv.checked){
+            let giamGia=-1;
+            vv.giaUuDai.forEach(vvv=>{ 
+              if(new Date(vvv.ngayGioApDung)<new Date()&&new Date(vvv.ngayKetThuc)>new Date()){
+                giamGia=vvv.gia
+              }
+            }) 
+            tong+=giamGia>0?giamGia:vv.gia;
+          }
+        })
+     })
+     setTong(tong);
+  }
+
+  const check=(indexCart,indexThoiGianKhoiHanh)=>{
+     let cartTest=cart[indexCart]; 
+    cartTest.thoiGianKhoiHanh2  =cartTest.thoiGianKhoiHanh2
+    .map((v,index)=>{
+      if(indexThoiGianKhoiHanh===index){
+        v.checked=true;
+      }else{
+        v.checked=false;
+      }
+      return v;
+    }
+)
+    tinhToan()
+  }
+
+
   const navigator = useNavigate()
   const { cart, setcart } = useContext(CartContext)
   return (
@@ -68,32 +107,7 @@ const CheckoutPage = () => {
                       </td>
                       <td>
                         {
-                          data?.thoiGianKhoiHanh2?.map((d, i) => { 
-                          //   return <>
-                          //     <div style={{ paddingTop: "10px" }}>
-                          //       <input style={{
-                          //         width: "20px",
-                          //         height: "20px",
-                          //         border: "2px solid #7AB730",
-                          //         borderRadius: "50%",
-                          //         display: "inline-block",
-                          //         position: "relative",
-                          //         padding: "10px",
-                          //         cursor:"pointer"
-                          //       }} onClick={(event) => {
-                          //         let j = [...cart]
-                          //         for (let p = 0; p < j[index].thoiGianKhoiHanh2.length; p++) {
-                          //           j[index].thoiGianKhoiHanh2[p].chon = false;
-                          //         }
-                          //         j[index].thoiGianKhoiHanh2[i].chon = true
-                          //         console.log(j)
-                          //         setcart(j)
-                          //         console.log(j)
-                          //       }} name={"bbb" + index} type="radio"></input>
-                          //       <span style={{ marginLeft: "10px" }}>Ngày Khởi Hành: {formatDate(d.thoiGian)}</span>
-                          //     </div>
-                          //   </>
-                          // }) 
+                          data?.thoiGianKhoiHanh2?.map((d, i) => {   
                             return isFutureDate(formatDate(d.thoiGian)) ? (
                               <div key={i} style={{ paddingTop: "10px" }}>
                                 <input
@@ -106,16 +120,15 @@ const CheckoutPage = () => {
                                     position: "relative",
                                     padding: "10px",
                                     cursor: "pointer",
-                                  }}
-                                  // checked={data?.thoiGianKhoiHanh2?.length === 1} 
+                                  }}  
                                   onClick={(event) => {
                                     let j = [...cart];
                                     for (let p = 0; p < j[index].thoiGianKhoiHanh2.length; p++) {
                                       j[index].thoiGianKhoiHanh2[p].chon = false;
                                     }
                                     j[index].thoiGianKhoiHanh2[i].chon = true;
-                                    console.log(j);
-                                    setcart(j);
+                                     setcart(j);
+                                    check(index,i)
                                   }}
                                   name={"bbb" + index}
                                   type="radio"
@@ -188,7 +201,7 @@ const CheckoutPage = () => {
         <div className="col-lg-4" style={{ backgroundColor: "white", border: "1px solidrgb(24, 37, 8)", borderRadius: "10px" }}>
           <div className="  p-3">
             <h4 cla>Order Summary</h4>
-            <p>Số lượng tour: {cart?.length} <span className="float-end">{total(cart)}</span></p>
+            <p>Số lượng tour: {cart?.length} <span className="float-end">{tong}</span></p>
             <input type="text" className="form-control my-2" value={localStorage.getItem("ten")} />
             <input type="text" className="form-control my-2" value={localStorage.getItem("sdt")} />
             <button onClick={() => {

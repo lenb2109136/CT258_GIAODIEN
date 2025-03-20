@@ -38,6 +38,9 @@ export default function Discount() {
     axios.get("http://localhost:8080/loaitour/getall")
       .then(data => {
         setloai(data.data.data);
+        if(data.data.data.length>0){
+          setloaichon(data.data.data[0].id)
+        }
       })
   }, [])
   // Mock discount data

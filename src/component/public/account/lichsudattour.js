@@ -46,7 +46,7 @@ export default function ({ nv,setopen }) {
     }, []);
 
     return (
-        <div style={{ border:"2px solid #7AB730",width: "89%",backgroundColor:"white", height: "500px", zIndex: 20,left:"171px", top: "160px",position:"absolute" }}>
+        <div style={{ border:"2px solid #7AB730",width: "95%",backgroundColor:"white", height: "500px", overflow:"auto", zIndex: 20,left:"3%", top: "143px",position:"absolute" }}>
             <img onClick={() => {
                 setopen(false)
 

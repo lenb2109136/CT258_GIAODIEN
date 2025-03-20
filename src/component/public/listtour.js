@@ -1,7 +1,7 @@
 
 import { useContext, useEffect, useRef, useState } from "react";
 import { BottomNavigation, BottomNavigationAction } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Menu, Button } from "antd";
 import { AppstoreOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import Cart from "../carttour";
