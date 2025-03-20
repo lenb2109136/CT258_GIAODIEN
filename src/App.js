@@ -5,7 +5,7 @@ import './lib/owlcarousel/assets/owl.carousel.min.css';
 import './lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Tour from './component/public/chitiettour';
 import ListTour from './component/public/listtour';
 import F from './component/public/footer';
