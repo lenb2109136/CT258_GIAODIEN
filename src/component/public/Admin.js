@@ -15,16 +15,29 @@ export default function Admin() {
   };
 
   const checkTableData = [
-    { name: 'Horizon UI PRO', progress: '17.5%', quantity: 2458, date: '12 Jan 2021' },
-    { name: 'Horizon UI Free', progress: '10.8%', quantity: 1485, date: '21 Feb 2021' },
-    { name: 'Weekly Update', progress: '21.3%', quantity: 1024, date: '13 Mar 2021' },
+    {
+      name: 'Horizon UI PRO',
+      progress: '17.5%',
+      quantity: 2458,
+      date: '12 Jan 2021',
+    },
+    {
+      name: 'Horizon UI Free',
+      progress: '10.8%',
+      quantity: 1485,
+      date: '21 Feb 2021',
+    },
+    {
+      name: 'Weekly Update',
+      progress: '21.3%',
+      quantity: 1024,
+      date: '13 Mar 2021',
+    },
   ];
 
   return (
     <div className="admin-container">
-      
       <div className="main-content">
-        
         <div className="dashboard-content">
           {/* Metrics Cards */}
           <div className="metrics">
@@ -60,7 +73,9 @@ export default function Admin() {
           <div className="charts-tables">
             {/* Line Chart Placeholder */}
             <div className="chart-section">
-              <h3>Total: $37.5K <span className="decline">(-2.45%)</span></h3>
+              <h3>
+                Total: $37.5K <span className="decline">(-2.45%)</span>
+              </h3>
               <p>Spent: On track</p>
               <div className="chart-placeholder">
                 <p>[Line Chart: Spent over time (Sep to Feb)]</p>
@@ -91,7 +106,11 @@ export default function Admin() {
                   {checkTableData.map((row, index) => (
                     <tr key={index}>
                       <td>
-                        <input type="checkbox" checked={index === 1 || index === 2} readOnly />
+                        <input
+                          type="checkbox"
+                          checked={index === 1 || index === 2}
+                          readOnly
+                        />
                         {row.name}
                       </td>
                       <td>{row.progress}</td>
@@ -106,7 +125,9 @@ export default function Admin() {
             {/* Daily Traffic */}
             <div className="traffic-section">
               <h3>Daily Traffic</h3>
-              <p>2,579 Visitors <span className="growth">+2.45%</span></p>
+              <p>
+                2,579 Visitors <span className="growth">+2.45%</span>
+              </p>
               <div className="chart-placeholder">
                 <p>[Bar Chart: Daily Traffic]</p>
               </div>
