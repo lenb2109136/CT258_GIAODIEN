@@ -86,7 +86,7 @@ export default function ModalCK({index,tour,setReload}) {
                       "exportpdf",
                     ],
                     toolbar:
-                      "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
+"undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
                     tinycomments_mode: "embedded",
                     tinycomments_author: "Author name",
                     mergetags_list: [
@@ -98,7 +98,8 @@ export default function ModalCK({index,tour,setReload}) {
                         Promise.reject("See docs to implement AI Assistant")
                       ),
                   }}
-                  initialValue="Welcome to TinyMCE!"
+                  initialValue={tour.chan[index].moTa}
+                  value={tour.chan[index].moTa}
                 /> 
         </Box>
       </Modal>

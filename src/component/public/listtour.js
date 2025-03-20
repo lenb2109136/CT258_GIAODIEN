@@ -1,20 +1,18 @@
-import { useEffect, useRef, useState } from 'react';
-import { BottomNavigation, BottomNavigationAction } from '@mui/material';
-import { Link, useSearchParams } from 'react-router-dom';
-import { Menu, Button } from 'antd';
-import {
-  AppstoreOutlined,
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
-} from '@ant-design/icons';
-import Cart from '../carttour';
-import Slider from './cartslider';
-import axios from 'axios';
 
-// Hàm kiểm tra
-function kiemtra(a, u) {
-  for (let i = 0; i < a.length; i++) {
-    if (a[i].batDau === u) return i;
+import { useContext, useEffect, useRef, useState } from "react";
+import { BottomNavigation, BottomNavigationAction } from "@mui/material";
+import { Link } from "react-router-dom";
+import { Menu, Button } from "antd";
+import { AppstoreOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
+import Cart from "../carttour";
+import Slider from "./cartslider";
+import axios from "axios";
+import { CartContext } from "./KhachHang";
+function kiemtra(a, u){
+  for(let i=0;i<a.length;i++){
+    if(a[i].batDau==u){
+      return i;
+    }
   }
   return -1;
 }
@@ -138,14 +136,24 @@ export default () => {
     { batDau: 21, KetThuc: 30 },
   ]);
   const filter = useRef({
-    giaBatDau: -1,
-    giaKetThuc: -1,
-    dsNgay: [],
-    thoiLuong: [],
-    loai: 0,
-  });
+// <<<<<<< HEAD
+//     giaBatDau: -1,
+//     giaKetThuc: -1,
+//     dsNgay: [],
+//     thoiLuong: [],
+//     loai: 0,
+//   });
 
-  // Lấy tất cả tour từ API getAllTours
+//   // Lấy tất cả tour từ API getAllTours
+// =======
+    giaBatDau:-1,
+    giaKetThuc:-1,
+    dsNgay:[],
+    thoiLuong:[],
+    loai:0,
+    sdt:localStorage.getItem("sdt")
+  })
+// >>>>>>> origin/len
   useEffect(() => {
     axios
       .get('http://localhost:8080/tour/getAllTours')
@@ -220,6 +228,7 @@ export default () => {
 
   // Lấy danh sách tour gần nhất dựa trên T_TEN
   useEffect(() => {
+// <<<<<<< HEAD
     const fetchClosestTours = async () => {
       if (!userLocation || allTours.length === 0) return;
       setLoading(true);
@@ -416,6 +425,21 @@ export default () => {
     localStorage.setItem('selectedTourId', tourId);
   };
 
+// =======
+//     let o=localStorage.getItem("sdt")
+//     axios.get(`http://localhost:8080/tour/getListTour?sdt=${o}`)
+//       .then(data => {
+//         setlisttour(data.data.data)
+//       })
+//   }, [])
+//   useEffect(() => {
+//     let o=localStorage.getItem("sdt")
+//     axios.get(`http://localhost:8080/tour/getListTourByLoai?idloai=${loaichon}&sdt=${o}`)
+//       .then(data => {
+//         setlisttour(data.data.data)
+//       })
+//   }, [loaichon])
+// >>>>>>> origin/len
   return (
     <div className="row">
       <div

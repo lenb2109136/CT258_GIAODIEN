@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from './footer';
@@ -58,6 +59,7 @@ const getRandomReviews = () => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
+
 const Home = () => {
   const [dshometour, setDshometour] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -83,8 +85,7 @@ const Home = () => {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
-
+  },[]);
   // Cấu hình cho Slider với nút chuyển qua lại
   const sliderSettings = {
     dots: true,
@@ -123,7 +124,6 @@ const Home = () => {
   return (
     <>
       <div className="container-fluid bg-light pt-3 d-none d-lg-block"></div>
-
       <div className="container-fluid p-0">
         <div
           id="header-carousel"

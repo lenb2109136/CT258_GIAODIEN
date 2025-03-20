@@ -1,231 +1,168 @@
-import React, { useEffect, useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useEffect, useRef, useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap CSS
 import axios from 'axios';
 import { BottomNavigation, BottomNavigationAction } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import QuanLyUuDai from './uudai';
+import QuanLyUuDai from "./uudai"
 import AddTour from './ModalAddTour';
-
+import UpdateTour from './ModalUpdate';
+import api from '../../config/axiosconfig';
+const Context=React.createContext()
+  export {Context};
 export default function Discount() {
-  const navigate = useNavigate();
-  const [dstour, setDstour] = useState([]);
-  const [opentgkh, setOpentgkh] = useState(false);
-  const [thongtin, setThongtin] = useState(null);
-  const [loai, setLoai] = useState([]);
-  const [loaichon, setLoaichon] = useState(0);
-  const [value, setValue] = useState('recents');
-  const [searchTerm, setSearchTerm] = useState('');
-
+  
+  const navigate= useNavigate()
+  const [dstour, setdstour] = useState([])
   useEffect(() => {
-    axios
-      .get('http://localhost:8080/tour/getadmintour')
+    axios.get("http://localhost:8080/tour/getadmintour")
       .then(data => {
-        setDstour(data.data.data || []);
+        setdstour(data.data.data)
       })
-      .catch(error => console.error('Lỗi khi lấy danh sách tour:', error));
-  }, []);
-
-  useEffect(() => {
-    axios
-      .get('http://localhost:8080/loaitour/getall')
-      .then(data => {
-        setLoai(data.data.data || []);
+  },[])
+  const [opentgkh,setopentgkh]= useState(false)
+  const [thongtin,setthongtin]=useState()
+  const [loai, setloai] = useState([])
+  const [loaichon, setloaichon] = useState(0);
+  useEffect(()=>{
+      api.get(`tour/getl?id=${loaichon}`)
+      .then(data=>{
+        setdstour(data.data.data)
       })
-      .catch(error => console.error('Lỗi khi lấy loại tour:', error));
-  }, []);
-
+  },[loaichon])
+  const [value, setValue] = useState("recents");
+  const ind=useRef(0)
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+  useEffect(() => {
+    axios.get("http://localhost:8080/loaitour/getall")
+      .then(data => {
+        setloai(data.data.data);
+      })
+  }, [])
+  // Mock discount data
+  const initialDiscounts = [
+    { id: 1, code: 'DISCOUNT10', amount: 10, type: 'Percentage', status: 'Active', expiry: '2025-12-31' },
+    { id: 2, code: 'SAVE20', amount: 20, type: 'Fixed', status: 'Inactive', expiry: '2025-06-30' },
+    { id: 3, code: 'SUMMER25', amount: 25, type: 'Percentage', status: 'Active', expiry: '2025-08-15' },
+    { id: 4, code: 'WELCOME5', amount: 5, type: 'Fixed', status: 'Expired', expiry: '2024-12-01' },
+  ];
 
-  const handleSearch = e => {
-    setSearchTerm(e.target.value);
-    console.log('Search term:', e.target.value);
-  };
+  // State for discounts and search term
+  const [discounts] = useState(initialDiscounts); // Removed setDiscounts if not used yet
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredTours = dstour.filter(tour =>
-    tour.ten.toLowerCase().includes(searchTerm.toLowerCase())
+  // Filter discounts based on search term
+  const filteredDiscounts = discounts.filter((discount) =>
+    discount.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    discount.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    discount.status.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Handle search input change
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
   return (
-    <div className="container mt-5" style={{ maxWidth: '1200px' }}>
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="text-primary fw-bold" style={{ fontSize: '28px' }}>
-          Quản lý Tour
-        </h2>
-        <AddTour />
-      </div>
+    <Context.Provider value={{dstour,setdstour}}>
 
-      {opentgkh && <QuanLyUuDai ds={thongtin} />}
+    <div className="container mt-5 discount-container">
+      <h2 className="mb-4 text-primary fw-bold">Quản lý Tour  <AddTour/></h2>
 
-      {/* Search and Filter */}
-      <div className="row mb-4 align-items-center">
-        <div className="col-md-8 d-flex align-items-center gap-3">
-          <div className="input-group" style={{ maxWidth: '300px' }}>
-            <span className="input-group-text bg-light border-0">
-              <i className="fas fa-search text-muted"></i>
+{opentgkh ? <QuanLyUuDai ind={ind.current} setopen={setopentgkh} ds= {thongtin}></QuanLyUuDai> : null}
+      
+      {/* Search Bar and Add Button */}
+      <div style={{display:"flex"}} className="row mb-4 align-items-center">
+        <div style={{display:"flex", alignItems:"center"}} className="col-md-8">
+          <div className="input-group">
+            <span style={{height:"38px"}} className="input-group-text bg-light">
+              <i className="fas fa-search"></i>
             </span>
             <input
+            style={{width:"200px"}}
               type="text"
               className="form-control shadow-sm"
               placeholder="Tìm kiếm tour..."
-              value={searchTerm}
-              onChange={handleSearch}
-              style={{ borderRadius: '0 5px 5px 0' }}
+             
+              // value={searchTerm}
+              onChange={(e)=>{
+                  api.post(`tour/getten?ten=${e.target.value}&id=${loaichon}`)
+                    .then(data=>{
+                      setdstour(data.data.data)
+                    })
+              }}
             />
           </div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "10px" }}>
+        <div>
+          <BottomNavigation sx={{ width: 500 }} value={value} onChange={handleChange}>
+            {
+              loai?.map(data => {
+                return <BottomNavigationAction
+                  onClick={() => {
+                    setloaichon(data.id)
+                  }}
+                  label={data.ten}
+                  value={data.ten}
+                  icon={<img src={data.icon} alt="Recents" style={{ width: 24, height: 24 }} />}
+                />
 
-          <BottomNavigation
-            sx={{ height: '40px', backgroundColor: '#f8f9fa' }}
-            value={value}
-            onChange={handleChange}
-          >
-            {loai.map(data => (
-              <BottomNavigationAction
-                key={data.id}
-                onClick={() => setLoaichon(data.id)}
-                label={data.ten}
-                value={data.ten}
-                icon={
-                  <img
-                    src={data.icon}
-                    alt={data.ten}
-                    style={{ width: 24, height: 24 }}
-                  />
-                }
-              />
-            ))}
+              })
+            }
           </BottomNavigation>
         </div>
-        <div className="col-md-4 text-end">
-          <button
-            onClick={() => navigate('haha')}
-            className="btn shadow-sm"
-            style={{
-              backgroundColor: '#7AB730',
-              color: 'white',
-              padding: '8px 16px',
-              borderRadius: '5px',
-              transition: 'background-color 0.3s',
-            }}
-            onMouseOver={e => (e.target.style.backgroundColor = '#689f28')}
-            onMouseOut={e => (e.target.style.backgroundColor = '#7AB730')}
-          >
-            <i className="fas fa-plus me-2"></i> Thêm mã giảm giá
-          </button>
+
+      </div>
+        </div>
+        <div className="col-md-4 text-md-end mt-3 mt-md-0">
+          
+          
         </div>
       </div>
 
-      {/* Table */}
-      <div
-        className="card shadow-sm border-0"
-        style={{ borderRadius: '10px', overflow: 'hidden' }}
-      >
+      {/* Discounts Table */}
+      <div className="card shadow-sm border-0">
         <div className="card-body p-0">
-          <table className="table table-hover table-striped mb-0">
-            <thead style={{ backgroundColor: '#343a40', color: 'white' }}>
+          <table style={{ width: "100%" }} className="table table-hover table-striped mb-0">
+            <thead className="table-dark">
               <tr>
-                <th scope="col" className="py-3">
-                  STT
-                </th>
-                <th scope="col" className="py-3">
-                  Tên tour
-                </th>
-                <th scope="col" className="py-3">
-                  Nhân viên hướng dẫn
-                </th>
-                <th scope="col" className="py-3">
-                  Thông tin cơ bản
-                </th>
-                <th scope="col" className="py-3">
-                  Ưu đãi áp dụng
-                </th>
-                <th scope="col" className="py-3">
-                  Thao tác
-                </th>
+                <th scope="col">STT</th>
+                <th scope="col">Tên tour</th>
+                <th scope="col">Nhân viên hướng dẫn</th>
+                <th scope="col">Thông tin cơ bản</th>
+                <th scope="col">Ưu đãi áp dụng</th>
+                <th scope="col">Thao tác</th>
               </tr>
             </thead>
             <tbody>
-              {filteredTours.length > 0 ? (
-                filteredTours.map((data, index) => (
-                  <tr
-                    key={data.id}
-                    style={{ transition: 'background-color 0.2s' }}
-                  >
-                    <td className="align-middle">{index + 1}</td>
-                    <td className="align-middle fw-medium">{data.ten}</td>
-                    <td className="align-middle">
-                      {data.nhanvien?.ten || 'Chưa có'}
+              {dstour?.length > 0 ? (
+                dstour.map((data,index) => (
+                  <tr key={data.id}>
+                    <td>{index+1}</td>
+                    <td style={{cursor:"pointer"}} onClick={()=>{
+                        navigate(`/khachhang/tour?id=${data.id}`)
+                    }} className="fw-medium">{data.ten}</td>
+                    <td>{data.nhanvien.ten}</td>
+                    <td>
                     </td>
-                    <td className="align-middle"></td>
-                    <td className="align-middle">
-                      <button
-                        onClick={() => {
-                          setThongtin(data);
-                          setOpentgkh(true);
-                        }}
-                        className="btn btn-outline-warning btn-sm"
-                        style={{
-                          borderRadius: '5px',
-                          padding: '5px 10px',
-                          transition: 'all 0.3s',
-                        }}
-                        onMouseOver={e => {
-                          e.target.style.backgroundColor = '#ffc107';
-                          e.target.style.color = 'white';
-                        }}
-                        onMouseOut={e => {
-                          e.target.style.backgroundColor = 'transparent';
-                          e.target.style.color = '#ffc107';
-                        }}
-                      >
-                        <i className="fas fa-eye me-1"></i> Xem chi tiết
-                      </button>
-                    </td>
-                    <td className="align-middle">
-                      <button
-                        className="btn btn-outline-primary btn-sm me-2"
-                        style={{
-                          borderRadius: '5px',
-                          padding: '5px 10px',
-                          transition: 'all 0.3s',
-                        }}
-                        onMouseOver={e => {
-                          e.target.style.backgroundColor = '#007bff';
-                          e.target.style.color = 'white';
-                        }}
-                        onMouseOut={e => {
-                          e.target.style.backgroundColor = 'transparent';
-                          e.target.style.color = '#007bff';
-                        }}
-                      >
-                        <i className="fas fa-edit me-1"></i> Sửa
-                      </button>
-                      <button
-                        className="btn btn-outline-danger btn-sm"
-                        style={{
-                          borderRadius: '5px',
-                          padding: '5px 10px',
-                          transition: 'all 0.3s',
-                        }}
-                        onMouseOver={e => {
-                          e.target.style.backgroundColor = '#dc3545';
-                          e.target.style.color = 'white';
-                        }}
-                        onMouseOut={e => {
-                          e.target.style.backgroundColor = 'transparent';
-                          e.target.style.color = '#dc3545';
-                        }}
-                      >
-                        <i className="fas fa-trash me-1"></i> Xóa
-                      </button>
+                    <td><button onClick={()=>{
+                        setthongtin(data);
+                        ind.current=index
+
+                         setopentgkh(true)}} className="btn btn-outline-warning btn-sm me-2">
+                      <i  className="fas fa-edit"></i> Xem chi tiết
+                    </button></td>
+                    
+                    <td>
+                      <UpdateTour tours={data}/>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="6" className="text-center text-muted py-4">
-                    Không tìm thấy tour nào
+                  <td colSpan="7" className="text-center text-muted py-4">
+                    Không tìm thấy mã giảm giá nào
                   </td>
                 </tr>
               )}
@@ -234,5 +171,6 @@ export default function Discount() {
         </div>
       </div>
     </div>
+    </Context.Provider>
   );
 }

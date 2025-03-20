@@ -25,7 +25,6 @@ import Category from './component/public/category/index';
 import TourAdmin from './component/public/tour/index';
 import Booking from './component/public/booking/index';
 import UserAdmin from './component/public/account/index';
-import { useNavigate } from 'react-router-dom';
 
 function App() {
   const location = useLocation();
@@ -49,15 +48,15 @@ function App() {
           <Route path="signin" element={<Login initialTab="login" />} />
         </Route>
 
-        <Route path="/khachhang" element={<KH />}>
-          <Route path="home" element={<Home />} />
-          <Route path="tour" element={<Tour />} />
-          <Route path="Listtour" element={<ListTour />} />
-          <Route path="shopingcart" element={<S />} />
-          <Route path="checkout" element={<CheckoutPage />} />
-          <Route path="dichvu" element={<DV />} />
-          <Route path="about" element={<About />} />
-          <Route path="contact" element={<Contact />} />
+        <Route path='/khachhang' element={<KH />}>
+          <Route path='home' element={<Home />} />
+          <Route path='tour' element={<Tour />} />
+          <Route path='Listtour' element={<ListTour />} />
+          <Route path='shopingcart' element={<S />} />
+          <Route path='checkout' element={<CheckoutPage />} />
+          <Route path='dichvu' element={<DV />} />
+          <Route path='about' element={<About />} />
+          <Route path='contact' element={<Contact />} />
         </Route>
 
         <Route path="/login" element={<Login initialTab="login" />} />
