@@ -1,18 +1,22 @@
+import { useContext, useEffect, useRef, useState } from 'react';
+import { BottomNavigation, BottomNavigationAction } from '@mui/material';
+import { Link, useSearchParams } from 'react-router-dom';
+import { Menu, Button } from 'antd';
+import {
+  AppstoreOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
+} from '@ant-design/icons';
+import Cart from '../carttour';
+import Slider from './cartslider';
+import axios from 'axios';
+import { AppContext } from '../../App';
+import api from '../config/axiosconfig';
 
-import { useContext, useEffect, useRef, useState } from "react";
-import { BottomNavigation, BottomNavigationAction } from "@mui/material";
-import { Link, useSearchParams } from "react-router-dom";
-import { Menu, Button } from "antd";
-import { AppstoreOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
-import Cart from "../carttour";
-import Slider from "./cartslider";
-import axios from "axios";
-import { CartContext } from "./KhachHang";
-function kiemtra(a, u){
-  for(let i=0;i<a.length;i++){
-    if(a[i].batDau==u){
-      return i;
-    }
+// Hàm kiểm tra
+function kiemtra(a, u) {
+  for (let i = 0; i < a.length; i++) {
+    if (a[i].batDau === u) return i;
   }
   return -1;
 }
@@ -44,52 +48,128 @@ function calculateTagSimilarity(tags1, tags2) {
   return unionSize === 0 ? 0 : intersection.size / unionSize;
 }
 
-// Hàm suy ra địa điểm từ T_TAGS
-function extractLocationFromTags(tags) {
-  if (!tags) return 'Unknown';
-  const locations = [
-    'Cần Thơ',
-    'Vĩnh Long',
-    'Sơn Đoòng',
-    'Nha Trang',
-    'Cồn Khương',
-    'Hội An',
-    'Tà Xùa',
-    'Vietnam',
-    'Pearl Island',
-  ];
-  const tagList = tags.split(/[,\s]+/).filter(tag => tag);
-  return (
-    locations.find(loc =>
-      tagList.some(tag => tag.toLowerCase().includes(loc.toLowerCase()))
-    ) || 'Unknown'
-  );
-}
-
 // Hàm suy ra địa điểm từ T_TEN (mở rộng danh sách địa điểm)
 function extractLocationFromName(tourName) {
   if (!tourName) return 'Unknown';
   const locations = [
-    'Cần Thơ',
-    'Vĩnh Long',
-    'Sơn Đoòng',
-    'Nha Trang',
-    'Cồn Khương',
-    'Hội An',
-    'Tà Xùa',
-    'Vietnam',
-    'Pearl Island',
+    // Các tỉnh thành phố
     'Hà Nội',
     'TP.HCM',
+    'Hồ Chí Minh',
+    'Hải Phòng',
     'Đà Nẵng',
+    'Cần Thơ',
+    'Hải Dương',
+    'Hà Giang',
+    'Cao Bằng',
+    'Lào Cai',
+    'Bắc Kạn',
+    'Lạng Sơn',
+    'Tuyên Quang',
+    'Yên Bái',
+    'Thái Nguyên',
+    'Phú Thọ',
+    'Vĩnh Phúc',
+    'Bắc Giang',
+    'Bắc Ninh',
+    'Quảng Ninh',
+    'Hà Tĩnh',
+    'Nghệ An',
+    'Thanh Hóa',
+    'Quảng Bình',
+    'Quảng Trị',
+    'Thừa Thiên Huế',
     'Huế',
-    'Phú Quốc',
-    'Đà Lạt',
-    'Sa Pa',
-    'Quy Nhơn',
-    'Côn Đảo',
-    'Mỹ Tho',
+    'Quảng Nam',
+    'Quảng Ngãi',
+    'Bình Định',
+    'Phú Yên',
+    'Khánh Hòa',
+    'Ninh Thuận',
+    'Bình Thuận',
+    'Kon Tum',
+    'Gia Lai',
+    'Đắk Lắk',
+    'Đắk Nông',
+    'Lâm Đồng',
+    'Bình Phước',
+    'Tây Ninh',
+    'Bình Dương',
+    'Đồng Nai',
+    'Bà Rịa - Vũng Tàu',
+    'Vũng Tàu',
+    'Long An',
+    'Tiền Giang',
+    'Bến Tre',
+    'Trà Vinh',
+    'Vĩnh Long',
+    'Đồng Tháp',
+    'An Giang',
+    'Kiên Giang',
+    'Hậu Giang',
+    'Sóc Trăng',
+    'Bạc Liêu',
+    'Cà Mau',
+
+    // Các địa điểm du lịch nổi bật
     'Hạ Long',
+    'Sa Pa',
+    'Đà Lạt',
+    'Phú Quốc',
+    'Nha Trang',
+    'Hội An',
+    'Mỹ Sơn',
+    'Phong Nha',
+    'Sơn Đoòng',
+    'Côn Đảo',
+    'Cát Bà',
+    'Mộc Châu',
+    'Mai Châu',
+    'Tam Đảo',
+    'Ba Vì',
+    'Cát Tiên',
+    'Cù Lao Chàm',
+    'Lý Sơn',
+    'Quy Nhơn',
+    'Phan Thiết',
+    'Mũi Né',
+    'Bà Nà',
+    'Ngũ Hành Sơn',
+    'Tràng An',
+    'Ninh Bình',
+    'Bái Đính',
+    'Yên Tử',
+    'Cửa Lò',
+    'Sầm Sơn',
+    'Đồ Sơn',
+    'Tà Xùa',
+    'Fansipan',
+    'Bạch Mã',
+    'Cốc Pài',
+    'Lũng Cú',
+    'Đồng Văn',
+    'Mèo Vạc',
+    'Hà Tiên',
+    'Rạch Giá',
+    'Châu Đốc',
+    'Cái Răng',
+    'Mỹ Tho',
+    'Sa Đéc',
+    'Cồn Phụng',
+    'Cồn Khương',
+    'Vĩnh Nghiêm',
+    'Điện Biên',
+    'Sơn La',
+    'Lai Châu',
+    'Pearl Island',
+    'Nam Du',
+    'Bình Ba',
+    'Bình Hưng',
+    'Tây Bắc',
+    'Đông Bắc',
+    'Miền Tây',
+    'Trung Bộ',
+    'Vietnam',
   ];
   const nameLower = tourName.toLowerCase();
   return (
@@ -99,11 +179,12 @@ function extractLocationFromName(tourName) {
 
 export default () => {
   const [loai, setloai] = useState([]);
+  const {s,sets}= useContext(AppContext)
   const [loaichon, setloaichon] = useState(0);
   const [value, setValue] = useState('recents');
   const [collapsed, setCollapsed] = useState(true);
   const [indx, setindx] = useState(0);
-  const [sdt, setSdt] = useState('0123456789');
+  const [sdt, setSdt] = useState(localStorage.getItem("sdt"));
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedTourId, setSelectedTourId] = useState(
     () => parseInt(localStorage.getItem('selectedTourId')) || null
@@ -122,7 +203,14 @@ export default () => {
 
   const handleChange = (event, newValue) => setValue(newValue);
   const toggleMenu = () => setCollapsed(!collapsed);
-
+  useEffect(()=>{
+    if(s!=null&&s!=undefined&&s!=""){
+      api.get(`http://localhost:8080/tour/getsearch?sdt=${localStorage.getItem("sdt")}&thamso=${s}`)
+      .then(data=>{
+        setlisttour(data.data.data)
+      })
+    }
+  },[s])
   const thoiLuong = useRef([
     { batDau: 1, KetThuc: 3 },
     { batDau: 3, KetThuc: 6 },
@@ -136,24 +224,15 @@ export default () => {
     { batDau: 21, KetThuc: 30 },
   ]);
   const filter = useRef({
-// <<<<<<< HEAD
-//     giaBatDau: -1,
-//     giaKetThuc: -1,
-//     dsNgay: [],
-//     thoiLuong: [],
-//     loai: 0,
-//   });
-
-//   // Lấy tất cả tour từ API getAllTours
-// =======
-    giaBatDau:-1,
-    giaKetThuc:-1,
-    dsNgay:[],
-    thoiLuong:[],
-    loai:0,
+    giaBatDau: 1,
+    giaKetThuc:9000000000,
+    dsNgay: [],
+    thoiLuong: [],
+    loai: 0,
     sdt:localStorage.getItem("sdt")
-  })
-// >>>>>>> origin/len
+  });
+
+  // Lấy tất cả tour từ API getAllTours
   useEffect(() => {
     axios
       .get('http://localhost:8080/tour/getAllTours')
@@ -228,7 +307,6 @@ export default () => {
 
   // Lấy danh sách tour gần nhất dựa trên T_TEN
   useEffect(() => {
-// <<<<<<< HEAD
     const fetchClosestTours = async () => {
       if (!userLocation || allTours.length === 0) return;
       setLoading(true);
@@ -425,21 +503,6 @@ export default () => {
     localStorage.setItem('selectedTourId', tourId);
   };
 
-// =======
-//     let o=localStorage.getItem("sdt")
-//     axios.get(`http://localhost:8080/tour/getListTour?sdt=${o}`)
-//       .then(data => {
-//         setlisttour(data.data.data)
-//       })
-//   }, [])
-//   useEffect(() => {
-//     let o=localStorage.getItem("sdt")
-//     axios.get(`http://localhost:8080/tour/getListTourByLoai?idloai=${loaichon}&sdt=${o}`)
-//       .then(data => {
-//         setlisttour(data.data.data)
-//       })
-//   }, [loaichon])
-// >>>>>>> origin/len
   return (
     <div className="row">
       <div
@@ -616,7 +679,8 @@ export default () => {
                 }}
                 onClick={() => {
                   filter.current.loai = loaichon;
-                  axios
+                  if(s==null||s==undefined||s===""){
+                    axios
                     .post(
                       'http://localhost:8080/tour/getfilter',
                       filter.current,
@@ -633,6 +697,26 @@ export default () => {
                       console.error(error);
                       setlisttour([]);
                     });
+                  }
+                  else{
+                    axios
+                    .post(
+                      'http://localhost:8080/tour/filtermix',
+                      {...filter.current,thamso:s},
+                      { headers: { 'Content-Type': 'application/json' } }
+                    )
+                    .then(response =>
+                      setlisttour(
+                        Array.isArray(response.data.data)
+                          ? response.data.data
+                          : []
+                      )
+                    )
+                    .catch(error => {
+                      console.error(error);
+                      setlisttour([]);
+                    });
+                  }
                 }}
               >
                 Áp dụng
@@ -716,7 +800,7 @@ export default () => {
           </div>
         </div>
 
-        <div className="col-lg-9">
+        <div className="col-lg-9" style={{position:"relative"}}>
           <div
             style={{
               display: 'flex',

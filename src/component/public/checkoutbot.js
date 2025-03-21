@@ -92,7 +92,7 @@ const id = search.get("id");
                       </div></td>
                     </tr>
                     {
-                      ve?.thoiGianKhoiHanh?.ve?.[0].phiDichVu?.map((de, id) => {
+                      ve?.ve?.phiDichVu?.map((de, id) => {
                         return <tr>
                           <td>
                             <div style={{ display: "flex", gap: 22 }}>

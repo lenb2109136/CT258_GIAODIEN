@@ -1,14 +1,25 @@
 import { useNavigate } from 'react-router-dom';
+import { useContext, useState } from 'react'; // Added useState for search functionality
+import { AppContext } from '../../App';
 
 export default () => {
   const navigate = useNavigate();
-  const isLoggedIn = localStorage.getItem('token') !== null; // Check if user is logged in
-
-  // Function to handle logout
+  const isLoggedIn = localStorage.getItem('token') !== null;
+  const [searchQuery, setSearchQuery] = useState(''); // State for search input
+  const {s,sets}= useContext(AppContext)
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Remove token
-    localStorage.removeItem('role'); // Remove role (if stored)
-    navigate('/login'); // Navigate to login page
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    navigate('/login');
+  };
+
+  // Function to handle search submission
+  const handleSearch = e => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // You can modify this to navigate to a search results page
+      navigate(`/khachhang/search?query=${searchQuery}`);
+    }
   };
 
   return (
@@ -124,7 +135,7 @@ export default () => {
               className="collapse navbar-collapse justify-content-between px-3"
               id="navbarCollapse"
             >
-              <div className="navbar-nav ml-auto py-0">
+              <div className="navbar-nav py-0">
                 <a
                   onClick={() => navigate('/khachhang/home')}
                   style={{ cursor: 'pointer' }}
@@ -157,6 +168,25 @@ export default () => {
                   Liên Hệ
                 </a>
               </div>
+              {/* Added search bar */}
+              <form
+                onSubmit={handleSearch}
+                className="d-flex align-items-center"
+              >
+                <input
+                  type="text"
+                  className="form-control mr-2"
+                  placeholder="Tìm kiếm tour..."
+                  value={s}
+                  onChange={e => {
+                    sets(e.target.value)
+                  }}
+                  style={{ maxWidth: '200px' }}
+                />
+                <button type="submit" className="btn btn-primary">
+                  <i className="fa fa-search"></i>
+                </button>
+              </form>
             </div>
           </nav>
         </div>

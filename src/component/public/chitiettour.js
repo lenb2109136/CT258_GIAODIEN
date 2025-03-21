@@ -14,10 +14,13 @@ function formatDate(dateString) {
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
 }
+
 const isValidHTML = (str) => {
     const regex = /<\/?[a-z][\s\S]*>/i;
     return regex.test(str);
 };
+
+
 
 const TourInfo = () => {
     const { cart, setcart } = useContext(CartContext)
@@ -26,10 +29,17 @@ const TourInfo = () => {
     const id = searchParams.get('id')
     const [t, sett] = useState();
     const [chuachon, setchu] = useState(true)
+    const [max,setmax]=useState(0)
+    const [min,setmin]=useState(0)
     useEffect(() => {
         axios.get("http://localhost:8080/tour/getListTourfavourite")
             .then(data => {
                 setfavorate(data.data.data)
+            })
+            axios.get(`http://localhost:8080/tour/getmaxmin?id=${id}`)
+            .then((data)=>{
+                setmin(data.data.data.min)
+                setmax(data.data.data.max)
             })
 
     }, [])
@@ -85,7 +95,7 @@ const TourInfo = () => {
                 <div className="col-md-6">
                     <div className="row d-flex align-items-center justify-content-center">
                         <img className="mb-2 col-lg-2" style={{ width: "70px", height: "8%", marginRight: "2%" }} src="https://cdn-icons-png.flaticon.com/128/10693/10693001.png" alt="price-icon" />
-                        <h4 className="col-lg-10 text-danger text-center">73.900.000 đ</h4>
+                        <h4 className="col-lg-10 text-danger text-center">{min} - {min===max ? null: max}</h4>
                     </div>
                     <div className="d-flex">
                         <img className="mb-2" style={{ width: "8%", height: "8%", marginRight: "6%" }} src=" https://cdn-icons-png.flaticon.com/128/2784/2784459.png" alt="airline-icon" />
@@ -101,10 +111,10 @@ const TourInfo = () => {
                             }
                         </ul>
                     </div>
-                    <div className="d-flex">
+                    {/* <div className="d-flex">
                         <img className="mb-2" style={{ width: "8%", height: "8%", marginRight: "6%", }} src="https://cdn-icons-png.flaticon.com/128/984/984233.png" alt="airline-icon" />
                         <p><strong>Hãng hàng không:</strong> Turkish Airlines</p>
-                    </div>
+                    </div> */}
                     <div className="d-flex">
                         <img className="mb-2" style={{ width: "8%", height: "8%", marginRight: "6%" }} src="https://cdn-icons-png.flaticon.com/128/282/282803.png" alt="calendar-icon" />
                         <p><strong>Ngày khởi hành:</strong></p>
