@@ -13,7 +13,7 @@ import axios from 'axios';
 import { AppContext } from '../../App';
 import api from '../config/axiosconfig';
 
-// Hàm kiểm tra
+// Các hàm hỗ trợ (giữ nguyên)
 function kiemtra(a, u) {
   for (let i = 0; i < a.length; i++) {
     if (a[i].batDau === u) return i;
@@ -21,7 +21,6 @@ function kiemtra(a, u) {
   return -1;
 }
 
-// Hàm tính độ tương đồng cosine
 function cosineSimilarity(vectorA, vectorB) {
   if (vectorA.length !== vectorB.length)
     throw new Error('Vectors must have the same length');
@@ -38,7 +37,6 @@ function cosineSimilarity(vectorA, vectorB) {
   return normA === 0 || normB === 0 ? 0 : dotProduct / (normA * normB);
 }
 
-// Hàm tính độ tương đồng Jaccard cho tags
 function calculateTagSimilarity(tags1, tags2) {
   if (!tags1 || !tags2) return 0;
   const set1 = new Set(tags1.split(/[,\s]+/).filter(tag => tag));
@@ -48,136 +46,27 @@ function calculateTagSimilarity(tags1, tags2) {
   return unionSize === 0 ? 0 : intersection.size / unionSize;
 }
 
-// Hàm suy ra địa điểm từ T_TEN (mở rộng danh sách địa điểm)
 function extractLocationFromName(tourName) {
   if (!tourName) return 'Unknown';
   const locations = [
-    // Các tỉnh thành phố
-    'Hà Nội',
-    'TP.HCM',
-    'Hồ Chí Minh',
-    'Hải Phòng',
-    'Đà Nẵng',
-    'Cần Thơ',
-    'Hải Dương',
-    'Hà Giang',
-    'Cao Bằng',
-    'Lào Cai',
-    'Bắc Kạn',
-    'Lạng Sơn',
-    'Tuyên Quang',
-    'Yên Bái',
-    'Thái Nguyên',
-    'Phú Thọ',
-    'Vĩnh Phúc',
-    'Bắc Giang',
-    'Bắc Ninh',
-    'Quảng Ninh',
-    'Hà Tĩnh',
-    'Nghệ An',
-    'Thanh Hóa',
-    'Quảng Bình',
-    'Quảng Trị',
-    'Thừa Thiên Huế',
-    'Huế',
-    'Quảng Nam',
-    'Quảng Ngãi',
-    'Bình Định',
-    'Phú Yên',
-    'Khánh Hòa',
-    'Ninh Thuận',
-    'Bình Thuận',
-    'Kon Tum',
-    'Gia Lai',
-    'Đắk Lắk',
-    'Đắk Nông',
-    'Lâm Đồng',
-    'Bình Phước',
-    'Tây Ninh',
-    'Bình Dương',
-    'Đồng Nai',
-    'Bà Rịa - Vũng Tàu',
-    'Vũng Tàu',
-    'Long An',
-    'Tiền Giang',
-    'Bến Tre',
-    'Trà Vinh',
-    'Vĩnh Long',
-    'Đồng Tháp',
-    'An Giang',
-    'Kiên Giang',
-    'Hậu Giang',
-    'Sóc Trăng',
-    'Bạc Liêu',
-    'Cà Mau',
-
-    // Các địa điểm du lịch nổi bật
-    'Hạ Long',
-    'Sa Pa',
-    'Đà Lạt',
-    'Phú Quốc',
-    'Nha Trang',
-    'Hội An',
-    'Mỹ Sơn',
-    'Phong Nha',
-    'Sơn Đoòng',
-    'Côn Đảo',
-    'Cát Bà',
-    'Mộc Châu',
-    'Mai Châu',
-    'Tam Đảo',
-    'Ba Vì',
-    'Cát Tiên',
-    'Cù Lao Chàm',
-    'Lý Sơn',
-    'Quy Nhơn',
-    'Phan Thiết',
-    'Mũi Né',
-    'Bà Nà',
-    'Ngũ Hành Sơn',
-    'Tràng An',
-    'Ninh Bình',
-    'Bái Đính',
-    'Yên Tử',
-    'Cửa Lò',
-    'Sầm Sơn',
-    'Đồ Sơn',
-    'Tà Xùa',
-    'Fansipan',
-    'Bạch Mã',
-    'Cốc Pài',
-    'Lũng Cú',
-    'Đồng Văn',
-    'Mèo Vạc',
-    'Hà Tiên',
-    'Rạch Giá',
-    'Châu Đốc',
-    'Cái Răng',
-    'Mỹ Tho',
-    'Sa Đéc',
-    'Cồn Phụng',
-    'Cồn Khương',
-    'Vĩnh Nghiêm',
-    'Điện Biên',
-    'Sơn La',
-    'Lai Châu',
-    'Pearl Island',
-    'Nam Du',
-    'Bình Ba',
-    'Bình Hưng',
-    'Tây Bắc',
-    'Đông Bắc',
-    'Miền Tây',
-    'Trung Bộ',
-    'Vietnam',
+    'Hà Nội', 'TP.HCM', 'Hồ Chí Minh', 'Hải Phòng', 'Đà Nẵng', 'Cần Thơ', 'Hải Dương', 'Hà Giang', 'Cao Bằng', 'Lào Cai',
+    'Bắc Kạn', 'Lạng Sơn', 'Tuyên Quang', 'Yên Bái', 'Thái Nguyên', 'Phú Thọ', 'Vĩnh Phúc', 'Bắc Giang', 'Bắc Ninh', 'Quảng Ninh',
+    'Hà Tĩnh', 'Nghệ An', 'Thanh Hóa', 'Quảng Bình', 'Quảng Trị', 'Thừa Thiên Huế', 'Huế', 'Quảng Nam', 'Quảng Ngãi', 'Bình Định',
+    'Phú Yên', 'Khánh Hòa', 'Ninh Thuận', 'Bình Thuận', 'Kon Tum', 'Gia Lai', 'Đắk Lắk', 'Đắk Nông', 'Lâm Đồng', 'Bình Phước',
+    'Tây Ninh', 'Bình Dương', 'Đồng Nai', 'Bà Rịa - Vũng Tàu', 'Vũng Tàu', 'Long An', 'Tiền Giang', 'Bến Tre', 'Trà Vinh',
+    'Vĩnh Long', 'Đồng Tháp', 'An Giang', 'Kiên Giang', 'Hậu Giang', 'Sóc Trăng', 'Bạc Liêu', 'Cà Mau', 'Hạ Long', 'Sa Pa',
+    'Đà Lạt', 'Phú Quốc', 'Nha Trang', 'Hội An', 'Mỹ Sơn', 'Phong Nha', 'Sơn Đoòng', 'Côn Đảo', 'Cát Bà', 'Mộc Châu', 'Mai Châu',
+    'Tam Đảo', 'Ba Vì', 'Cát Tiên', 'Cù Lao Chàm', 'Lý Sơn', 'Quy Nhơn', 'Phan Thiết', 'Mũi Né', 'Bà Nà', 'Ngũ Hành Sơn', 'Tràng An',
+    'Ninh Bình', 'Bái Đính', 'Yên Tử', 'Cửa Lò', 'Sầm Sơn', 'Đồ Sơn', 'Tà Xùa', 'Fansipan', 'Bạch Mã', 'Cốc Pài', 'Lũng Cú',
+    'Đồng Văn', 'Mèo Vạc', 'Hà Tiên', 'Rạch Giá', 'Châu Đốc', 'Cái Răng', 'Mỹ Tho', 'Sa Đéc', 'Cồn Phụng', 'Cồn Khương', 'Vĩnh Nghiêm',
+    'Điện Biên', 'Sơn La', 'Lai Châu', 'Pearl Island', 'Nam Du', 'Bình Ba', 'Bình Hưng', 'Tây Bắc', 'Đông Bắc', 'Miền Tây', 'Trung Bộ', 'Vietnam',
   ];
   const nameLower = tourName.toLowerCase();
-  return (
-    locations.find(loc => nameLower.includes(loc.toLowerCase())) || 'Unknown'
-  );
+  return locations.find(loc => nameLower.includes(loc.toLowerCase())) || 'Unknown';
 }
 
 export default () => {
+  const [tr,settr]= useState([])
   const [loai, setloai] = useState([]);
   const { s, sets } = useContext(AppContext);
   const [loaichon, setloaichon] = useState(0);
@@ -198,24 +87,30 @@ export default () => {
   const [closestTours, setClosestTours] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
 
-  const OPENROUTE_API_KEY =
-    '5b3ce3597851110001cf6248f88b4df23e86413f846d28862cce425c';
+  const OPENROUTE_API_KEY = '5b3ce3597851110001cf6248f88b4df23e86413f846d28862cce425c';
 
   const handleChange = (event, newValue) => setValue(newValue);
   const toggleMenu = () => setCollapsed(!collapsed);
+
   useEffect(() => {
     if (s != null && s != undefined && s != '') {
       api
         .get(
-          `http://localhost:8080/tour/getsearch?sdt=${localStorage.getItem(
-            'sdt'
-          )}&thamso=${s}`
+          `http://localhost:8080/tour/getsearch?sdt=${localStorage.getItem('sdt')}&thamso=${s}`
         )
         .then(data => {
-          setlisttour(data.data.data);
+          settr(data.data.data);
+        })
+        .catch(error => {
+          console.error('Lỗi khi lấy danh sách tour tìm kiếm:', error);
+          setlisttour([]);
+        })
+        .finally(() => {
+          setLoading(false); 
         });
     }
   }, [s]);
+
   const thoiLuong = useRef([
     { batDau: 1, KetThuc: 3 },
     { batDau: 3, KetThuc: 6 },
@@ -239,12 +134,13 @@ export default () => {
 
   // Lấy tất cả tour từ API getAllTours
   useEffect(() => {
+    setLoading(true); // Bật loading khi bắt đầu lấy dữ liệu
     axios
       .get('http://localhost:8080/tour/getAllTours')
       .then(data => {
         const tours = Array.isArray(data.data.data) ? data.data.data : [];
         setAllTours(tours);
-        console.log('All Tours:', tours); // Debug dữ liệu tour
+        console.log('All Tours:', tours);
         const savedFavorites = localStorage.getItem('favoriteTours');
         if (savedFavorites) {
           setfavorate(JSON.parse(savedFavorites));
@@ -263,6 +159,9 @@ export default () => {
       .catch(error => {
         console.error('Lỗi khi lấy danh sách tour:', error);
         setAllTours([]);
+      })
+      .finally(() => {
+        setLoading(false); // Tắt loading sau khi hoàn tất
       });
 
     axios
@@ -276,85 +175,85 @@ export default () => {
       });
   }, []);
 
-  // Lấy vị trí người dùng
+  // Lấy vị trí người dùng chỉ bằng navigator.geolocation
   useEffect(() => {
+    const cachedLocation = localStorage.getItem('userLocation');
+    if (cachedLocation) {
+      setUserLocation(JSON.parse(cachedLocation));
+      console.log('User Location from cache:', JSON.parse(cachedLocation));
+      return;
+    }
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         position => {
-          setUserLocation({
+          const location = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
-          });
-          console.log('User Location:', {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          }); // Debug vị trí người dùng
+          };
+          setUserLocation(location);
+          localStorage.setItem('userLocation', JSON.stringify(location));
+          console.log('User Location from Geolocation:', location);
         },
         error => {
           console.error('Lỗi khi lấy vị trí người dùng:', error);
-          axios
-            .get('https://ipapi.co/json/')
-            .then(response => {
-              setUserLocation({
-                lat: response.data.latitude,
-                lng: response.data.longitude,
-              });
-              console.log('User Location from IP:', {
-                lat: response.data.latitude,
-                lng: response.data.longitude,
-              });
-            })
-            .catch(err => console.error('Lỗi IP Geolocation:', err));
+          if (error.code === 1) {
+            console.log('Người dùng từ chối cấp quyền vị trí.');
+          } else if (error.code === 2) {
+            console.log('Không thể xác định vị trí.');
+          } else if (error.code === 3) {
+            console.log('Hết thời gian chờ lấy vị trí.');
+          }
+          setUserLocation(null);
         }
       );
+    } else {
+      console.log('Trình duyệt không hỗ trợ Geolocation.');
+      setUserLocation(null);
     }
   }, []);
 
   // Lấy danh sách tour gần nhất dựa trên T_TEN
   useEffect(() => {
     const fetchClosestTours = async () => {
-      if (!userLocation || allTours.length === 0) return;
+      if (!userLocation || listtour.length === 0) return; // Chỉ chạy khi có userLocation và listtour
       setLoading(true);
 
       try {
-        // Bước 1: Suy ra địa điểm từ T_TEN
-        const tourLocations = allTours.map(tour => ({
+        const tourLocations = listtour.map(tour => ({
           tour,
           location: extractLocationFromName(tour.T_TEN),
         }));
-        console.log('Tour Locations:', tourLocations); // Debug số lượng tour và địa điểm
+        console.log('Tour Locations:', tourLocations);
 
-        // Bước 2: Lấy tọa độ từ Nominatim
-        const locationPromises = tourLocations.map(
-          async ({ tour, location }) => {
-            if (location === 'Unknown') return null;
+        const locationPromises = tourLocations.map(async ({ tour, location }) => {
+          if (location === 'Unknown') return null;
+          try {
             const geoResponse = await axios.get(
               `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
                 location + ', Việt Nam'
               )}&format=json&limit=1`
             );
-            console.log(
-              `Nominatim response for ${location}:`,
-              geoResponse.data
-            ); // Debug API Nominatim
+            console.log(`Nominatim response for ${location}:`, geoResponse.data);
             if (!geoResponse.data.length) return null;
             const { lat, lon } = geoResponse.data[0];
             return { tour, lat: parseFloat(lat), lng: parseFloat(lon) };
+          } catch (error) {
+            console.error(`Lỗi khi lấy tọa độ cho ${location}:`, error);
+            return null;
           }
-        );
+        });
 
-        const tourCoords = (await Promise.all(locationPromises)).filter(
-          Boolean
-        );
-        console.log('Tour Coords:', tourCoords); // Debug số lượng tour có tọa độ
+        const tourCoords = (await Promise.all(locationPromises)).filter(Boolean);
+        console.log('Tour Coords:', tourCoords);
 
         if (tourCoords.length === 0) {
+          console.log('Không có tọa độ tour nào để tính khoảng cách.');
           setClosestTours([]);
           setLoading(false);
           return;
         }
 
-        // Bước 3: Tính khoảng cách bằng OpenRouteService
         const locations = [
           [userLocation.lng, userLocation.lat],
           ...tourCoords.map(coord => [coord.lng, coord.lat]),
@@ -374,21 +273,17 @@ export default () => {
             },
           }
         );
-
-        console.log('OpenRoute Response:', response.data); // Debug API OpenRouteService
+        console.log('OpenRoute Response:', response.data);
 
         if (response.data.error) {
           throw new Error(response.data.error.message);
         }
 
-        // Bước 4: Gắn khoảng cách vào tour và sắp xếp
         const closestTours = tourCoords
           .map((coord, index) => {
-            const distance = response.data.distances[0][index + 1] ?? 0; // Mặc định 0 nếu null
+            const distance = response.data.distances[0][index + 1] ?? 0;
             const duration = response.data.durations[0][index + 1] ?? 0;
-            const durationText = `${Math.floor(duration / 3600)}h ${Math.round(
-              (duration % 3600) / 60
-            )}m`;
+            const durationText = `${Math.floor(duration / 3600)}h ${Math.round((duration % 3600) / 60)}m`;
             return {
               ...coord.tour,
               distanceInfo: `${distance.toFixed(1)} km (${durationText})`,
@@ -398,18 +293,18 @@ export default () => {
           .sort((a, b) => a.distanceValue - b.distanceValue)
           .slice(0, 6);
 
-        console.log('Closest Tours:', closestTours); // Debug kết quả cuối cùng
+        console.log('Closest Tours:', closestTours);
         setClosestTours(closestTours);
       } catch (error) {
-        console.error('Lỗi khi lấy tour gần nhất:', error);
+        console.error('Lỗi khi tính khoảng cách tour:', error);
         setClosestTours([]);
       } finally {
         setLoading(false);
       }
     };
 
-    if (userLocation && allTours.length > 0) fetchClosestTours();
-  }, [userLocation, allTours]);
+    if (userLocation && listtour.length > 0) fetchClosestTours();
+  }, [userLocation, listtour]);
 
   // Các useEffect khác
   useEffect(() => {
@@ -426,9 +321,7 @@ export default () => {
 
   useEffect(() => {
     axios
-      .get(
-        `http://localhost:8080/tour/getListTourByLoai?idloai=${loaichon}&sdt=${sdt}`
-      )
+      .get(`http://localhost:8080/tour/getListTourByLoai?idloai=${loaichon}&sdt=${sdt}`)
       .then(data =>
         setlisttour(Array.isArray(data.data.data) ? data.data.data : [])
       )
@@ -455,14 +348,7 @@ export default () => {
       const maxTimeDiff = Math.max(
         ...allTours
           .filter(t => t.T_THOIGIANKHOIHANH && selectedTour.T_THOIGIANKHOIHANH)
-          .map(
-            t =>
-              Math.abs(
-                new Date(t.T_THOIGIANKHOIHANH) -
-                  new Date(selectedTour.T_THOIGIANKHOIHANH)
-              ) /
-              (1000 * 60 * 60 * 24)
-          ),
+          .map(t => Math.abs(new Date(t.T_THOIGIANKHOIHANH) - new Date(selectedTour.T_THOIGIANKHOIHANH)) / (1000 * 60 * 60 * 24)),
         1
       );
 
@@ -508,46 +394,26 @@ export default () => {
     localStorage.setItem('selectedTourId', tourId);
   };
 
+  // Phần JSX
   return (
     <div className="row">
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginTop: '10px',
-        }}
-      >
-        <BottomNavigation
-          sx={{ width: 500 }}
-          value={value}
-          onChange={handleChange}
-        >
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '10px' }}>
+        <BottomNavigation sx={{ width: 500 }} value={value} onChange={handleChange}>
           {loai.map(data => (
             <BottomNavigationAction
               key={data.id}
               onClick={() => setloaichon(data.id)}
               label={data.ten}
               value={data.ten}
-              icon={
-                <img
-                  src={data.icon}
-                  alt="Recents"
-                  style={{ width: 24, height: 24 }}
-                />
-              }
+              icon={<img src={data.icon} alt="Recents" style={{ width: 24, height: 24 }} />}
             />
           ))}
         </BottomNavigation>
       </div>
 
-      {/* Slider Tours You May Like */}
       <div style={{ width: '100%', marginBottom: '15px' }}>
         <div className="text-center mb-3 pb-3 mt-3">
-          <h6
-            className="text-uppercase"
-            style={{ letterSpacing: '5px', color: '#7AB730' }}
-          >
+          <h6 className="text-uppercase" style={{ letterSpacing: '5px', color: '#7AB730' }}>
             Có thể bạn sẽ thích
           </h6>
         </div>
@@ -561,13 +427,9 @@ export default () => {
         )}
       </div>
 
-      {/* Slider Các Tour Gần Nhất */}
       <div style={{ width: '100%', marginBottom: '15px' }}>
         <div className="text-center mb-3 pb-3 mt-3">
-          <h6
-            className="text-uppercase"
-            style={{ letterSpacing: '5px', color: '#7AB730' }}
-          >
+          <h6 className="text-uppercase" style={{ letterSpacing: '5px', color: '#7AB730' }}>
             Các tour gần nhất với bạn
           </h6>
         </div>
@@ -576,7 +438,11 @@ export default () => {
           <div style={{ textAlign: 'center', padding: '20px' }}>
             <p>Đang tải...</p>
           </div>
-        ) : (
+        ) : userLocation === null ? (
+          <div style={{ textAlign: 'center', padding: '20px' }}>
+            <p>Vui lòng cấp quyền truy cập vị trí để xem các tour gần nhất.</p>
+          </div>
+        ) : closestTours.length > 0 ? (
           <Slider
             ds={closestTours.map(tour => ({
               ...tour,
@@ -585,90 +451,46 @@ export default () => {
             }))}
             onTourClick={handleTourClick}
           />
+        ) : (
+          <div style={{ textAlign: 'center', padding: '20px' }}>
+            <p>Không tìm thấy tour gần nhất.</p>
+          </div>
         )}
       </div>
 
-      <div
-        className="bosung"
-        style={{
-          display: 'flex',
-          gap: '20px',
-          position: 'fixed',
-          width: '100%',
-          zIndex: 20,
-        }}
-      >
-        <div
-          style={{ position: 'absolute', zIndex: 3, left: '10px', top: '0px' }}
-        ></div>
+      <div className="bosung" style={{ display: 'flex', gap: '20px', position: 'fixed', width: '100%', zIndex: 20 }}>
+        <div style={{ position: 'absolute', zIndex: 3, left: '10px', top: '0px' }}></div>
       </div>
 
       <div className="text-center mb-3 pb-3 mt-3">
-        <h6
-          className="text-uppercase"
-          style={{ letterSpacing: '5px', color: '#7AB730' }}
-        >
+        <h6 className="text-uppercase" style={{ letterSpacing: '5px', color: '#7AB730' }}>
           Những tours hot nhất
         </h6>
         <h1>Khám phá những địa điểm nổi bật</h1>
       </div>
 
       <div className="row" style={{ width: '90%', marginLeft: '4%' }}>
-        <div
-          className="col-lg-3"
-          style={{ maxHeight: '600px', overflowY: 'scroll' }}
-        >
-          <div
-            style={{
-              width: '100%',
-              padding: '10px',
-              borderRight: '1px solid #ddd',
-              textAlign: 'left',
-            }}
-          >
+        <div className="col-lg-3" style={{ maxHeight: '600px', overflowY: 'scroll' }}>
+          <div style={{ width: '100%', padding: '10px', borderRight: '1px solid #ddd', textAlign: 'left' }}>
             <div>
-              <h5
-                style={{
-                  fontWeight: 'bold',
-                  marginBottom: '5px',
-                  color: '#7ab730',
-                }}
-              >
-                Traveler
-              </h5>
-              <p style={{ color: 'gray', fontSize: '14px' }}>
-                Khám Phá - Du Lịch
-              </p>
+              <h5 style={{ fontWeight: 'bold', marginBottom: '5px', color: '#7ab730' }}>Traveler</h5>
+              <p style={{ color: 'gray', fontSize: '14px' }}>Khám Phá - Du Lịch</p>
             </div>
 
             <div style={{ marginTop: '20px' }}>
               <p style={{ fontWeight: 'bold' }}>KHOẢNG GIÁ</p>
               <div style={{ display: 'flex', gap: '5px', marginTop: '5px' }}>
                 <input
-                  onChange={event =>
-                    (filter.current.giaBatDau = parseFloat(event.target.value))
-                  }
+                  onChange={event => (filter.current.giaBatDau = parseFloat(event.target.value))}
                   type="number"
                   placeholder="₫ TỪ"
-                  style={{
-                    width: '50%',
-                    padding: '5px',
-                    border: '1px solid #ddd',
-                    textAlign: 'left',
-                  }}
+                  style={{ width: '50%', padding: '5px', border: '1px solid #ddd', textAlign: 'left' }}
                 />
                 <input
-                  onChange={event =>
-                    (filter.current.giaKetThuc = parseFloat(event.target.value))
-                  }
+                  onChange={event => (filter.current.giaKetThuc = parseFloat(event.target.value))}
                   type="number"
                   placeholder="₫ ĐẾN"
-                  style={{
-                    width: '50%',
-                    padding: '5px',
-                    border: '1px solid #ddd',
-                    textAlign: 'left',
-                  }}
+                  style={{ width: '50%', padding: '5px', border: '1px solid #ddd', textAlign: 'left' }}
                 />
               </div>
               <button
@@ -684,42 +506,33 @@ export default () => {
                 }}
                 onClick={() => {
                   filter.current.loai = loaichon;
+                  setLoading(true); // Bật loading khi áp dụng bộ lọc
                   if (s == null || s == undefined || s === '') {
                     axios
-                      .post(
-                        'http://localhost:8080/tour/getfilter',
-                        filter.current,
-                        { headers: { 'Content-Type': 'application/json' } }
-                      )
+                      .post('http://localhost:8080/tour/getfilter', filter.current, {
+                        headers: { 'Content-Type': 'application/json' },
+                      })
                       .then(response =>
-                        setlisttour(
-                          Array.isArray(response.data.data)
-                            ? response.data.data
-                            : []
-                        )
+                        setlisttour(Array.isArray(response.data.data) ? response.data.data : [])
                       )
                       .catch(error => {
                         console.error(error);
                         setlisttour([]);
-                      });
+                      })
+                      .finally(() => setLoading(false)); // Tắt loading sau khi hoàn tất
                   } else {
                     axios
-                      .post(
-                        'http://localhost:8080/tour/filtermix',
-                        { ...filter.current, thamso: s },
-                        { headers: { 'Content-Type': 'application/json' } }
-                      )
+                      .post('http://localhost:8080/tour/filtermix', { ...filter.current, thamso: s }, {
+                        headers: { 'Content-Type': 'application/json' },
+                      })
                       .then(response =>
-                        setlisttour(
-                          Array.isArray(response.data.data)
-                            ? response.data.data
-                            : []
-                        )
+                        setlisttour(Array.isArray(response.data.data) ? response.data.data : [])
                       )
                       .catch(error => {
                         console.error(error);
                         setlisttour([]);
-                      });
+                      })
+                      .finally(() => setLoading(false)); // Tắt loading sau khi hoàn tất
                   }
                 }}
               >
@@ -727,42 +540,10 @@ export default () => {
               </button>
             </div>
 
-            {/* <div style={{ marginTop: '20px' }}>
-              <p style={{ fontWeight: 'bold' }}>Quốc gia</p>
-              {[
-                'Việt Nam',
-                'Pháp',
-                'Thụy Sỹ',
-                'Trung Quốc',
-                'Hà Lan',
-                'Nhật Bản',
-                'Hy Lạp',
-              ].map((brand, index) => (
-                <label
-                  key={index}
-                  style={{
-                    display: 'block',
-                    margin: '5px 0',
-                    textAlign: 'left',
-                  }}
-                >
-                  <input type="checkbox" style={{ marginRight: '5px' }} />{' '}
-                  {brand}
-                </label>
-              ))}
-            </div> */}
-
             <div style={{ marginTop: '20px' }}>
               <p style={{ fontWeight: 'bold' }}>Thời lượng</p>
               {thoiLuong.current.map((brand, index) => (
-                <label
-                  key={index}
-                  style={{
-                    display: 'block',
-                    margin: '5px 0',
-                    textAlign: 'left',
-                  }}
-                >
+                <label key={index} style={{ display: 'block', margin: '5px 0', textAlign: 'left' }}>
                   <input
                     onClick={() => {
                       let mm = kiemtra(filter.current.thoiLuong, brand.batDau);
@@ -780,14 +561,7 @@ export default () => {
             <div style={{ marginTop: '20px' }}>
               <p style={{ fontWeight: 'bold' }}>Ngày khởi hành</p>
               {dsNgay.current.map((brand, index) => (
-                <label
-                  key={index}
-                  style={{
-                    display: 'block',
-                    margin: '5px 0',
-                    textAlign: 'left',
-                  }}
-                >
+                <label key={index} style={{ display: 'block', margin: '5px 0', textAlign: 'left' }}>
                   <input
                     onClick={() => {
                       let mm = kiemtra(filter.current.dsNgay, brand.batDau);
@@ -818,8 +592,12 @@ export default () => {
               paddingBottom: '50px',
             }}
           >
-            {Array.isArray(listtour) && listtour.length > 0 ? (
-              listtour.map((data, index) => {
+            {loading ? (
+              <div style={{ width: '100%', textAlign: 'center', padding: '20px' }}>
+                <p>Đang tải...</p>
+              </div>
+            ) : Array.isArray(tr) && listtour.length > 0 ? (
+              tr.map((data, index) => {
                 if (index <= indx + 5 && index >= indx) {
                   return (
                     <Link
@@ -879,8 +657,7 @@ export default () => {
             <strong>
               <p
                 style={{
-                  color:
-                    indx >= listtour.length - 1 ? 'gray' : 'rgb(212, 160, 23)',
+                  color: indx >= listtour.length - 1 ? 'gray' : 'rgb(212, 160, 23)',
                   cursor: indx >= listtour.length - 1 ? 'default' : 'pointer',
                 }}
                 onClick={() => indx < listtour.length - 1 && setindx(indx + 6)}

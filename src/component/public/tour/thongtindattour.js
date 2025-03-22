@@ -136,7 +136,6 @@ const AddTour = (prop) => {
     return (
         <div>
              
-            {/* {<Pickservice></Pickservice>} */}
             <Button onClick={handleOpen}>Xem chi tiết</Button>
             <Modal
                 keepMounted

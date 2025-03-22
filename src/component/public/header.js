@@ -37,7 +37,7 @@ export default () => {
 
       {/* ...000 */}
 
-      <div id='divfixed' style={{position:"fixed",left:"0px",right:"0px",zIndex:"999999",backgroundColor:"white"}}>
+      <div id='divfixed' style={{position:"fixed",left:"0px",right:"0px",zIndex:"1",backgroundColor:"white"}}>
         {/* <div style={{"height":height}}></div> */}
 
       {/* ...000 */}

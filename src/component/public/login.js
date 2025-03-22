@@ -48,8 +48,8 @@ const Login = () => {
                       <h2 className="text-xl font-semibold text-center text-blue-600 mb-4">Chào Mừng Trở Lại!</h2>
                       <Form>
                         <Form.Group className="mb-3">
-                          <Form.Label className="font-medium">Email</Form.Label>
-                          <Form.Control id="sdt" type="email" placeholder="Nhập email của bạn" required className="rounded-lg px-3 py-2 border border-gray-300 focus:ring focus:ring-blue-200" />
+                          <Form.Label className="font-medium">Số điện thoại</Form.Label>
+                          <Form.Control id="sdt" type="email" placeholder="Nhập số điện thoại của bạn" required className="rounded-lg px-3 py-2 border border-gray-300 focus:ring focus:ring-blue-200" />
                         </Form.Group>
 
                         <Form.Group className="mb-3">

@@ -172,10 +172,10 @@ const TourInfo = () => {
 
       <hr></hr>
 
-      <h2 class="mb-3">You might also like</h2>
+      <h2 class="mb-3">Có thể bạn sẽ thíchthích</h2>
       <Slider ds={favorite} />
       <hr></hr>
-      <h2 class="mb-3">Detailed schedule</h2>
+      <h2 class="mb-3">Lịch trình chi tiết</h2>
       <div className="chan mt-4">
         {
           t?.chan.map((data, index) => {
