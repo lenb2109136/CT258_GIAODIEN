@@ -26,29 +26,35 @@ const TourSlider = ({ ds, onTourClick }) => {
       </button>
 
       <div ref={sliderRef} style={cartItemsWrapperStyle}>
-        {ds.map((data, index) => (
-          <Link
-            key={index}
-            to={'/khachhang/tour?id=' + data.T_ID}
-            style={{
-              textDecoration: 'none',
-              color: 'inherit',
-              marginLeft: '6%',
-            }}
-            onClick={() => onTourClick(data.T_ID)}
-          >
-            <Cart
-              ten={data.T_TEN}
-              id={data.T_ID}
-              gia={data.gia}
-              ngay={data.T_SONGAY}
-              anh={data.T_ANH}
-              dem={data.T_SODEM}
-              additionalInfo={data.additionalInfo} // Truyền khoảng cách
-              isNearby={data.isNearby} // Truyền cờ để thay đổi nhãn
-            />
-          </Link>
-        ))}
+      {Array.isArray(ds) &&
+  ds.map((data, index) => {
+    if (!data) return null; 
+
+    return (
+      <Link
+        key={index}
+        to={'/khachhang/tour?id=' + (data.T_ID ?? '')}
+        style={{
+          textDecoration: 'none',
+          color: 'inherit',
+          marginLeft: '6%',
+        }}
+        onClick={() => data.T_ID && onTourClick(data.T_ID)}
+      >
+        <Cart
+          ten={data.T_TEN ?? 'Chưa có tên'}
+          id={data.T_ID ?? ''}
+          gia={data.gia ?? 'Liên hệ'}
+          ngay={data.T_SONGAY ?? 0}
+          anh={data.T_ANH ?? ''}
+          dem={data.T_SODEM ?? 0}
+          additionalInfo={data.additionalInfo ?? ''}
+          isNearby={data.isNearby ?? false}
+        />
+      </Link>
+    );
+  })}
+
       </div>
 
       <button onClick={scrollRight} style={rightButtonStyle}>

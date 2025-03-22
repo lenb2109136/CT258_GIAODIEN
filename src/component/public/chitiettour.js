@@ -124,7 +124,7 @@ const TourInfo = () => {
             <div className="row">
 
             {
-    (t?.thoiGianKhoiHanh2 ?? []).length > 0 ? (
+       (t?.thoiGianKhoiHanh2 ?? []).length > 0 ? (
         (t?.thoiGianKhoiHanh2 ?? []).map((data, index) => (
             <div className="col-md-6" key={index}>
                 <ul className="list-unstyled">

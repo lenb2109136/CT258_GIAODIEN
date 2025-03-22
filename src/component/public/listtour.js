@@ -727,7 +727,7 @@ export default () => {
               </button>
             </div>
 
-            <div style={{ marginTop: '20px' }}>
+            {/* <div style={{ marginTop: '20px' }}>
               <p style={{ fontWeight: 'bold' }}>Quốc gia</p>
               {[
                 'Việt Nam',
@@ -750,7 +750,7 @@ export default () => {
                   {brand}
                 </label>
               ))}
-            </div>
+            </div> */}
 
             <div style={{ marginTop: '20px' }}>
               <p style={{ fontWeight: 'bold' }}>Thời lượng</p>
