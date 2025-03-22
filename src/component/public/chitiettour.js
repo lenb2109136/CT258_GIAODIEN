@@ -22,6 +22,8 @@ const isValidHTML = (str) => {
 
 
 
+
+
 const TourInfo = () => {
   const { cart, setcart } = useContext(CartContext)
   const [favorite, setfavorate] = useState([])
@@ -31,6 +33,9 @@ const TourInfo = () => {
   const [chuachon, setchu] = useState(true)
   const [max, setmax] = useState(0)
   const [min, setmin] = useState(0)
+  function formatVND(amount) {
+    return amount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+}
   useEffect(() => {
     axios.get("http://localhost:8080/tour/getListTourfavourite")
       .then(data => {
@@ -95,7 +100,7 @@ const TourInfo = () => {
         <div className="col-md-6">
           <div className="row d-flex align-items-center justify-content-center">
             <img className="mb-2 col-lg-2" style={{ width: "70px", height: "8%", marginRight: "2%" }} src="https://cdn-icons-png.flaticon.com/128/10693/10693001.png" alt="price-icon" />
-            <h4 className="col-lg-10 text-danger text-center">{min} - {min === max ? null : max}</h4>
+            <h4 className="col-lg-10 text-danger text-center">{formatVND(min)}  {min === max||max<1? null : "-"+formatVND(max)}</h4>
           </div>
           <div className="d-flex">
             <img className="mb-2" style={{ width: "8%", height: "8%", marginRight: "6%" }} src=" https://cdn-icons-png.flaticon.com/128/2784/2784459.png" alt="airline-icon" />

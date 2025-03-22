@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useContext, useState } from 'react'; // Added useState for search functionality
+import { useContext, useEffect, useState } from 'react'; // Added useState for search functionality
 import { AppContext } from '../../App';
 
 export default () => {
@@ -13,6 +13,8 @@ export default () => {
     navigate('/login');
   };
 
+  const [height,setHeight]=useState(0)
+
   // Function to handle search submission
   const handleSearch = e => {
     e.preventDefault();
@@ -22,9 +24,24 @@ export default () => {
     }
   };
 
+  useEffect(()=>{
+    let a=document.getElementById("divfixed")
+   setHeight( a.clientHeight )
+  })
+
+  
+
   return (
-    <>
-      <div className="container">
+    <div>
+      {/* <div style={{"height":height}}></div> */}
+
+      {/* ...000 */}
+
+      <div id='divfixed' style={{position:"fixed",left:"0px",right:"0px",zIndex:"999999",backgroundColor:"white"}}>
+        {/* <div style={{"height":height}}></div> */}
+
+      {/* ...000 */}
+      <div className="container" >
         <div className="row mt-3">
           <div className="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
             <div className="d-inline-flex align-items-center">
@@ -180,6 +197,8 @@ export default () => {
           </nav>
         </div>
       </div>
-    </>
+    </div>
+    <div style={{"height":height}}></div>
+    </div>
   );
 };

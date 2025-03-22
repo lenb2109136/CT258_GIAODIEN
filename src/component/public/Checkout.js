@@ -211,6 +211,10 @@ let thongtingui = {
   infove: ss
 };
 
+function formatVND(amount) {
+  return amount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+}
+
 axios.post("http://localhost:8080/ve/save", thongtingui, {
   headers: {
     'Content-Type': 'application/json'

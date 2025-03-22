@@ -37,7 +37,7 @@ export default function (prop) {
             height: "700px",
             position: "absolute", zIndex: 3, backgroundColor: "white",
             left:"200px",
-            top:"150px"
+            top:"120px"
         }}> 
         <img onClick={()=>{prop.setopen(false)}} src="https://cdn-icons-png.flaticon.com/128/189/189254.png" style={{position:"absolute",cursor:"pointer",left:"10px",width:"30px"}}></img>
         <strong><h4 style={{color:"#7AB730",backgroundColor:"white"}}>Thông Tin Ưu Đãi</h4></strong>
@@ -71,6 +71,10 @@ export default function (prop) {
                                             <hr></hr>
                                         </div>
                                 })
+                                
+                            }
+                            {
+                                data?.giaUuDai?.length==0 ?<p>Chưa áp dụng ưu đãi nào</p> :null
                             }
                         </td>
                         <td style={{textAlign:"center",borderBottom:"1px solid #7AB730"}}>
