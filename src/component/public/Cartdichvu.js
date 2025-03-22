@@ -124,6 +124,8 @@ export default function TourCard(prop) {
               anh:prop.anh,
               gia:prop.gia
             })
+            console.log(c)
+            localStorage.setItem("cart",JSON.stringify(c));
             setcart(c)
           }}
           disabled={kiemtradachon(cart,prop.id)}

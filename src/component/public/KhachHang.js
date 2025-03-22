@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import api from "../config/axiosconfig";
 
 const CartContext = createContext();
 export {CartContext}
@@ -7,18 +8,19 @@ export {CartContext}
 export default () => {
     const [cart,setcart] = useState([]); 
     const navigate=useNavigate();
-    if(localStorage.getItem("token")==null||localStorage.getItem("role")!="khachhang"){
+    if(localStorage.getItem("token")==null){
         navigate("/login")
     }
     useEffect(()=>{
         setcart(JSON.parse(localStorage.getItem("cart")))
     },[])
-    useEffect(()=>{
-        localStorage.setItem("cart",JSON.stringify(cart))
-    },[cart])
+    // useEffect(()=>{
+    //     localStorage.setItem("cart",JSON.stringify(cart))
+    // },[cart])
     return (
         <CartContext.Provider value={{cart,setcart}}>
             <div>
+                
                 <Outlet />
                 <div style={{
                     position: "fixed",

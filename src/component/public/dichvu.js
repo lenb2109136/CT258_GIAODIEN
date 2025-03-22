@@ -60,40 +60,17 @@ export default () => {
 
   })
   useEffect(()=>{
-    axios.get("http://localhost:8080/dichvu/getphuhop")
-    .then(data=>{
-        setdsdichvu(data.data.data)
-    })
+    if(cart.length>inde){
+      axios.get(`http://localhost:8080/dichvu/phuhop?id=${cart?.[inde].id}`)
+      .then(data=>{
+          setdsdichvu(data.data.data)})
+    }
     axios.get("http://localhost:8080/dichvu/getall")
     .then(data=>{
         setdvall(data.data.data)
     })
-  },[])
-  useEffect(() => {
-    axios.get("http://localhost:8080/tour/getListTourfavourite")
-      .then(data => {
-        setfavorate(data.data.data)
-      })
-
-  }, [])
-  useEffect(() => {
-    axios.get("http://localhost:8080/loaitour/getall")
-      .then(data => {
-        setloai(data.data.data);
-      })
-  }, [])
-  useEffect(() => {
-    axios.get("http://localhost:8080/tour/getListTour")
-      .then(data => {
-        setlisttour(data.data.data)
-      })
-  }, [])
-  useEffect(() => {
-    axios.get(`http://localhost:8080/tour/getListTourByLoai?idloai=${loaichon}`)
-      .then(data => {
-        setlisttour(data.data.data)
-      })
-  }, [loaichon])
+  },[cart])
+ 
   return (
     <div className="row">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "10px" }}>
@@ -124,7 +101,7 @@ export default () => {
         <h1>Explore Top Service</h1>
       </div>
       <div className="row" style={{ width: "90%", marginLeft: "4%" }}>
-        <div className="col-lg-3" style={{ maxHeight: "600px", overflowY: "scroll" }}>
+        {/* <div className="col-lg-3" style={{ maxHeight: "600px", overflowY: "scroll" }}>
           <div style={{ width: "100%", padding: "10px", borderRight: "1px solid #ddd", textAlign: "left" }}>
 
             <div>
@@ -223,16 +200,16 @@ export default () => {
               ))}
             </div>
           </div>
-        </div>
-        <div className="col-lg-9" >
+        </div> */}
+        <div className="col-lg-12" >
           <div
             style={{
-              display: "flex", flexWrap: "wrap", alignItems: "center",
+              display: "flex", flexWrap: "wrap", alignItems: "start",
               justifyContent: "start", height: "600px", overflowY: "scroll",width:"100%",
               position: "relative", paddingBottom: "50px"
             }}>
 
-            {dvall.map((data, index) => {
+            {dvall?.map((data, index) => {
               if (index <= indx + 5 && index >= indx) {
                 return (
                      <Cart inde={inde} ten={data.ten} id={data.id} gia={data.gia} anh={data.anh} />
@@ -242,7 +219,7 @@ export default () => {
             })
             }
 
-            {listtour.length === 0 && (
+            {dvall.length === 0 && (
               <div style={{ width: "100%", textAlign: "center" }}>
                 <img src="https://cdn-icons-png.flaticon.com/128/10608/10608904.png" alt="Không tìm thấy" />
                 <p>Không tìm thấy tour phù hợp</p>

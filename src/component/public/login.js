@@ -74,6 +74,8 @@ const Login = () => {
                               else{
                                 localStorage.setItem("token",data.data.data.token)
                                 localStorage.setItem("role",data.data.data.role)
+                                localStorage.setItem("ten",data.data.data.ten)
+                                localStorage.setItem("sdt",data.data.data.sdt)
                                 if(data.data.data.role==="khachhang"){
                                   navigate("/khachhang/home")
                                 }
