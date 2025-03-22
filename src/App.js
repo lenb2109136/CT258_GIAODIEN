@@ -36,9 +36,10 @@ function App() {
 
   // Example state to share via context (customize as needed)
   const [someValue, setSomeValue] = useState('default value');
+  const [s,sets] =useState("")
 
   return (
-    <AppContext.Provider value={{ someValue, setSomeValue }}>
+    <AppContext.Provider value={{ someValue, setSomeValue,s,sets}}>
       {' '}
       {/* Provide context value */}
       <div className="App">
